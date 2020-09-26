@@ -1,0 +1,339 @@
+<template>
+<div>
+    <headerComponent></headerComponent>
+    <div class="content-wrapper">
+      <div class="content">
+        <div class="container-fluid">
+
+            <div class="container">
+                <div class="card card-default">
+                <div class="card-header">
+                    <h3 class="card-title">Add New Book</h3>
+                    <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                    </div>
+                </div>
+                <!-- /.card-header -->
+                <div class="card-body" style="display: block;">
+                <form @submit.prevent="createBook">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <label for="exampleInputIsbn" class="isbn">ISBN Auto</label>
+                            <input @click="myFunction(1000000000000, 9000000000000)" v-model="form.isbnCheck" type="checkbox" name="isbnCheck" class="form-check-input">
+                            <label class="form-check-label"> Auto Generate</label>
+                        </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <input v-model="form.isbn" :class="{ 'is-invalid': form.errors.has('isbn') }"
+                            type="text" name="isbn" placeholder="ISBN No." class="form-control">
+                            <has-error :form="form" field="isbn"></has-error>
+                        </div>
+
+                        <div class="form-group">
+                            <input v-model="form.author" :class="{ 'is-invalid': form.errors.has('author') }"
+                            type="text" name="author" placeholder="Book Author" class="form-control">
+                            <has-error :form="form" field="author"></has-error>
+                        </div>
+
+
+                        <!-- <div class="form-group">
+                            <input @keyup="searchData()" v-model="form.author" :class="{ 'is-invalid': form.errors.has('author') }"
+                            type="text" placeholder="Book Author" class="form-control">
+                            <has-error :form="form" field="author"></has-error>
+                        </div>
+                        <div v-show="getSesrchValue">
+                            <ul>
+                                <li v-for="val in searchValue" :key="val.id">
+                                    <p style="cursor:pointer;" @click.prevent="getVal(val)">{{ val.author }}</p>
+
+                                </li>
+                            </ul>
+                        </div> -->
+
+                        <div class="form-group">
+                            <input v-model="form.copyright" :class="{ 'is-invalid': form.errors.has('copyright') }"
+                            type="text" name="copyright" placeholder="Copyright" class="form-control">
+                            <has-error :form="form" field="copyright"></has-error>
+                        </div>
+                        <div class="col-md-6" style="float:left; padding-left:0px">
+                            <div class="form-group">
+                                <input v-model="form.year" :class="{ 'is-invalid': form.errors.has('year') }"
+                                type="text" name="year" placeholder="Publish Year" class="form-control">
+                                <has-error :form="form" field="year"></has-error>
+                            </div>
+
+                        </div>
+                        <div class="col-md-6" style="float:right; padding-right:0px">
+                            <div class="form-group">
+                                <input v-model="form.country" :class="{ 'is-invalid': form.errors.has('country') }"
+                                type="text" name="country" placeholder="Publish Country" class="form-control">
+                                <has-error :form="form" field="country"></has-error>
+                            </div>
+                        </div>
+                        
+
+                        <!-- <div class="form-group">
+                        <label for="exampleInputFile">Category Cover Photo</label>
+                        <div class="input-group">
+                            <div class="custom-file file-input-style">
+                            <img :src="form.image" class="img-style" />
+                            <!-- <i class="fas fa-file-upload icon-style"></i> -->
+                            <!-- <input @change="changePhoto($event)" type="file" class="custom-file-input input-new-style" id="exampleInputFile" /> -->
+                            <!-- <label style="display:none;" class="custom-file-label" for="exampleInputFile">Choose file</label> -->
+                            <!-- </div>
+                        </div>
+                        </div> -->
+
+
+
+                        <div class="form-group">
+                            <label>Cover</label>
+                        <div class="input-group">
+                            <div class="custom-file file-input-style">
+                                <img :src="form.cover" class="img-style" />
+                                <input  @change="changePhoto($event)" type="file" name="cover" class="custom-file-input input-new-style" id="exampleInputFile">
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+
+                    <!-- /.col -->
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <input v-model="form.book_name" :class="{ 'is-invalid': form.errors.has('book_name') }"
+                            type="text" name="book_name" placeholder="Book Title" class="form-control">
+                            <has-error :form="form" field="book_name"></has-error>
+                        </div>
+
+                        <div class="form-group">
+                            <input v-model="form.category" :class="{ 'is-invalid': form.errors.has('category') }"
+                            type="text" name="category" placeholder="Subject/Category" class="form-control">
+                            <has-error :form="form" field="category"></has-error>
+                        </div>
+                        <div class="form-group">
+                            <input v-model="form.publisher" :class="{ 'is-invalid': form.errors.has('publisher') }"
+                            type="text" name="publisher" placeholder="Publisher" class="form-control">
+                            <has-error :form="form" field="publisher"></has-error>
+                        </div>
+
+                    <div class="col-md-6" style="float:left; padding-left:0px">
+                        <div class="form-group">
+                            <input v-model="form.edition" :class="{ 'is-invalid': form.errors.has('edition') }"
+                            type="text" name="edition" placeholder="Edition" class="form-control">
+                            <has-error :form="form" field="edition"></has-error>
+                        </div>
+                    </div>
+                    <div class="col-md-6" style="float:right; padding-right:0px;">
+                        <div class="form-group">
+                            <select v-model="form.language" :class="{ 'is-invalid': form.errors.has('language') }" id="type" name="language" class="form-control">
+                                <option active value="">Language</option>
+                                <option>Bangla</option>
+                                <option>English</option>
+                            </select>
+                            <has-error :form="form" field="language"></has-error>
+                        </div>
+                    </div>
+
+                        <div class="form-group">
+                            <input v-model="form.ref" :class="{ 'is-invalid': form.errors.has('ref') }"
+                            type="text" name="ref" placeholder="Shelf Ref#" class="form-control">
+                            <has-error :form="form" field="ref"></has-error>
+                        </div>
+
+                        <div class="form-group">
+                        <select v-model="form.status" :class="{ 'is-invalid': form.errors.has('status') }" id="type" name="status" class="form-control">
+                            <option active value="">Select New/Upcoming</option>
+                            <option>New</option>
+                            <option>Upcoming</option>
+                        </select>
+                        <has-error :form="form" field="status"></has-error>
+                        </div>
+
+                        <!-- <div class="col-md-6" style="float: left; padding-left:0px;">
+                        <div class="form-group">
+                            <input name="status" type="checkbox" id="exampleCheck1">
+                            <label class="form-check-label" for="exampleCheck1"> New</label>
+                            <input v-model="form.status" :class="{ 'is-invalid': form.errors.has('status') }" name="status" style="margin-left:20px;" type="checkbox" id="exampleCheck2">
+                            <label class="form-check-labe2" for="exampleCheck2"> Upcoming</label>
+                            <has-error :form="form" field="status"></has-error>
+                        </div>
+                        </div> -->
+                        <div class="form-group">
+                            <textarea v-model="form.summary" :class="{ 'is-invalid': form.errors.has('summary') }"
+                            type="text" name="summary" placeholder="Summary" class="form-control"></textarea>
+                            <has-error :form="form" field="summary"></has-error>
+                        </div>
+
+                        <div class="col-md-6" style="float:right; text-align:center;padding-right:0px">
+                            <div class="form-group">
+                            <button type="button" class="btn btn-danger" >Cancel</button>
+                            <button type="submit" class="btn btn-primary">Save</button>
+                        </div>
+                        </div>
+
+
+                    </div>
+                    <!-- /.col -->
+
+                    </div>
+                    </form>
+                    <!-- /.row -->
+                </div>
+                <!-- /.card-body -->
+                <div class="card-footer" style="display: block;">
+                    Visit <a href="https://select2.github.io/">Select2 documentation</a> for more examples and information about
+                    the plugin.
+                </div>
+                </div>
+
+            </div>
+
+
+        </div>
+      </div>
+    </div>
+
+    <footerComponent></footerComponent>
+  </div>
+</template>
+
+</template>
+
+<script>
+import headerComponent from "./header";
+import footerComponent from "./footer";
+    export default {
+        name: "Book",
+        components: {
+            headerComponent,
+            footerComponent
+        },
+
+        data(){
+            return{
+                searchValue: "",
+                getSesrchValue: false,
+                randomNumber:'',
+                form: new Form({
+                    isbn:'',
+                    author:'',
+                    copyright:'',
+                    year:'',
+                    country:'',
+                    cover:'',
+                    summary:'',
+                    book_name:'',
+                    category:'',
+                    publisher:'',
+                    edition:'',
+                    language:'',
+                    ref:'',
+                    status:'',
+
+                })
+            }
+        },
+
+        methods:{
+            createBook(){
+                // Submit the form via a POST request
+                this.form.post('/storeBook')
+                .then(() => {
+                    this.form.reset();
+                    Toast.fire({
+                    icon: 'success',
+                    title: 'Book Stored Successfully'
+                })
+            })
+
+            },
+
+            ourImage(img) {
+                return "/images/" + img;
+                },
+                changePhoto(event) {
+                let file = event.target.files[0];
+                let reader = new FileReader();
+                reader.onload = event => {
+                    this.form.cover = event.target.result;
+                };
+                reader.readAsDataURL(file);
+
+            },
+
+            // getVal(val){
+            //     this.form.author = val.author;
+            //     this.getSesrchValue = false;
+            // },
+            // searchData: _.debounce(function () {
+            //     if (this.form.author !== "") {
+            //         axios.get("/get-author?q=" + this.form.author)
+            //         .then((response) => {
+            //         this.searchValue = response.data.data;
+            //         this.getSesrchValue = true;
+            //         //   console.log(response.data.users);
+            //         });
+            //     } else {
+            //         this.getSesrchValue = false;
+            //         this.form.author = "";
+            //     }
+            // }, 300),
+
+            myFunction: function (min, max) {
+                if(this.form.isbn == ''){
+                    this.form.isbn = Math.floor(Math.random() * (max - min)) + min;
+                }else{
+                    this.form.isbn =""
+                }
+            },
+
+            // getBook(){
+            //     axios.get('/getbook').then((response)=> {
+            //         console.log(response.data.data);
+            //     })
+            // }
+
+        },
+
+        mounted() {
+
+            console.log('Component mounted.')
+        }
+    }
+</script>
+
+
+<style>
+    .isbn{
+        display: inline-flex;
+        margin-right: 30px;
+    }
+    
+.file-input-style{
+    border: dashed 1.5px blue;
+    background-image: repeating-linear-gradient(45deg, black, transparent 100px);
+    height: 180px !important;
+    max-width: 200px !important;
+    /* margin-left: 50px !important; */
+    margin:auto;
+}
+.input-new-style{
+    margin-left: -100%;
+    height: 180px;
+    border: dashed 1.5px blue;
+    background-image: repeating-linear-gradient(45deg, black, transparent 100px);
+    width: 100% !important;
+    cursor: pointer;
+}
+.icon-style{
+    font-size: 50px;
+    margin-left: 145px;
+    margin-top:5px;
+}
+
+.img-style{
+    width: 200px !important;
+    height: 180px !important;
+}
+</style>
