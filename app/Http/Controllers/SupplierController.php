@@ -7,6 +7,17 @@ use App\Supplier;
 
 class SupplierController extends Controller
 {
+    
+    public function index(){
+        
+        $data = Supplier::all();
+        return response()->json([
+            'data'=>$data,
+            'message'=>"success"
+        ],200);
+    }
+    
+    
     public function store(Request $request){
         $this->validate($request, [
             'supplier'  => 'required',

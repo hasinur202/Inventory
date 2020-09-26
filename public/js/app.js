@@ -2198,22 +2198,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -2224,8 +2208,8 @@ __webpack_require__.r(__webpack_exports__);
   },
   data: function data() {
     return {
-      searchValue: "",
       getSesrchValue: false,
+      authors: [],
       randomNumber: '',
       form: new Form({
         isbn: '',
@@ -2245,13 +2229,29 @@ __webpack_require__.r(__webpack_exports__);
       })
     };
   },
+  created: function created() {
+    var _this = this;
+
+    axios.get('/getAuthor').then(function (response) {
+      _this.authors = response.data.data;
+    });
+  },
+  computed: {
+    filterd: function filterd() {
+      var _this2 = this;
+
+      return this.authors.filter(function (val) {
+        return val.author.toLowerCase().startsWith(_this2.form.author.toLowerCase());
+      });
+    }
+  },
   methods: {
     createBook: function createBook() {
-      var _this = this;
+      var _this3 = this;
 
       // Submit the form via a POST request
       this.form.post('/storeBook').then(function () {
-        _this.form.reset();
+        _this3.form.reset();
 
         Toast.fire({
           icon: 'success',
@@ -2263,24 +2263,36 @@ __webpack_require__.r(__webpack_exports__);
       return "/images/" + img;
     },
     changePhoto: function changePhoto(event) {
-      var _this2 = this;
+      var _this4 = this;
 
       var file = event.target.files[0];
       var reader = new FileReader();
 
       reader.onload = function (event) {
-        _this2.form.cover = event.target.result;
+        _this4.form.cover = event.target.result;
       };
 
       reader.readAsDataURL(file);
     },
-    // getVal(val){
-    //     this.form.author = val.author;
-    //     this.getSesrchValue = false;
-    // },
-    // searchData: _.debounce(function () {
+    getVal: function getVal(val) {
+      this.form.author = val.author;
+      this.getSesrchValue = false;
+    },
+    searchVal: function searchVal() {
+      var _this5 = this;
+
+      if (this.form.author == '') {
+        this.getSesrchValue = false;
+      } else {
+        axios.get('/getAuthor').then(function (response) {
+          _this5.authors = response.data.data;
+        });
+        this.getSesrchValue = true;
+      }
+    },
+    // searchData: _.debounce(()=>{
     //     if (this.form.author !== "") {
-    //         axios.get("/get-author?q=" + this.form.author)
+    //         axios.get("/getAuthor?q=" + this.form.author)
     //         .then((response) => {
     //         this.searchValue = response.data.data;
     //         this.getSesrchValue = true;
@@ -3038,31 +3050,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -3073,6 +3060,7 @@ __webpack_require__.r(__webpack_exports__);
   },
   data: function data() {
     return {
+      supplierlist: "",
       form: new Form({
         supplier: '',
         address: '',
@@ -3089,6 +3077,10 @@ __webpack_require__.r(__webpack_exports__);
 
       // Submit the form via a POST request
       this.form.post('/storeSupplier').then(function () {
+        axios.get('/getSupplier').then(function (response) {
+          _this.supplierlist = response.data.data;
+        });
+
         _this.form.reset();
 
         Toast.fire({
@@ -3096,10 +3088,17 @@ __webpack_require__.r(__webpack_exports__);
           title: 'Supplier Added Successfully'
         });
       });
+    },
+    viewSupplier: function viewSupplier() {
+      var _this2 = this;
+
+      axios.get('/getSupplier').then(function (response) {
+        _this2.supplierlist = response.data.data;
+      });
     }
   },
   mounted: function mounted() {
-    console.log('Component mounted.');
+    this.viewSupplier();
   }
 });
 
@@ -3646,9 +3645,7 @@ __webpack_require__.r(__webpack_exports__);
       var _this2 = this;
 
       // Submit the form via a POST request
-      this.form.post('/storeAuthor').then(function (_ref) {
-        var data = _ref.data;
-
+      this.form.post('/storeAuthor').then(function () {
         _this2.form.reset();
 
         Toast.fire({
@@ -3661,8 +3658,8 @@ __webpack_require__.r(__webpack_exports__);
       var _this3 = this;
 
       // Submit the form via a POST request
-      this.form.post('/storePublisher').then(function (_ref2) {
-        var data = _ref2.data;
+      this.form.post('/storePublisher').then(function (_ref) {
+        var data = _ref.data;
 
         _this3.form.reset();
 
@@ -3676,8 +3673,8 @@ __webpack_require__.r(__webpack_exports__);
       var _this4 = this;
 
       // Submit the form via a POST request
-      this.form.post('/storeCategory').then(function (_ref3) {
-        var data = _ref3.data;
+      this.form.post('/storeCategory').then(function (_ref2) {
+        var data = _ref2.data;
 
         _this4.form.reset();
 
@@ -3762,6 +3759,7 @@ __webpack_require__.r(__webpack_exports__);
       this.form.post('/login').then(function (response) {
         _this.$router.push('/dashboard');
 
+        window.location.reload();
         Toast.fire({
           icon: "success",
           title: "login successfull."
@@ -8215,7 +8213,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.isbn{\n        display: inline-flex;\n        margin-right: 30px;\n}\n.file-input-style{\n    border: dashed 1.5px blue;\n    background-image: repeating-linear-gradient(45deg, black, transparent 100px);\n    height: 180px !important;\n    max-width: 200px !important;\n    /* margin-left: 50px !important; */\n    margin:auto;\n}\n.input-new-style{\n    margin-left: -100%;\n    height: 180px;\n    border: dashed 1.5px blue;\n    background-image: repeating-linear-gradient(45deg, black, transparent 100px);\n    width: 100% !important;\n    cursor: pointer;\n}\n.icon-style{\n    font-size: 50px;\n    margin-left: 145px;\n    margin-top:5px;\n}\n.img-style{\n    width: 200px !important;\n    height: 180px !important;\n}\n", ""]);
+exports.push([module.i, "\n.isbn{\n        display: inline-flex;\n        margin-right: 30px;\n}\n.file-input-style{\n    border: dashed 1.5px blue;\n    background-image: repeating-linear-gradient(45deg, black, transparent 100px);\n    height: 180px !important;\n    max-width: 200px !important;\n    /* margin-left: 50px !important; */\n    margin:auto;\n}\n.input-new-style{\n    margin-left: -100%;\n    height: 180px;\n    border: dashed 1.5px blue;\n    background-image: repeating-linear-gradient(45deg, black, transparent 100px);\n    width: 100% !important;\n    cursor: pointer;\n}\n.icon-style{\n    font-size: 50px;\n    margin-left: 145px;\n    margin-top:5px;\n}\n.img-style{\n    width: 200px !important;\n    height: 180px !important;\n}\n\n/* .ul-list{\n    \n} */\n.ulstyle{\n    list-style: none;\n    padding-left: 0px;\n}\n.ulstyle > li:hover {\n    background:#ddd;\n    color: blue;\n    border-radius: 5px;\n}\n.ulstyle > li > p{\n    padding: 5px;\n    cursor:pointer;\n    margin-bottom:4px;\n}\n\n", ""]);
 
 // exports
 
@@ -8234,7 +8232,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.head_menu{\n        border-radius: 10px;\n        border: 1px solid #fff;\n        background: #494E54;\n        color: #fff !important;\n        margin-left: 14px;\n}\n.head_menu:hover {\n          background: gray !important;\n          color: black !important;\n          border:1px solid #ddd;transition-delay: 0.2s;\n}\n.fixed_position{\n          left:0;\n          right:0; top: 0;\n          position: fixed;\n}\n", ""]);
+exports.push([module.i, "\n.head_menu{\r\n        border-radius: 10px;\r\n        border: 1px solid #fff;\r\n        background: #494E54;\r\n        color: #fff !important;\r\n        margin-left: 14px;\n}\n.head_menu:hover {\r\n          background: gray !important;\r\n          color: black !important;\r\n          border:1px solid #ddd;transition-delay: 0.2s;\n}\n.fixed_position{\r\n          left:0;\r\n          right:0; top: 0;\r\n          position: fixed;\n}\r\n", ""]);
 
 // exports
 
@@ -44562,11 +44560,13 @@ var render = function() {
                                   },
                                   attrs: {
                                     type: "text",
-                                    name: "author",
                                     placeholder: "Book Author"
                                   },
                                   domProps: { value: _vm.form.author },
                                   on: {
+                                    keyup: function($event) {
+                                      return _vm.searchVal()
+                                    },
                                     input: function($event) {
                                       if ($event.target.composing) {
                                         return
@@ -44585,6 +44585,43 @@ var render = function() {
                                 })
                               ],
                               1
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "div",
+                              {
+                                directives: [
+                                  {
+                                    name: "show",
+                                    rawName: "v-show",
+                                    value: _vm.getSesrchValue,
+                                    expression: "getSesrchValue"
+                                  }
+                                ]
+                              },
+                              [
+                                _c(
+                                  "ul",
+                                  { staticClass: "ulstyle" },
+                                  _vm._l(_vm.filterd, function(val) {
+                                    return _c("li", { key: val.id }, [
+                                      _c(
+                                        "p",
+                                        {
+                                          on: {
+                                            click: function($event) {
+                                              $event.preventDefault()
+                                              return _vm.getVal(val)
+                                            }
+                                          }
+                                        },
+                                        [_vm._v(_vm._s(val.author))]
+                                      )
+                                    ])
+                                  }),
+                                  0
+                                )
+                              ]
                             ),
                             _vm._v(" "),
                             _c(
@@ -45302,12 +45339,12 @@ var staticRenderFns = [
       "div",
       { staticClass: "card-footer", staticStyle: { display: "block" } },
       [
-        _vm._v("\n                    Visit "),
+        _vm._v("\r\n                    Visit "),
         _c("a", { attrs: { href: "https://select2.github.io/" } }, [
           _vm._v("Select2 documentation")
         ]),
         _vm._v(
-          " for more examples and information about\n                    the plugin.\n                "
+          " for more examples and information about\r\n                    the plugin.\r\n                "
         )
       ]
     )
@@ -46353,7 +46390,47 @@ var render = function() {
         _c("div", { staticClass: "content" }, [
           _c("div", { staticClass: "container-fluid" }, [
             _c("div", { staticClass: "container" }, [
-              _vm._m(0),
+              _c("div", { staticClass: "row mt-5" }, [
+                _c("div", { staticClass: "col-md-12" }, [
+                  _c("div", { staticClass: "card" }, [
+                    _vm._m(0),
+                    _vm._v(" "),
+                    _c(
+                      "div",
+                      { staticClass: "card-body table-responsive p-0" },
+                      [
+                        _c("table", { staticClass: "table table-hover" }, [
+                          _vm._m(1),
+                          _vm._v(" "),
+                          _c(
+                            "tbody",
+                            _vm._l(_vm.supplierlist, function(supplier) {
+                              return _c("tr", { key: supplier.id }, [
+                                _c("td", [_vm._v(_vm._s(supplier.id))]),
+                                _vm._v(" "),
+                                _c("td", [_vm._v(_vm._s(supplier.supplier))]),
+                                _vm._v(" "),
+                                _c("td", [_vm._v(_vm._s(supplier.address))]),
+                                _vm._v(" "),
+                                _c("td", [_vm._v(_vm._s(supplier.phone))]),
+                                _vm._v(" "),
+                                _c("td", [_vm._v(_vm._s(supplier.fax))]),
+                                _vm._v(" "),
+                                _c("td", [_vm._v(_vm._s(supplier.mobile))]),
+                                _vm._v(" "),
+                                _c("td", [_vm._v(_vm._s(supplier.email))]),
+                                _vm._v(" "),
+                                _vm._m(2, true)
+                              ])
+                            }),
+                            0
+                          )
+                        ])
+                      ]
+                    )
+                  ])
+                ])
+              ]),
               _vm._v(" "),
               _c(
                 "div",
@@ -46376,7 +46453,7 @@ var render = function() {
                     },
                     [
                       _c("div", { staticClass: "modal-content" }, [
-                        _vm._m(1),
+                        _vm._m(3),
                         _vm._v(" "),
                         _c(
                           "form",
@@ -46661,7 +46738,7 @@ var render = function() {
                               )
                             ]),
                             _vm._v(" "),
-                            _vm._m(2)
+                            _vm._m(4)
                           ]
                         )
                       ])
@@ -46684,136 +46761,60 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "row mt-5" }, [
-      _c("div", { staticClass: "col-md-12" }, [
-        _c("div", { staticClass: "card" }, [
-          _c("div", { staticClass: "card-header" }, [
-            _c("h3", { staticClass: "card-title" }, [
-              _vm._v("Supplier History")
-            ]),
-            _vm._v(" "),
-            _c("div", { staticClass: "card-tools" }, [
-              _c(
-                "button",
-                {
-                  staticClass: "btn btn-success",
-                  attrs: { "data-toggle": "modal", "data-target": "#addNew" }
-                },
-                [
-                  _vm._v("Add New "),
-                  _c("i", { staticClass: "fas fa-user-plus fa-fw" })
-                ]
-              )
-            ])
-          ]),
-          _vm._v(" "),
-          _c("div", { staticClass: "card-body table-responsive p-0" }, [
-            _c("table", { staticClass: "table table-hover" }, [
-              _c("thead", [
-                _c("tr", [
-                  _c("th", [_vm._v("ID")]),
-                  _vm._v(" "),
-                  _c("th", [_vm._v("Name")]),
-                  _vm._v(" "),
-                  _c("th", [_vm._v("Address")]),
-                  _vm._v(" "),
-                  _c("th", [_vm._v("Phone")]),
-                  _vm._v(" "),
-                  _c("th", [_vm._v("Fax")]),
-                  _vm._v(" "),
-                  _c("th", [_vm._v("Email")]),
-                  _vm._v(" "),
-                  _c("th", [_vm._v("Modify")])
-                ])
-              ]),
-              _vm._v(" "),
-              _c("tbody", [
-                _c("tr", [
-                  _c("td", [_vm._v("183")]),
-                  _vm._v(" "),
-                  _c("td", [_vm._v("Iqbal")]),
-                  _vm._v(" "),
-                  _c("td", [_vm._v("Farmgate")]),
-                  _vm._v(" "),
-                  _c("td", [_vm._v("017XXXXXXXXX")]),
-                  _vm._v(" "),
-                  _c("td", [_vm._v("navudyog@vsnl.net")]),
-                  _vm._v(" "),
-                  _c("td", [_vm._v("iqbalgmail.com@")]),
-                  _vm._v(" "),
-                  _c("td", [
-                    _c("a", { attrs: { href: "#" } }, [
-                      _c("button", { staticClass: "btn btn-info btn-sm" }, [
-                        _c("i", { staticClass: "fa fa-edit" })
-                      ])
-                    ]),
-                    _vm._v(" "),
-                    _c("a", { attrs: { href: "#" } }, [
-                      _c("button", { staticClass: "btn btn-danger btn-sm" }, [
-                        _c("i", { staticClass: "fa fa-trash" })
-                      ])
-                    ])
-                  ])
-                ]),
-                _vm._v(" "),
-                _c("tr", [
-                  _c("td", [_vm._v("183")]),
-                  _vm._v(" "),
-                  _c("td", [_vm._v("Hossain")]),
-                  _vm._v(" "),
-                  _c("td", [_vm._v("Motizil")]),
-                  _vm._v(" "),
-                  _c("td", [_vm._v("017XXXXXXXXX")]),
-                  _vm._v(" "),
-                  _c("td", [_vm._v("navudyog@vsnl.net")]),
-                  _vm._v(" "),
-                  _c("td", [_vm._v("iqbalgmail.com@")]),
-                  _vm._v(" "),
-                  _c("td", [
-                    _c("a", { attrs: { href: "#" } }, [
-                      _c("button", { staticClass: "btn btn-info btn-sm" }, [
-                        _c("i", { staticClass: "fa fa-edit" })
-                      ])
-                    ]),
-                    _vm._v(" "),
-                    _c("a", { attrs: { href: "#" } }, [
-                      _c("button", { staticClass: "btn btn-danger btn-sm" }, [
-                        _c("i", { staticClass: "fa fa-trash" })
-                      ])
-                    ])
-                  ])
-                ]),
-                _vm._v(" "),
-                _c("tr", [
-                  _c("td", [_vm._v("183")]),
-                  _vm._v(" "),
-                  _c("td", [_vm._v("Saju Hossain")]),
-                  _vm._v(" "),
-                  _c("td", [_vm._v("Dhaka")]),
-                  _vm._v(" "),
-                  _c("td", [_vm._v("017XXXXXXXXX")]),
-                  _vm._v(" "),
-                  _c("td", [_vm._v("navudyog@vsnl.net")]),
-                  _vm._v(" "),
-                  _c("td", [_vm._v("iqbalgmail.com@")]),
-                  _vm._v(" "),
-                  _c("td", [
-                    _c("a", { attrs: { href: "#" } }, [
-                      _c("button", { staticClass: "btn btn-info btn-sm" }, [
-                        _c("i", { staticClass: "fa fa-edit" })
-                      ])
-                    ]),
-                    _vm._v(" "),
-                    _c("a", { attrs: { href: "#" } }, [
-                      _c("button", { staticClass: "btn btn-danger btn-sm" }, [
-                        _c("i", { staticClass: "fa fa-trash" })
-                      ])
-                    ])
-                  ])
-                ])
-              ])
-            ])
-          ])
+    return _c("div", { staticClass: "card-header" }, [
+      _c("h3", { staticClass: "card-title" }, [_vm._v("Supplier History")]),
+      _vm._v(" "),
+      _c("div", { staticClass: "card-tools" }, [
+        _c(
+          "button",
+          {
+            staticClass: "btn btn-success",
+            attrs: { "data-toggle": "modal", "data-target": "#addNew" }
+          },
+          [
+            _vm._v("Add New "),
+            _c("i", { staticClass: "fas fa-user-plus fa-fw" })
+          ]
+        )
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("thead", [
+      _c("tr", [
+        _c("th", [_vm._v("ID")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Name")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Address")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Phone")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Fax")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Email")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Modify")])
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("td", [
+      _c("a", { attrs: { href: "#" } }, [
+        _c("button", { staticClass: "btn btn-info btn-sm" }, [
+          _c("i", { staticClass: "fa fa-edit" })
+        ])
+      ]),
+      _vm._v(" "),
+      _c("a", { attrs: { href: "#" } }, [
+        _c("button", { staticClass: "btn btn-danger btn-sm" }, [
+          _c("i", { staticClass: "fa fa-trash" })
         ])
       ])
     ])
@@ -64741,8 +64742,8 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! D:\Hasinur\Inventory-sales\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! D:\Hasinur\Inventory-sales\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! D:\Office Project\Inventory\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! D:\Office Project\Inventory\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })

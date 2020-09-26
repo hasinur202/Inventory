@@ -35,8 +35,9 @@ Route::post('/storeSupplier', 'SupplierController@store');
 
 Route::get('getbook', 'BookController@index');
 //Get Author details
-Route::get('/getAuthor', 'AuthorController@searchAuthor');
+Route::get('/getAuthor', 'AuthorController@index');
 
+Route::get('/getSupplier', 'SupplierController@index');
 
 
 

@@ -30,44 +30,19 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                            <td>183</td>
-                            <td>Iqbal</td>
-                            <td>Farmgate</td>
-                            <td>017XXXXXXXXX</td>
-                            <td>navudyog@vsnl.net</td>
-                            <td>iqbalgmail.com@</td>
+                            <tr v-for="supplier in supplierlist" :key="supplier.id">
+                            <td>{{ supplier.id }}</td>
+                            <td>{{ supplier.supplier }}</td>
+                            <td>{{ supplier.address }}</td>
+                            <td>{{ supplier.phone }}</td>
+                            <td>{{ supplier.fax }}</td>
+                            <td>{{ supplier.mobile }}</td>
+                            <td>{{ supplier.email }}</td>
                                 <td>
                                 <a href="#"><button class="btn btn-info btn-sm"><i class="fa fa-edit"></i></button></a>
                                 <a href="#"><button class="btn btn-danger btn-sm"><i class="fa fa-trash"></i></button></a>
                             </td>
                             </tr>
-                            <tr>
-                            <td>183</td>
-                            <td>Hossain</td>
-                            <td>Motizil</td>
-                            <td>017XXXXXXXXX</td>
-                            <td>navudyog@vsnl.net</td>
-                            <td>iqbalgmail.com@</td>
-                                <td>
-                                <a href="#"><button class="btn btn-info btn-sm"><i class="fa fa-edit"></i></button></a>
-                                <a href="#"><button class="btn btn-danger btn-sm"><i class="fa fa-trash"></i></button></a>
-                            </td>
-                            </tr>
-                            <tr>
-                            <td>183</td>
-                            <td>Saju Hossain</td>
-                            <td>Dhaka</td>
-                            <td>017XXXXXXXXX</td>
-                            <td>navudyog@vsnl.net</td>
-                            <td>iqbalgmail.com@</td>
-                            <td>
-                                <a href="#"><button class="btn btn-info btn-sm"><i class="fa fa-edit"></i></button></a>
-                                <a href="#"><button class="btn btn-danger btn-sm"><i class="fa fa-trash"></i></button></a>
-                            </td>
-
-                            </tr>
-
 
                         </tbody>
                         </table>
@@ -151,6 +126,7 @@ export default {
     },
     data() {
         return {
+            supplierlist: "",
             form: new Form({
                 supplier: '',
                 address: '',
@@ -167,6 +143,10 @@ export default {
                 // Submit the form via a POST request
             this.form.post('/storeSupplier')
             .then(() => {
+                axios.get('/getSupplier')
+                .then((response)=>{
+                    this.supplierlist = response.data.data;
+                })
                 this.form.reset();
                 Toast.fire({
                     icon: 'success',
@@ -174,13 +154,18 @@ export default {
                 })
             })
         },
+
+        viewSupplier(){
+            axios.get('/getSupplier')
+            .then((response)=>{
+                this.supplierlist = response.data.data;
+            })
+        }
     },
 
 
-
-
   mounted() {
-      console.log('Component mounted.')
+      this.viewSupplier();
   }
 };
 </script>

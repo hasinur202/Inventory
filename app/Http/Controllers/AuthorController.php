@@ -14,10 +14,10 @@ class AuthorController extends Controller
     }
 
 
-    public function searchAuthor(Request $request)
+    public function index(Request $request)
     {
-        $search = $request->get('q');
-        $data = Author::where('author','LIKE','%'.$search.'%')->get();
+        
+        $data = Author::all();
         return response()->json([
             'data'=>$data,
             'message'=>"success"
