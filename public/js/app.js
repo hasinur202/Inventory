@@ -2192,6 +2192,15 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+<<<<<<< HEAD
+=======
+//
+//
+//
+//
+//
+//
+>>>>>>> 73134112e99528f9923f4572277b04a40abe2bce
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -2273,17 +2282,57 @@ __webpack_require__.r(__webpack_exports__);
       return "/images/" + img;
     },
     changePhoto: function changePhoto(event) {
+<<<<<<< HEAD
       var _this5 = this;
+=======
+      var _this4 = this;
+>>>>>>> 73134112e99528f9923f4572277b04a40abe2bce
 
       var file = event.target.files[0];
       var reader = new FileReader();
 
       reader.onload = function (event) {
+<<<<<<< HEAD
         _this5.form.cover = event.target.result;
+=======
+        _this4.form.cover = event.target.result;
+>>>>>>> 73134112e99528f9923f4572277b04a40abe2bce
       };
 
       reader.readAsDataURL(file);
     },
+<<<<<<< HEAD
+=======
+    getVal: function getVal(val) {
+      this.form.author = val.author;
+      this.getSesrchValue = false;
+    },
+    searchVal: function searchVal() {
+      var _this5 = this;
+
+      if (this.form.author == '') {
+        this.getSesrchValue = false;
+      } else {
+        axios.get('/getAuthor').then(function (response) {
+          _this5.authors = response.data.data;
+        });
+        this.getSesrchValue = true;
+      }
+    },
+    // searchData: _.debounce(()=>{
+    //     if (this.form.author !== "") {
+    //         axios.get("/getAuthor?q=" + this.form.author)
+    //         .then((response) => {
+    //         this.searchValue = response.data.data;
+    //         this.getSesrchValue = true;
+    //         //   console.log(response.data.users);
+    //         });
+    //     } else {
+    //         this.getSesrchValue = false;
+    //         this.form.author = "";
+    //     }
+    // }, 300),
+>>>>>>> 73134112e99528f9923f4572277b04a40abe2bce
     myFunction: function myFunction(min, max) {
       if (this.form.isbn == '') {
         this.form.isbn = Math.floor(Math.random() * (max - min)) + min;
@@ -3775,9 +3824,7 @@ __webpack_require__.r(__webpack_exports__);
       var _this2 = this;
 
       // Submit the form via a POST request
-      this.form.post('/storeAuthor').then(function (_ref) {
-        var data = _ref.data;
-
+      this.form.post('/storeAuthor').then(function () {
         _this2.form.reset();
 
         Toast.fire({
@@ -3790,8 +3837,8 @@ __webpack_require__.r(__webpack_exports__);
       var _this3 = this;
 
       // Submit the form via a POST request
-      this.form.post('/storePublisher').then(function (_ref2) {
-        var data = _ref2.data;
+      this.form.post('/storePublisher').then(function (_ref) {
+        var data = _ref.data;
 
         _this3.form.reset();
 
@@ -3805,8 +3852,8 @@ __webpack_require__.r(__webpack_exports__);
       var _this4 = this;
 
       // Submit the form via a POST request
-      this.form.post('/storeCategory').then(function (_ref3) {
-        var data = _ref3.data;
+      this.form.post('/storeCategory').then(function (_ref2) {
+        var data = _ref2.data;
 
         _this4.form.reset();
 
@@ -8345,6 +8392,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
+<<<<<<< HEAD
 exports.push([module.i, "\n.isbn{\n        display: inline-flex;\n        margin-right: 30px;\n}\n.file-input-style{\n    border: dashed 1.5px blue;\n    background-image: repeating-linear-gradient(45deg, black, transparent 100px);\n    height: 180px !important;\n    max-width: 200px !important;\n    /* margin-left: 50px !important; */\n    margin:auto;\n}\n.input-new-style{\n    margin-left: -100%;\n    height: 180px;\n    border: dashed 1.5px blue;\n    background-image: repeating-linear-gradient(45deg, black, transparent 100px);\n    width: 100% !important;\n    cursor: pointer;\n}\n.icon-style{\n    font-size: 50px;\n    margin-left: 145px;\n    margin-top:5px;\n}\n.img-style{\n    width: 200px !important;\n    height: 180px !important;\n}\n.ulstyle{\n    list-style: none;\n    padding-left: 0px;\n}\n.ulstyle > li:hover {\n    background:#ddd;\n    color: blue;\n    border-radius: 5px;\n}\n.ulstyle > li > p{\n    padding: 5px;\n    cursor:pointer;\n    margin-bottom:4px;\n}\n\n\n", ""]);
 
 // exports
@@ -8365,6 +8413,9 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 // module
 exports.push([module.i, "\n.mytable{\n    width:100%;\n    border:2px solid #ddd;\n}\n.mytable tbody > tr{\n    border-bottom:1px solid #ddd;\n    line-height:25px;\n}\n.mytable tbody > tr:hover{\n    background: #ddd;\n}\n.mytable tbody > tr > th{\n    width:30%;\n    background: #227C9A;\n    padding-left: 5px;\n}\n.mytable tbody > tr > td{\n    padding-left: 5px;\n}\n", ""]);
+=======
+exports.push([module.i, "\n.isbn{\n        display: inline-flex;\n        margin-right: 30px;\n}\n.file-input-style{\n    border: dashed 1.5px blue;\n    background-image: repeating-linear-gradient(45deg, black, transparent 100px);\n    height: 180px !important;\n    max-width: 200px !important;\n    /* margin-left: 50px !important; */\n    margin:auto;\n}\n.input-new-style{\n    margin-left: -100%;\n    height: 180px;\n    border: dashed 1.5px blue;\n    background-image: repeating-linear-gradient(45deg, black, transparent 100px);\n    width: 100% !important;\n    cursor: pointer;\n}\n.icon-style{\n    font-size: 50px;\n    margin-left: 145px;\n    margin-top:5px;\n}\n.img-style{\n    width: 200px !important;\n    height: 180px !important;\n}\n\n/* .ul-list{\n    \n} */\n.ulstyle{\n    list-style: none;\n    padding-left: 0px;\n}\n.ulstyle > li:hover {\n    background:#ddd;\n    color: blue;\n    border-radius: 5px;\n}\n.ulstyle > li > p{\n    padding: 5px;\n    cursor:pointer;\n    margin-bottom:4px;\n}\n\n", ""]);
+>>>>>>> 73134112e99528f9923f4572277b04a40abe2bce
 
 // exports
 
@@ -8383,7 +8434,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.head_menu{\n        border-radius: 10px;\n        border: 1px solid #fff;\n        background: #494E54;\n        color: #fff !important;\n        margin-left: 14px;\n}\n.head_menu:hover {\n          background: gray !important;\n          color: black !important;\n          border:1px solid #ddd;transition-delay: 0.2s;\n}\n.fixed_position{\n          left:0;\n          right:0; top: 0;\n          position: fixed;\n}\n", ""]);
+exports.push([module.i, "\n.head_menu{\r\n        border-radius: 10px;\r\n        border: 1px solid #fff;\r\n        background: #494E54;\r\n        color: #fff !important;\r\n        margin-left: 14px;\n}\n.head_menu:hover {\r\n          background: gray !important;\r\n          color: black !important;\r\n          border:1px solid #ddd;transition-delay: 0.2s;\n}\n.fixed_position{\r\n          left:0;\r\n          right:0; top: 0;\r\n          position: fixed;\n}\r\n", ""]);
 
 // exports
 
@@ -45520,12 +45571,12 @@ var staticRenderFns = [
       "div",
       { staticClass: "card-footer", staticStyle: { display: "block" } },
       [
-        _vm._v("\n                    Visit "),
+        _vm._v("\r\n                    Visit "),
         _c("a", { attrs: { href: "https://select2.github.io/" } }, [
           _vm._v("Select2 documentation")
         ]),
         _vm._v(
-          " for more examples and information about\n                    the plugin.\n                "
+          " for more examples and information about\r\n                    the plugin.\r\n                "
         )
       ]
     )
@@ -47613,7 +47664,11 @@ var staticRenderFns = [
         _vm._v(" "),
         _c("th", [_vm._v("Email")]),
         _vm._v(" "),
+<<<<<<< HEAD
         _c("th", [_vm._v("Action")])
+=======
+        _c("th", [_vm._v("Modify")])
+>>>>>>> 73134112e99528f9923f4572277b04a40abe2bce
       ])
     ])
   },
@@ -65576,8 +65631,13 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
+<<<<<<< HEAD
 __webpack_require__(/*! D:\Hasinur\Inventory\resources\js\app.js */"./resources/js/app.js");
 module.exports = __webpack_require__(/*! D:\Hasinur\Inventory\resources\sass\app.scss */"./resources/sass/app.scss");
+=======
+__webpack_require__(/*! D:\Office Project\Inventory\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! D:\Office Project\Inventory\resources\sass\app.scss */"./resources/sass/app.scss");
+>>>>>>> 73134112e99528f9923f4572277b04a40abe2bce
 
 
 /***/ })

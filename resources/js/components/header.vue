@@ -344,7 +344,8 @@ export default {
       createAuthor(){
         // Submit the form via a POST request
         this.form.post('/storeAuthor')
-        .then(({ data }) => {
+        .then(() => {
+             
             this.form.reset();
             Toast.fire({
             icon: 'success',

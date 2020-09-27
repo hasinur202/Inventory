@@ -153,6 +153,10 @@ export default {
                 })
             })
         },
+<<<<<<< HEAD
+=======
+
+>>>>>>> 73134112e99528f9923f4572277b04a40abe2bce
         viewSupplier(){
             axios.get('/getSupplier')
             .then((response)=>{
@@ -160,6 +164,11 @@ export default {
             })
         }
     },
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> 73134112e99528f9923f4572277b04a40abe2bce
   mounted() {
       this.viewSupplier();
   }

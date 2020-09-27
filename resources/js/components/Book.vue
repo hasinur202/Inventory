@@ -30,6 +30,15 @@
                             <has-error :form="form" field="isbn"></has-error>
                         </div>
 
+<<<<<<< HEAD
+=======
+                        <!-- <div class="form-group">
+                            <input v-model="form.author" :class="{ 'is-invalid': form.errors.has('author') }"
+                            type="text" name="author" placeholder="Book Author" class="form-control">
+                            <has-error :form="form" field="author"></has-error>
+                        </div> -->
+
+>>>>>>> 73134112e99528f9923f4572277b04a40abe2bce
                         <div class="form-group">
                             <input @keyup="searchVal()" v-model="form.author" :class="{ 'is-invalid': form.errors.has('author') }"
                             type="text" placeholder="Book Author" class="form-control">
@@ -212,11 +221,15 @@ import footerComponent from "./footer";
                 })
             }
         },
+<<<<<<< HEAD
 
+=======
+>>>>>>> 73134112e99528f9923f4572277b04a40abe2bce
         created(){
             axios.get('/getAuthor')
             .then((response)=>{
                 this.authors = response.data.data;
+<<<<<<< HEAD
             })
         },
         computed:{
@@ -227,6 +240,18 @@ import footerComponent from "./footer";
             }
         },
 
+=======
+            })  
+        },
+        computed:{
+            
+            filterd(){
+                return this.authors.filter(val =>
+                val.author.toLowerCase().startsWith(this.form.author.toLowerCase()))
+                
+            }
+        },
+>>>>>>> 73134112e99528f9923f4572277b04a40abe2bce
         methods:{
             createBook(){
                 // Submit the form via a POST request
@@ -270,6 +295,38 @@ import footerComponent from "./footer";
 
             },
 
+<<<<<<< HEAD
+=======
+            getVal(val){
+                this.form.author = val.author;
+                this.getSesrchValue = false;
+            },
+            searchVal(){
+                if (this.form.author == '') {
+                    this.getSesrchValue = false;
+                }else{
+                    axios.get('/getAuthor')
+                    .then((response)=>{
+                        this.authors = response.data.data;
+                    });
+                    this.getSesrchValue = true;
+
+                }
+            },
+            // searchData: _.debounce(()=>{
+            //     if (this.form.author !== "") {
+            //         axios.get("/getAuthor?q=" + this.form.author)
+            //         .then((response) => {
+            //         this.searchValue = response.data.data;
+            //         this.getSesrchValue = true;
+            //         //   console.log(response.data.users);
+            //         });
+            //     } else {
+            //         this.getSesrchValue = false;
+            //         this.form.author = "";
+            //     }
+            // }, 300),
+>>>>>>> 73134112e99528f9923f4572277b04a40abe2bce
 
             myFunction: function (min, max) {
                 if(this.form.isbn == ''){
@@ -321,6 +378,12 @@ import footerComponent from "./footer";
     height: 180px !important;
 }
 
+<<<<<<< HEAD
+=======
+/* .ul-list{
+    
+} */
+>>>>>>> 73134112e99528f9923f4572277b04a40abe2bce
 .ulstyle{
     list-style: none;
     padding-left: 0px;
@@ -330,11 +393,18 @@ import footerComponent from "./footer";
     color: blue;
     border-radius: 5px;
 }
+<<<<<<< HEAD
+=======
+
+>>>>>>> 73134112e99528f9923f4572277b04a40abe2bce
 .ulstyle > li > p{
     padding: 5px;
     cursor:pointer;
     margin-bottom:4px;
 }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 73134112e99528f9923f4572277b04a40abe2bce
 </style>
