@@ -57,13 +57,10 @@ export default {
         login(){
             this.form.post('/login')
             .then((response)=>{
-<<<<<<< HEAD
                 this.$router.push('/dashboard');
                 window.location.reload();
-=======
               this.$router.push('/dashboard');
               window.location.reload();
->>>>>>> 73134112e99528f9923f4572277b04a40abe2bce
                 Toast.fire({
                     icon:"success",
                     title:"login successfull."

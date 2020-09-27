@@ -12,6 +12,9 @@
                                     <div class="card-header">
                                         <h3 class="card-title">Stock History</h3>
                                         <div class="card-tools">
+                                            <input  v-model="form.supplier" :class="{ 'is-invalid': form.errors.has('supplier') }" type="text" name="isbn" placeholder="Search Supplier"
+                                                        class="form-control">
+
                                             <button class="btn btn-success" data-toggle="modal" data-target="#addNew"><i
                                                     class="fas fa-user-plus fa-fw"></i> Add New</button>
                                         </div>
@@ -87,18 +90,24 @@
                                         <div class="col-md-12">
                                             <div style="width:48%; float:left;">
                                                 <div class="form-group">
-                                                    <input  v-model="form.isbn" :class="{ 'is-invalid': form.errors.has('isbn') }" type="text" name="isbn" placeholder="Search ISBN"
+                                                    <input @keyup.prevent="searchVal()" v-model="form.isbn" :class="{ 'is-invalid': form.errors.has('isbn') }" type="text" name="isbn" placeholder="Search ISBN"
                                                         class="form-control">
                                                     <has-error :form="form" field="isbn"></has-error>
                                                 </div>
                                             </div>
-                                            <div style="width:48%; float:right;">
+                                            <ul v-show="getSesrchValue">
+                                                <li v-for="val in filterd" :key="val.id">
+                                                    <p @click.prevent="getVal(val)">{{ val.isbn }}</p>
+
+                                                </li>
+                                            </ul>
+                                            <!-- <div style="width:48%; float:right;">
                                                 <div class="form-group">
                                                     <input  v-model="form.supplier" :class="{ 'is-invalid': form.errors.has('supplier') }" type="text" name="isbn" placeholder="Search Supplier"
                                                         class="form-control">
                                                     <has-error :form="form" field="supplier"></has-error>
                                                 </div>
-                                            </div>
+                                            </div> -->
 
                                             <div>
                                                 <div class="form-group">
@@ -121,14 +130,14 @@
                                                     <div style="width:38%; float:left;">
                                                         <select v-model="form.select_price" :class="{ 'is-invalid': form.errors.has('select_price') }" id="type" name="select_price"
                                                             style="padding: 6px; padding-right: 60px;">
-                                                            <option active>TK</option>
+                                                            <option active value="">TK</option>
                                                             <option>USD</option>
                                                             <option>R</option>
                                                         </select>
                                                         <has-error :form="form" field="select_price"></has-error>
                                                     </div>
                                                     <div style="width:60%; float: right;">
-                                                        <input v-model="form.pub_price" :class="{ 'is-invalid': form.errors.has('pub_price') }" type="text" name="pub_price" placeholder="Publishers Price"
+                                                        <input v-model="form.pub_price" @keyup="costBd" :class="{ 'is-invalid': form.errors.has('pub_price') }" type="text" name="pub_price" placeholder="Publishers Price"
                                                             class="form-control">
                                                         <has-error :form="form" field="pub_price"></has-error>
                                                     </div>
@@ -146,7 +155,7 @@
                                                 <div style="width:48%; float: right; padding-top:16px">
                                                     <div class="form-group">
                                                         <label>Rate</label>
-                                                        <input  v-model="form.st_rate" :class="{ 'is-invalid': form.errors.has('st_rate') }" type="text" name="st_rate" placeholder="Rate"
+                                                        <input  v-model="form.st_rate" @keyup="costBd" :class="{ 'is-invalid': form.errors.has('st_rate') }" type="text" name="st_rate" placeholder="Rate"
                                                             class="form-control">
                                                         <has-error :form="form" field="st_rate"></has-error>
                                                     </div>
@@ -156,7 +165,7 @@
                                             <div class="col-md-6" style="padding-right:0px !important; float:left;">
                                                 <div class="form-group">
                                                     <label>Cost Price in BD</label>
-                                                    <input @click="costBd()" v-model="form.cost_price" :class="{ 'is-invalid': form.errors.has('cost_price') }" type="text" name="cost_price" placeholder="Cost in BD"
+                                                    <input v-model="form.cost_price" :class="{ 'is-invalid': form.errors.has('cost_price') }" type="text" name="cost_price" placeholder="Cost in BD"
                                                         class="form-control">
                                                     <has-error :form="form" field="cost_price"></has-error>
                                                 </div>
@@ -207,6 +216,8 @@
 
         data(){
             return{
+                getSesrchValue: false,
+                allBook:[],
                 form: new Form({
                     isbn:'',
                     supplier:'',
@@ -222,8 +233,36 @@
                 })
             }
         },
+        created(){
+            axios.get('/getBook')
+            .then((response)=>{
+                this.allBook = response.data.data;
+            })
+        },
+        computed:{
 
+            filterd(){
+                return this.allBook.filter(val =>
+                val.isbn.startsWith(this.form.isbn))
+            }
+        },
         methods:{
+            searchVal(){
+                
+                if (this.form.isbn == '') {
+                    this.getSesrchValue = false;
+                }else{
+                    this.getSesrchValue = true;
+                }
+            },
+            getVal(val){
+               this.form.isbn = val.isbn;
+               this.allBook.forEach(el => {
+                   if (this.form.isbn == el.isbn) {
+                       this.form.book_name = el.book_name;
+                   }
+               }); 
+            },
             pub_price: function (event) {
                 this.pub_price = event.target.value;
             },
@@ -231,12 +270,8 @@
                 this.st_rate = event.target.value;
             },
             costBd(){
-                if(this.form.cost_price == ''){
-                    if(this.pub_price !== "" && this.st_rate !== ""){
-                        this.form.cost_price = parseInt(this.pub_price * this.st_rate);
-                    }
-                }else{
-                    this.form.cost_price =""
+                if(parseFloat(this.form.st_rate) > 0 && parseFloat(this.form.pub_price) > 0){
+                    this.form.cost_price = Math.floor(parseFloat(this.form.st_rate) * parseFloat(this.form.pub_price))
                 }
             }
         },

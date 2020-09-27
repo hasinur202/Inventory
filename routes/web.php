@@ -39,17 +39,13 @@ Route::get('getBook', 'BookController@index');
 
 
 //Get Author details
-<<<<<<< HEAD
 Route::get('/getAuthor', 'AuthorController@searchAuthor');
 //get supplier
 Route::get('/getSupplier', 'SupplierController@index');
-=======
 Route::get('/getAuthor', 'AuthorController@index');
->>>>>>> 73134112e99528f9923f4572277b04a40abe2bce
+
 
 Route::get('/getSupplier', 'SupplierController@index');
-
-
 
 
 //login/logout

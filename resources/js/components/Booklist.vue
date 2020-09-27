@@ -18,7 +18,7 @@
                         <tr>
                             <th>ISBN No.</th>
                             <th>Book Name</th>
-                            <th>Autho</th>
+                            <th>Author</th>
                             <th>Copyright</th>
                             <th>Subject/Category</th>
                             <th>Edition</th>
@@ -38,8 +38,8 @@
                         <td>
                             <a href="#"><button class="btn btn-info btn-sm"><i class="fa fa-edit"></i></button></a>
                             <a href="#"><button class="btn btn-danger btn-sm"><i class="fa fa-trash"></i></button></a>
-                            <!-- <button @click="bookByid(key)" data-toggle="modal" data-target="#viewBook" class="btn btn-primary btn-sm"><i class="fa fa-eye"></i></button> -->
-                            <button data-toggle="modal" data-target="#viewBook" class="btn btn-primary btn-sm"><i class="fa fa-eye"></i></button>
+                            <button @click="bookByid(books)" data-toggle="modal" data-target="#viewBook" class="btn btn-primary btn-sm"><i class="fa fa-eye"></i></button>
+                            <!-- <button data-toggle="modal" data-target="#viewBook" class="btn btn-primary btn-sm"><i class="fa fa-eye"></i></button> -->
                         </td>
                     </tr>
 
@@ -66,90 +66,121 @@
                     <div class="modal-body">
                         <div class="row">
 
-                    <div class="col-md-4">
+                            <div class="col-md-3">
 
-                        <div class="form-group">
-                            <label>Cover</label>
-                        <div class="input-group">
-                            <div class="custom-file file-input-style">
-                                <img class="img-style" />
+                                <div class="form-group">
+                                    <label>Cover</label>
+                                <div class="input-group">
+                                    <div class="custom-file file-input-style">
+                                        <img class="img-style" :src="`/images/${singleBookDetails.cover}`" />
+                                    </div>
+                                </div>
+                                </div>
                             </div>
-                        </div>
-                        </div>
-                    </div>
 
-                    <!-- /.col -->
-                    <div class="col-md-8">
-                        <table class="mytable">
-                            <tbody>
-                                <tr>
-                                    <th scope="row">ISBN No.</th>
-                                    <td></td>
-                                    <td>545452151212552</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">Author</th>
-                                    <td></td>
-                                    <td>Mark</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">Subject/Category</th>
-                                    <td></td>
-                                    <td>History</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">Publisher</th>
-                                    <td></td>
-                                    <td>Mark Jacshon</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">Publish Year</th>
-                                    <td></td>
-                                    <td>2020</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">Publish Country</th>
-                                    <td></td>
-                                    <td>America</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">Copyright</th>
-                                    <td></td>
-                                    <td>Idea Tech Solution</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">Edition</th>
-                                    <td></td>
-                                    <td>2nd</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">Language</th>
-                                    <td></td>
-                                    <td>English</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">Shelf Ref#</th>
-                                    <td></td>
-                                    <td>Idea Tech</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">Status</th>
-                                     <td></td>
-                                    <td>New</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">Summary</th>
-                                     <td></td>
-                                    <td> Lorem ipsum dolor sit, amet consectetur adipisicing elit. Nam dolor harum molestiae laboriosam excepturi quia amet.
-                                        Officiis, neque voluptatum blanditiis dignissimos repellat culpa consequuntur provident vitae labore fugit recusandae cumque! </td>
-                                </tr>
-                            </tbody>
-                            </table>
-                    </div>
-                    <!-- /.col -->
-                    </div>
-                    </div>
+                            <!-- /.col -->
+                            <div class="col-md-8 mytable">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <label>ISBN No.</label>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <input v-model="singleBookDetails.isbn" readonly>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <label>Author</label>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <input v-model="singleBookDetails.author" readonly>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <label>Subject/Category</label>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <input v-model="singleBookDetails.category" readonly>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <label>Publisher</label>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <input v-model="singleBookDetails.publisher" readonly>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <label>Publisher Year</label>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <input v-model="singleBookDetails.year" readonly>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <label>Publish Country</label>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <input v-model="singleBookDetails.country" readonly>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <label>Copyright</label>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <input v-model="singleBookDetails.copyright" readonly>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <label>Edition</label>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <input v-model="singleBookDetails.edition" readonly>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <label>Language</label>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <input v-model="singleBookDetails.language" readonly>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <label>Shelf Ref# Country</label>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <input v-model="singleBookDetails.ref" readonly>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <label>Status</label>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <input v-model="singleBookDetails.status" readonly>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <label>Summary</label>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <textarea v-model="singleBookDetails.summary" readonly></textarea>
+                                    </div>
+                                </div>
 
+                            </div>
+                    <!-- /.col -->
+                    </div>
+                    </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
                         <button type="submit" class="btn btn-primary">Create</button>
@@ -178,6 +209,22 @@ export default {
         return{
             booklist: "",
             // booklistId: "",
+            singleBookDetails : {
+                isbn:'',
+                author:'',
+                copyright:'',
+                year:'',
+                country:'',
+                cover:'',
+                summary:'',
+                book_name:'',
+                category:'',
+                publisher:'',
+                edition:'',
+                language:'',
+                ref:'',
+                status:'',
+            }
         }
     },
 
@@ -188,6 +235,13 @@ export default {
                 this.booklist = response.data.data;
             })
         },
+        bookByid(book){
+            for(let index in this.singleBookDetails){
+                if(book.hasOwnProperty(index)){
+                    this.singleBookDetails[index] = book[index];
+                }
+            }
+        }
 
         // bookByid(key){
         //     axios.post('/getBookbyId/${key}')
@@ -206,26 +260,35 @@ export default {
     };
     </script>
 
-<style>
+<style scoped>
     .mytable{
+        margin-left:40px;
+    }
+
+    .row div > input{
+        width: 100%;
+        padding-left: 5px;
+        height: 25px;
+        border: 1px solid #ddd !important;
+    }
+    .row div > textarea{
         width:100%;
-        border:2px solid #ddd;
+        padding-left: 5px;
+        border: 1px solid #ddd !important;
     }
-    .mytable tbody > tr{
-        border-bottom:1px solid #ddd;
-        line-height:25px;
+    .row .col-md-4 {
+        background:#ddd;
+        border-bottom: 1px solid #fff;
+        padding: 4px;
+        padding-left: 16px;
+        border-radius: 5px;
     }
 
-    .mytable tbody > tr:hover{
-        background: #ddd;
+    .row .col-md-8 {
+        padding: 4px;
+        
     }
-
-    .mytable tbody > tr > th{
-        width:30%;
-        background: #227C9A;
-        padding-left: 5px;
-    }
-    .mytable tbody > tr > td{
-        padding-left: 5px;
+    .row .col-md-4 label{
+        margin-bottom: 0 !important;
     }
 </style>
