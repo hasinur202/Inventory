@@ -26,48 +26,23 @@
                             <th>Phone</th>
                             <th>Fax</th>
                             <th>Email</th>
-                            <th>Modify</th>
+                            <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                            <td>183</td>
-                            <td>Iqbal</td>
-                            <td>Farmgate</td>
-                            <td>017XXXXXXXXX</td>
-                            <td>navudyog@vsnl.net</td>
-                            <td>iqbalgmail.com@</td>
+                            <tr v-for="supplier in supplierlist" :key="supplier.id">
+                            <td>{{ supplier.id }}</td>
+                            <td>{{ supplier.supplier }}</td>
+                            <td>{{ supplier.address }}</td>
+                            <td>{{ supplier.phone }}</td>
+                            <td>{{ supplier.fax }}</td>
+                            <td>{{ supplier.mobile }}</td>
+                            <td>{{ supplier.email }}</td>
                                 <td>
                                 <a href="#"><button class="btn btn-info btn-sm"><i class="fa fa-edit"></i></button></a>
                                 <a href="#"><button class="btn btn-danger btn-sm"><i class="fa fa-trash"></i></button></a>
                             </td>
                             </tr>
-                            <tr>
-                            <td>183</td>
-                            <td>Hossain</td>
-                            <td>Motizil</td>
-                            <td>017XXXXXXXXX</td>
-                            <td>navudyog@vsnl.net</td>
-                            <td>iqbalgmail.com@</td>
-                                <td>
-                                <a href="#"><button class="btn btn-info btn-sm"><i class="fa fa-edit"></i></button></a>
-                                <a href="#"><button class="btn btn-danger btn-sm"><i class="fa fa-trash"></i></button></a>
-                            </td>
-                            </tr>
-                            <tr>
-                            <td>183</td>
-                            <td>Saju Hossain</td>
-                            <td>Dhaka</td>
-                            <td>017XXXXXXXXX</td>
-                            <td>navudyog@vsnl.net</td>
-                            <td>iqbalgmail.com@</td>
-                            <td>
-                                <a href="#"><button class="btn btn-info btn-sm"><i class="fa fa-edit"></i></button></a>
-                                <a href="#"><button class="btn btn-danger btn-sm"><i class="fa fa-trash"></i></button></a>
-                            </td>
-
-                            </tr>
-
 
                         </tbody>
                         </table>
@@ -91,32 +66,32 @@
                 <form @submit.prevent="createSupplier">
                     <div class="modal-body">
                     <div class="form-group">
-                        <input v-model="form.supplier" :class="{ 'is-invalid': form.errors.has('supplier') }" 
+                        <input v-model="form.supplier" :class="{ 'is-invalid': form.errors.has('supplier') }"
                         type="text" name="supplier" placeholder="Supplier Name" class="form-control">
                         <has-error :form="form" field="supplier"></has-error>
                     </div>
                     <div class="form-group">
-                        <input v-model="form.address" :class="{ 'is-invalid': form.errors.has('address') }" 
+                        <input v-model="form.address" :class="{ 'is-invalid': form.errors.has('address') }"
                         type="text" name="address" placeholder="Address" class="form-control">
                         <has-error :form="form" field="address"></has-error>
                     </div>
                     <div class="form-group">
-                        <input v-model="form.phone" :class="{ 'is-invalid': form.errors.has('phone') }" 
+                        <input v-model="form.phone" :class="{ 'is-invalid': form.errors.has('phone') }"
                         type="text" name="phone" placeholder="Phone" class="form-control">
                         <has-error :form="form" field="phone"></has-error>
                     </div>
                     <div class="form-group">
-                        <input v-model="form.fax" :class="{ 'is-invalid': form.errors.has('fax') }" 
+                        <input v-model="form.fax" :class="{ 'is-invalid': form.errors.has('fax') }"
                         type="text" name="fax" placeholder="Fax" class="form-control">
                         <has-error :form="form" field="fax"></has-error>
                     </div>
                     <div class="form-group">
-                        <input v-model="form.mobile" :class="{ 'is-invalid': form.errors.has('mobile') }" 
+                        <input v-model="form.mobile" :class="{ 'is-invalid': form.errors.has('mobile') }"
                         type="text" name="mobile" placeholder="Mobile" class="form-control">
                         <has-error :form="form" field="mobile"></has-error>
                     </div>
                     <div class="form-group">
-                        <input v-model="form.email" :class="{ 'is-invalid': form.errors.has('email') }" 
+                        <input v-model="form.email" :class="{ 'is-invalid': form.errors.has('email') }"
                         type="email" name="email" placeholder="Email" class="form-control">
                         <has-error :form="form" field="email"></has-error>
                     </div>
@@ -135,8 +110,8 @@
         </div>
       </div>
     </div>
-
     <footerComponent></footerComponent>
+
   </div>
 </template>
 
@@ -151,6 +126,7 @@ export default {
     },
     data() {
         return {
+            supplierlist: "",
             form: new Form({
                 supplier: '',
                 address: '',
@@ -161,12 +137,15 @@ export default {
         })
         }
     },
-
     methods:{
         createSupplier(){
                 // Submit the form via a POST request
             this.form.post('/storeSupplier')
             .then(() => {
+                axios.get('/getSupplier')
+                .then((response)=>{
+                    this.supplierlist = response.data.data;
+                })
                 this.form.reset();
                 Toast.fire({
                     icon: 'success',
@@ -174,13 +153,15 @@ export default {
                 })
             })
         },
+        viewSupplier(){
+            axios.get('/getSupplier')
+            .then((response)=>{
+                this.supplierlist = response.data.data;
+            })
+        }
     },
-
-
-
-
   mounted() {
-      console.log('Component mounted.')
+      this.viewSupplier();
   }
 };
 </script>

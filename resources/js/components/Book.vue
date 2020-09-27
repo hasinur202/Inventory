@@ -31,25 +31,18 @@
                         </div>
 
                         <div class="form-group">
-                            <input v-model="form.author" :class="{ 'is-invalid': form.errors.has('author') }"
-                            type="text" name="author" placeholder="Book Author" class="form-control">
-                            <has-error :form="form" field="author"></has-error>
-                        </div>
-
-
-                        <!-- <div class="form-group">
-                            <input @keyup="searchData()" v-model="form.author" :class="{ 'is-invalid': form.errors.has('author') }"
+                            <input @keyup="searchVal()" v-model="form.author" :class="{ 'is-invalid': form.errors.has('author') }"
                             type="text" placeholder="Book Author" class="form-control">
                             <has-error :form="form" field="author"></has-error>
                         </div>
                         <div v-show="getSesrchValue">
-                            <ul>
-                                <li v-for="val in searchValue" :key="val.id">
-                                    <p style="cursor:pointer;" @click.prevent="getVal(val)">{{ val.author }}</p>
+                            <ul class="ulstyle">
+                                <li v-for="val in filterd" :key="val.id">
+                                    <p @click.prevent="getVal(val)">{{ val.author }}</p>
 
                                 </li>
                             </ul>
-                        </div> -->
+                        </div>
 
                         <div class="form-group">
                             <input v-model="form.copyright" :class="{ 'is-invalid': form.errors.has('copyright') }"
@@ -71,21 +64,6 @@
                                 <has-error :form="form" field="country"></has-error>
                             </div>
                         </div>
-                        
-
-                        <!-- <div class="form-group">
-                        <label for="exampleInputFile">Category Cover Photo</label>
-                        <div class="input-group">
-                            <div class="custom-file file-input-style">
-                            <img :src="form.image" class="img-style" />
-                            <!-- <i class="fas fa-file-upload icon-style"></i> -->
-                            <!-- <input @change="changePhoto($event)" type="file" class="custom-file-input input-new-style" id="exampleInputFile" /> -->
-                            <!-- <label style="display:none;" class="custom-file-label" for="exampleInputFile">Choose file</label> -->
-                            <!-- </div>
-                        </div>
-                        </div> -->
-
-
 
                         <div class="form-group">
                             <label>Cover</label>
@@ -212,8 +190,8 @@ import footerComponent from "./footer";
 
         data(){
             return{
-                searchValue: "",
                 getSesrchValue: false,
+                authors:[],
                 randomNumber:'',
                 form: new Form({
                     isbn:'',
@@ -235,6 +213,20 @@ import footerComponent from "./footer";
             }
         },
 
+        created(){
+            axios.get('/getAuthor')
+            .then((response)=>{
+                this.authors = response.data.data;
+            })
+        },
+        computed:{
+
+            filterd(){
+                return this.authors.filter(val =>
+                val.author.toLowerCase().startsWith(this.form.author.toLowerCase()))
+            }
+        },
+
         methods:{
             createBook(){
                 // Submit the form via a POST request
@@ -247,6 +239,22 @@ import footerComponent from "./footer";
                 })
             })
 
+            },
+
+            getVal(val){
+                this.form.author = val.author;
+                this.getSesrchValue = false;
+            },
+            searchVal(){
+                if (this.form.author == '') {
+                    this.getSesrchValue = false;
+                }else{
+                    axios.get('/getAuthor')
+                    .then((response)=>{
+                        this.authors = response.data.data;
+                    });
+                    this.getSesrchValue = true;
+                }
             },
 
             ourImage(img) {
@@ -262,23 +270,6 @@ import footerComponent from "./footer";
 
             },
 
-            // getVal(val){
-            //     this.form.author = val.author;
-            //     this.getSesrchValue = false;
-            // },
-            // searchData: _.debounce(function () {
-            //     if (this.form.author !== "") {
-            //         axios.get("/get-author?q=" + this.form.author)
-            //         .then((response) => {
-            //         this.searchValue = response.data.data;
-            //         this.getSesrchValue = true;
-            //         //   console.log(response.data.users);
-            //         });
-            //     } else {
-            //         this.getSesrchValue = false;
-            //         this.form.author = "";
-            //     }
-            // }, 300),
 
             myFunction: function (min, max) {
                 if(this.form.isbn == ''){
@@ -288,16 +279,9 @@ import footerComponent from "./footer";
                 }
             },
 
-            // getBook(){
-            //     axios.get('/getbook').then((response)=> {
-            //         console.log(response.data.data);
-            //     })
-            // }
-
         },
 
         mounted() {
-
             console.log('Component mounted.')
         }
     }
@@ -309,7 +293,7 @@ import footerComponent from "./footer";
         display: inline-flex;
         margin-right: 30px;
     }
-    
+
 .file-input-style{
     border: dashed 1.5px blue;
     background-image: repeating-linear-gradient(45deg, black, transparent 100px);
@@ -336,4 +320,21 @@ import footerComponent from "./footer";
     width: 200px !important;
     height: 180px !important;
 }
+
+.ulstyle{
+    list-style: none;
+    padding-left: 0px;
+}
+.ulstyle > li:hover {
+    background:#ddd;
+    color: blue;
+    border-radius: 5px;
+}
+.ulstyle > li > p{
+    padding: 5px;
+    cursor:pointer;
+    margin-bottom:4px;
+}
+
+
 </style>

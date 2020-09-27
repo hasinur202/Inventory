@@ -116,8 +116,8 @@
         </div>
       </div>
     </div>
-
     <footerComponent></footerComponent>
+
   </div>
 </template>
 

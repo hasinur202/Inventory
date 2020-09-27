@@ -13,12 +13,20 @@ class BookController extends Controller
     // }
 
     public function index(){
-        $data = Book::latest()->get();
+        $data = Book::all();
         return response()->json([
             'data'=>$data,
             'message'=>'success'
         ],200);
     }
+
+    // public function getBookById($key){
+    //     $data = Book::find($key);
+    //     return response()->json([
+    //         'data'=>$data,
+    //         'message'=>'success'
+    //     ],200);
+    // }
 
     //ekhon data entry daw mia
     //ekktu wait koro

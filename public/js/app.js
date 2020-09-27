@@ -2192,28 +2192,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -2224,8 +2202,8 @@ __webpack_require__.r(__webpack_exports__);
   },
   data: function data() {
     return {
-      searchValue: "",
       getSesrchValue: false,
+      authors: [],
       randomNumber: '',
       form: new Form({
         isbn: '',
@@ -2245,13 +2223,29 @@ __webpack_require__.r(__webpack_exports__);
       })
     };
   },
+  created: function created() {
+    var _this = this;
+
+    axios.get('/getAuthor').then(function (response) {
+      _this.authors = response.data.data;
+    });
+  },
+  computed: {
+    filterd: function filterd() {
+      var _this2 = this;
+
+      return this.authors.filter(function (val) {
+        return val.author.toLowerCase().startsWith(_this2.form.author.toLowerCase());
+      });
+    }
+  },
   methods: {
     createBook: function createBook() {
-      var _this = this;
+      var _this3 = this;
 
       // Submit the form via a POST request
       this.form.post('/storeBook').then(function () {
-        _this.form.reset();
+        _this3.form.reset();
 
         Toast.fire({
           icon: 'success',
@@ -2259,50 +2253,44 @@ __webpack_require__.r(__webpack_exports__);
         });
       });
     },
+    getVal: function getVal(val) {
+      this.form.author = val.author;
+      this.getSesrchValue = false;
+    },
+    searchVal: function searchVal() {
+      var _this4 = this;
+
+      if (this.form.author == '') {
+        this.getSesrchValue = false;
+      } else {
+        axios.get('/getAuthor').then(function (response) {
+          _this4.authors = response.data.data;
+        });
+        this.getSesrchValue = true;
+      }
+    },
     ourImage: function ourImage(img) {
       return "/images/" + img;
     },
     changePhoto: function changePhoto(event) {
-      var _this2 = this;
+      var _this5 = this;
 
       var file = event.target.files[0];
       var reader = new FileReader();
 
       reader.onload = function (event) {
-        _this2.form.cover = event.target.result;
+        _this5.form.cover = event.target.result;
       };
 
       reader.readAsDataURL(file);
     },
-    // getVal(val){
-    //     this.form.author = val.author;
-    //     this.getSesrchValue = false;
-    // },
-    // searchData: _.debounce(function () {
-    //     if (this.form.author !== "") {
-    //         axios.get("/get-author?q=" + this.form.author)
-    //         .then((response) => {
-    //         this.searchValue = response.data.data;
-    //         this.getSesrchValue = true;
-    //         //   console.log(response.data.users);
-    //         });
-    //     } else {
-    //         this.getSesrchValue = false;
-    //         this.form.author = "";
-    //     }
-    // }, 300),
     myFunction: function myFunction(min, max) {
       if (this.form.isbn == '') {
         this.form.isbn = Math.floor(Math.random() * (max - min)) + min;
       } else {
         this.form.isbn = "";
       }
-    } // getBook(){
-    //     axios.get('/getbook').then((response)=> {
-    //         console.log(response.data.data);
-    //     })
-    // }
-
+    }
   },
   mounted: function mounted() {
     console.log('Component mounted.');
@@ -2464,6 +2452,31 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -2472,7 +2485,30 @@ __webpack_require__.r(__webpack_exports__);
     headerComponent: _header__WEBPACK_IMPORTED_MODULE_0__["default"],
     footerComponent: _footer__WEBPACK_IMPORTED_MODULE_1__["default"]
   },
-  mounted: function mounted() {}
+  data: function data() {
+    return {
+      booklist: "" // booklistId: "",
+
+    };
+  },
+  methods: {
+    viewBook: function viewBook() {
+      var _this = this;
+
+      axios.get('/getBook').then(function (response) {
+        _this.booklist = response.data.data;
+      });
+    } // bookByid(key){
+    //     axios.post('/getBookbyId/${key}')
+    //     .then((response)=>{
+    //         this.booklistId = response.data.data;
+    //     })
+    // }
+
+  },
+  mounted: function mounted() {
+    this.viewBook();
+  }
 });
 
 /***/ }),
@@ -2788,10 +2824,116 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "NewConsignment",
+  data: function data() {
+    return {
+      form: new Form({
+        isbn: '',
+        supplier: '',
+        book_name: '',
+        copies: '',
+        select_price: '',
+        pub_price: '',
+        conv_rate: '',
+        st_rate: '',
+        cost_price: '',
+        my_rate: '',
+        sales_price: ''
+      })
+    };
+  },
+  methods: {
+    pub_price: function pub_price(event) {
+      this.pub_price = event.target.value;
+    },
+    st_rate: function st_rate(event) {
+      this.st_rate = event.target.value;
+    },
+    costBd: function costBd() {
+      if (this.form.cost_price == '') {
+        if (this.pub_price !== "" && this.st_rate !== "") {
+          this.form.cost_price = parseInt(this.pub_price * this.st_rate);
+        }
+      } else {
+        this.form.cost_price = "";
+      }
+    }
+  },
   components: {
     headerComponent: _header__WEBPACK_IMPORTED_MODULE_0__["default"],
     footerComponent: _footer__WEBPACK_IMPORTED_MODULE_1__["default"]
@@ -3038,31 +3180,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -3073,6 +3190,7 @@ __webpack_require__.r(__webpack_exports__);
   },
   data: function data() {
     return {
+      supplierlist: "",
       form: new Form({
         supplier: '',
         address: '',
@@ -3089,6 +3207,10 @@ __webpack_require__.r(__webpack_exports__);
 
       // Submit the form via a POST request
       this.form.post('/storeSupplier').then(function () {
+        axios.get('/getSupplier').then(function (response) {
+          _this.supplierlist = response.data.data;
+        });
+
         _this.form.reset();
 
         Toast.fire({
@@ -3096,10 +3218,17 @@ __webpack_require__.r(__webpack_exports__);
           title: 'Supplier Added Successfully'
         });
       });
+    },
+    viewSupplier: function viewSupplier() {
+      var _this2 = this;
+
+      axios.get('/getSupplier').then(function (response) {
+        _this2.supplierlist = response.data.data;
+      });
     }
   },
   mounted: function mounted() {
-    console.log('Component mounted.');
+    this.viewSupplier();
   }
 });
 
@@ -3762,6 +3891,7 @@ __webpack_require__.r(__webpack_exports__);
       this.form.post('/login').then(function (response) {
         _this.$router.push('/dashboard');
 
+        window.location.reload();
         Toast.fire({
           icon: "success",
           title: "login successfull."
@@ -8215,7 +8345,26 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.isbn{\n        display: inline-flex;\n        margin-right: 30px;\n}\n.file-input-style{\n    border: dashed 1.5px blue;\n    background-image: repeating-linear-gradient(45deg, black, transparent 100px);\n    height: 180px !important;\n    max-width: 200px !important;\n    /* margin-left: 50px !important; */\n    margin:auto;\n}\n.input-new-style{\n    margin-left: -100%;\n    height: 180px;\n    border: dashed 1.5px blue;\n    background-image: repeating-linear-gradient(45deg, black, transparent 100px);\n    width: 100% !important;\n    cursor: pointer;\n}\n.icon-style{\n    font-size: 50px;\n    margin-left: 145px;\n    margin-top:5px;\n}\n.img-style{\n    width: 200px !important;\n    height: 180px !important;\n}\n", ""]);
+exports.push([module.i, "\n.isbn{\n        display: inline-flex;\n        margin-right: 30px;\n}\n.file-input-style{\n    border: dashed 1.5px blue;\n    background-image: repeating-linear-gradient(45deg, black, transparent 100px);\n    height: 180px !important;\n    max-width: 200px !important;\n    /* margin-left: 50px !important; */\n    margin:auto;\n}\n.input-new-style{\n    margin-left: -100%;\n    height: 180px;\n    border: dashed 1.5px blue;\n    background-image: repeating-linear-gradient(45deg, black, transparent 100px);\n    width: 100% !important;\n    cursor: pointer;\n}\n.icon-style{\n    font-size: 50px;\n    margin-left: 145px;\n    margin-top:5px;\n}\n.img-style{\n    width: 200px !important;\n    height: 180px !important;\n}\n.ulstyle{\n    list-style: none;\n    padding-left: 0px;\n}\n.ulstyle > li:hover {\n    background:#ddd;\n    color: blue;\n    border-radius: 5px;\n}\n.ulstyle > li > p{\n    padding: 5px;\n    cursor:pointer;\n    margin-bottom:4px;\n}\n\n\n", ""]);
+
+// exports
+
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Booklist.vue?vue&type=style&index=0&lang=css&":
+/*!**************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Booklist.vue?vue&type=style&index=0&lang=css& ***!
+  \**************************************************************************************************************************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loader/lib/css-base.js */ "./node_modules/css-loader/lib/css-base.js")(false);
+// imports
+
+
+// module
+exports.push([module.i, "\n.mytable{\n    width:100%;\n    border:2px solid #ddd;\n}\n.mytable tbody > tr{\n    border-bottom:1px solid #ddd;\n    line-height:25px;\n}\n.mytable tbody > tr:hover{\n    background: #ddd;\n}\n.mytable tbody > tr > th{\n    width:30%;\n    background: #227C9A;\n    padding-left: 5px;\n}\n.mytable tbody > tr > td{\n    padding-left: 5px;\n}\n", ""]);
 
 // exports
 
@@ -39381,6 +39530,36 @@ if(false) {}
 
 /***/ }),
 
+/***/ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Booklist.vue?vue&type=style&index=0&lang=css&":
+/*!******************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/style-loader!./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Booklist.vue?vue&type=style&index=0&lang=css& ***!
+  \******************************************************************************************************************************************************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+
+var content = __webpack_require__(/*! !../../../node_modules/css-loader??ref--6-1!../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../node_modules/postcss-loader/src??ref--6-2!../../../node_modules/vue-loader/lib??vue-loader-options!./Booklist.vue?vue&type=style&index=0&lang=css& */ "./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Booklist.vue?vue&type=style&index=0&lang=css&");
+
+if(typeof content === 'string') content = [[module.i, content, '']];
+
+var transform;
+var insertInto;
+
+
+
+var options = {"hmr":true}
+
+options.transform = transform
+options.insertInto = undefined;
+
+var update = __webpack_require__(/*! ../../../node_modules/style-loader/lib/addStyles.js */ "./node_modules/style-loader/lib/addStyles.js")(content, options);
+
+if(content.locals) module.exports = content.locals;
+
+if(false) {}
+
+/***/ }),
+
 /***/ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/header.vue?vue&type=style&index=0&lang=css&":
 /*!****************************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/style-loader!./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/header.vue?vue&type=style&index=0&lang=css& ***!
@@ -44562,11 +44741,13 @@ var render = function() {
                                   },
                                   attrs: {
                                     type: "text",
-                                    name: "author",
                                     placeholder: "Book Author"
                                   },
                                   domProps: { value: _vm.form.author },
                                   on: {
+                                    keyup: function($event) {
+                                      return _vm.searchVal()
+                                    },
                                     input: function($event) {
                                       if ($event.target.composing) {
                                         return
@@ -44585,6 +44766,43 @@ var render = function() {
                                 })
                               ],
                               1
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "div",
+                              {
+                                directives: [
+                                  {
+                                    name: "show",
+                                    rawName: "v-show",
+                                    value: _vm.getSesrchValue,
+                                    expression: "getSesrchValue"
+                                  }
+                                ]
+                              },
+                              [
+                                _c(
+                                  "ul",
+                                  { staticClass: "ulstyle" },
+                                  _vm._l(_vm.filterd, function(val) {
+                                    return _c("li", { key: val.id }, [
+                                      _c(
+                                        "p",
+                                        {
+                                          on: {
+                                            click: function($event) {
+                                              $event.preventDefault()
+                                              return _vm.getVal(val)
+                                            }
+                                          }
+                                        },
+                                        [_vm._v(_vm._s(val.author))]
+                                      )
+                                    ])
+                                  }),
+                                  0
+                                )
+                              ]
                             ),
                             _vm._v(" "),
                             _c(
@@ -45339,7 +45557,60 @@ var render = function() {
     [
       _c("headerComponent"),
       _vm._v(" "),
-      _vm._m(0),
+      _c("div", { staticClass: "content-wrapper" }, [
+        _c("div", { staticClass: "content" }, [
+          _c("div", { staticClass: "container-fluid" }, [
+            _c("div", { staticClass: "container" }, [
+              _c("div", { staticClass: "row" }, [
+                _c("div", { staticClass: "col-12" }, [
+                  _c("div", { staticClass: "card" }, [
+                    _vm._m(0),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "card-body" }, [
+                      _c(
+                        "table",
+                        {
+                          staticClass: "table table-bordered table-hover",
+                          attrs: { id: "example2" }
+                        },
+                        [
+                          _vm._m(1),
+                          _vm._v(" "),
+                          _c(
+                            "tbody",
+                            _vm._l(_vm.booklist, function(books) {
+                              return _c("tr", { key: books.id }, [
+                                _c("td", [_vm._v(_vm._s(books.isbn))]),
+                                _vm._v(" "),
+                                _c("td", [_vm._v(_vm._s(books.book_name))]),
+                                _vm._v(" "),
+                                _c("td", [_vm._v(_vm._s(books.author))]),
+                                _vm._v(" "),
+                                _c("td", [_vm._v(_vm._s(books.copyright))]),
+                                _vm._v(" "),
+                                _c("td", [_vm._v(_vm._s(books.category))]),
+                                _vm._v(" "),
+                                _c("td", [_vm._v(_vm._s(books.edition))]),
+                                _vm._v(" "),
+                                _c("td", [_vm._v(_vm._s(books.edition))]),
+                                _vm._v(" "),
+                                _vm._m(2, true)
+                              ])
+                            }),
+                            0
+                          )
+                        ]
+                      )
+                    ])
+                  ])
+                ])
+              ])
+            ]),
+            _vm._v(" "),
+            _vm._m(3)
+          ])
+        ])
+      ]),
       _vm._v(" "),
       _c("footerComponent")
     ],
@@ -45351,294 +45622,280 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "content-wrapper" }, [
-      _c("div", { staticClass: "content" }, [
-        _c("div", { staticClass: "container-fluid" }, [
-          _c("div", { staticClass: "container" }, [
-            _c("div", { staticClass: "row" }, [
-              _c("div", { staticClass: "col-12" }, [
-                _c("div", { staticClass: "card" }, [
-                  _c("div", { staticClass: "card-header" }, [
-                    _c("h3", { staticClass: "card-title" }, [
-                      _vm._v("Book History")
+    return _c("div", { staticClass: "card-header" }, [
+      _c("h3", { staticClass: "card-title" }, [_vm._v("Book History")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("thead", [
+      _c("tr", [
+        _c("th", [_vm._v("ISBN No.")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Book Name")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Autho")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Copyright")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Subject/Category")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Edition")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Language")]),
+        _vm._v(" "),
+        _c("td", [_vm._v("Action")])
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("td", [
+      _c("a", { attrs: { href: "#" } }, [
+        _c("button", { staticClass: "btn btn-info btn-sm" }, [
+          _c("i", { staticClass: "fa fa-edit" })
+        ])
+      ]),
+      _vm._v(" "),
+      _c("a", { attrs: { href: "#" } }, [
+        _c("button", { staticClass: "btn btn-danger btn-sm" }, [
+          _c("i", { staticClass: "fa fa-trash" })
+        ])
+      ]),
+      _vm._v(" "),
+      _c(
+        "button",
+        {
+          staticClass: "btn btn-primary btn-sm",
+          attrs: { "data-toggle": "modal", "data-target": "#viewBook" }
+        },
+        [_c("i", { staticClass: "fa fa-eye" })]
+      )
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "div",
+      {
+        staticClass: "modal fade",
+        attrs: {
+          id: "viewBook",
+          tabindex: "-1",
+          role: "dialog",
+          "aria-labelledby": "addNewLabel",
+          "aria-hidden": "true"
+        }
+      },
+      [
+        _c(
+          "div",
+          {
+            staticClass: "modal-dialog modal-dialog-centered  modal-lg",
+            attrs: { role: "document" }
+          },
+          [
+            _c("div", { staticClass: "modal-content" }, [
+              _c("div", { staticClass: "modal-header" }, [
+                _c(
+                  "h5",
+                  { staticClass: "modal-title", attrs: { id: "addNewLabel" } },
+                  [_vm._v("Book Details")]
+                ),
+                _vm._v(" "),
+                _c(
+                  "button",
+                  {
+                    staticClass: "close",
+                    attrs: {
+                      type: "button",
+                      "data-dismiss": "modal",
+                      "aria-label": "Close"
+                    }
+                  },
+                  [
+                    _c("span", { attrs: { "aria-hidden": "true" } }, [
+                      _vm._v("×")
+                    ])
+                  ]
+                )
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "modal-body" }, [
+                _c("div", { staticClass: "row" }, [
+                  _c("div", { staticClass: "col-md-4" }, [
+                    _c("div", { staticClass: "form-group" }, [
+                      _c("label", [_vm._v("Cover")]),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "input-group" }, [
+                        _c(
+                          "div",
+                          { staticClass: "custom-file file-input-style" },
+                          [_c("img", { staticClass: "img-style" })]
+                        )
+                      ])
                     ])
                   ]),
                   _vm._v(" "),
-                  _c("div", { staticClass: "card-body" }, [
-                    _c(
-                      "table",
-                      {
-                        staticClass: "table table-bordered table-hover",
-                        attrs: { id: "example2" }
-                      },
-                      [
-                        _c("thead", [
-                          _c("tr", [
-                            _c("th", [_vm._v("ISBN No.")]),
-                            _vm._v(" "),
-                            _c("th", [_vm._v("Book Name")]),
-                            _vm._v(" "),
-                            _c("th", [_vm._v("Book Author(s)")]),
-                            _vm._v(" "),
-                            _c("th", [_vm._v("Publish Year version")]),
-                            _vm._v(" "),
-                            _c("th", [_vm._v("Edition")]),
-                            _vm._v(" "),
-                            _c("td", [_vm._v("Modify")])
-                          ])
+                  _c("div", { staticClass: "col-md-8" }, [
+                    _c("table", { staticClass: "mytable" }, [
+                      _c("tbody", [
+                        _c("tr", [
+                          _c("th", { attrs: { scope: "row" } }, [
+                            _vm._v("ISBN No.")
+                          ]),
+                          _vm._v(" "),
+                          _c("td"),
+                          _vm._v(" "),
+                          _c("td", [_vm._v("545452151212552")])
                         ]),
                         _vm._v(" "),
-                        _c("tbody", [
-                          _c("tr", [
-                            _c("td", [_vm._v("Gecko")]),
-                            _vm._v(" "),
-                            _c("td", [_vm._v("Mozilla 1.4")]),
-                            _vm._v(" "),
-                            _c("td", [_vm._v("Win 95+ / OSX.1+")]),
-                            _vm._v(" "),
-                            _c("td", [_vm._v("1.4")]),
-                            _vm._v(" "),
-                            _c("td", [_vm._v("A")]),
-                            _vm._v(" "),
-                            _c("td", [
-                              _c("a", { attrs: { href: "#" } }, [
-                                _c(
-                                  "button",
-                                  { staticClass: "btn btn-info btn-sm" },
-                                  [_c("i", { staticClass: "fa fa-edit" })]
-                                )
-                              ]),
-                              _vm._v(" "),
-                              _c("a", { attrs: { href: "#" } }, [
-                                _c(
-                                  "button",
-                                  { staticClass: "btn btn-danger btn-sm" },
-                                  [_c("i", { staticClass: "fa fa-trash" })]
-                                )
-                              ])
-                            ])
+                        _c("tr", [
+                          _c("th", { attrs: { scope: "row" } }, [
+                            _vm._v("Author")
                           ]),
                           _vm._v(" "),
-                          _c("tr", [
-                            _c("td", [_vm._v("Gecko")]),
-                            _vm._v(" "),
-                            _c("td", [_vm._v("Mozilla 1.5")]),
-                            _vm._v(" "),
-                            _c("td", [_vm._v("Win 95+ / OSX.1+")]),
-                            _vm._v(" "),
-                            _c("td", [_vm._v("1.5")]),
-                            _vm._v(" "),
-                            _c("td", [_vm._v("A")]),
-                            _vm._v(" "),
-                            _c("td", [
-                              _c("a", { attrs: { href: "#" } }, [
-                                _c(
-                                  "button",
-                                  { staticClass: "btn btn-info btn-sm" },
-                                  [_c("i", { staticClass: "fa fa-edit" })]
-                                )
-                              ]),
-                              _vm._v(" "),
-                              _c("a", { attrs: { href: "#" } }, [
-                                _c(
-                                  "button",
-                                  { staticClass: "btn btn-danger btn-sm" },
-                                  [_c("i", { staticClass: "fa fa-trash" })]
-                                )
-                              ])
-                            ])
+                          _c("td"),
+                          _vm._v(" "),
+                          _c("td", [_vm._v("Mark")])
+                        ]),
+                        _vm._v(" "),
+                        _c("tr", [
+                          _c("th", { attrs: { scope: "row" } }, [
+                            _vm._v("Subject/Category")
                           ]),
                           _vm._v(" "),
-                          _c("tr", [
-                            _c("td", [_vm._v("Gecko")]),
-                            _vm._v(" "),
-                            _c("td", [_vm._v("Mozilla 1.6")]),
-                            _vm._v(" "),
-                            _c("td", [_vm._v("Win 95+ / OSX.1+")]),
-                            _vm._v(" "),
-                            _c("td", [_vm._v("1.6")]),
-                            _vm._v(" "),
-                            _c("td", [_vm._v("A")]),
-                            _vm._v(" "),
-                            _c("td", [
-                              _c("a", { attrs: { href: "#" } }, [
-                                _c(
-                                  "button",
-                                  { staticClass: "btn btn-info btn-sm" },
-                                  [_c("i", { staticClass: "fa fa-edit" })]
-                                )
-                              ]),
-                              _vm._v(" "),
-                              _c("a", { attrs: { href: "#" } }, [
-                                _c(
-                                  "button",
-                                  { staticClass: "btn btn-danger btn-sm" },
-                                  [_c("i", { staticClass: "fa fa-trash" })]
-                                )
-                              ])
-                            ])
+                          _c("td"),
+                          _vm._v(" "),
+                          _c("td", [_vm._v("History")])
+                        ]),
+                        _vm._v(" "),
+                        _c("tr", [
+                          _c("th", { attrs: { scope: "row" } }, [
+                            _vm._v("Publisher")
                           ]),
                           _vm._v(" "),
-                          _c("tr", [
-                            _c("td", [_vm._v("Gecko")]),
-                            _vm._v(" "),
-                            _c("td", [_vm._v("Mozilla 1.7")]),
-                            _vm._v(" "),
-                            _c("td", [_vm._v("Win 98+ / OSX.1+")]),
-                            _vm._v(" "),
-                            _c("td", [_vm._v("1.7")]),
-                            _vm._v(" "),
-                            _c("td", [_vm._v("A")]),
-                            _vm._v(" "),
-                            _c("td", [
-                              _c("a", { attrs: { href: "#" } }, [
-                                _c(
-                                  "button",
-                                  { staticClass: "btn btn-info btn-sm" },
-                                  [_c("i", { staticClass: "fa fa-edit" })]
-                                )
-                              ]),
-                              _vm._v(" "),
-                              _c("a", { attrs: { href: "#" } }, [
-                                _c(
-                                  "button",
-                                  { staticClass: "btn btn-danger btn-sm" },
-                                  [_c("i", { staticClass: "fa fa-trash" })]
-                                )
-                              ])
-                            ])
+                          _c("td"),
+                          _vm._v(" "),
+                          _c("td", [_vm._v("Mark Jacshon")])
+                        ]),
+                        _vm._v(" "),
+                        _c("tr", [
+                          _c("th", { attrs: { scope: "row" } }, [
+                            _vm._v("Publish Year")
                           ]),
                           _vm._v(" "),
-                          _c("tr", [
-                            _c("td", [_vm._v("Gecko")]),
-                            _vm._v(" "),
-                            _c("td", [_vm._v("Mozilla 1.8")]),
-                            _vm._v(" "),
-                            _c("td", [_vm._v("Win 98+ / OSX.1+")]),
-                            _vm._v(" "),
-                            _c("td", [_vm._v("1.8")]),
-                            _vm._v(" "),
-                            _c("td", [_vm._v("A")]),
-                            _vm._v(" "),
-                            _c("td", [
-                              _c("a", { attrs: { href: "#" } }, [
-                                _c(
-                                  "button",
-                                  { staticClass: "btn btn-info btn-sm" },
-                                  [_c("i", { staticClass: "fa fa-edit" })]
-                                )
-                              ]),
-                              _vm._v(" "),
-                              _c("a", { attrs: { href: "#" } }, [
-                                _c(
-                                  "button",
-                                  { staticClass: "btn btn-danger btn-sm" },
-                                  [_c("i", { staticClass: "fa fa-trash" })]
-                                )
-                              ])
-                            ])
+                          _c("td"),
+                          _vm._v(" "),
+                          _c("td", [_vm._v("2020")])
+                        ]),
+                        _vm._v(" "),
+                        _c("tr", [
+                          _c("th", { attrs: { scope: "row" } }, [
+                            _vm._v("Publish Country")
                           ]),
                           _vm._v(" "),
-                          _c("tr", [
-                            _c("td", [_vm._v("Gecko")]),
-                            _vm._v(" "),
-                            _c("td", [_vm._v("Seamonkey 1.1")]),
-                            _vm._v(" "),
-                            _c("td", [_vm._v("Win 98+ / OSX.2+")]),
-                            _vm._v(" "),
-                            _c("td", [_vm._v("1.8")]),
-                            _vm._v(" "),
-                            _c("td", [_vm._v("A")]),
-                            _vm._v(" "),
-                            _c("td", [
-                              _c("a", { attrs: { href: "#" } }, [
-                                _c(
-                                  "button",
-                                  { staticClass: "btn btn-info btn-sm" },
-                                  [_c("i", { staticClass: "fa fa-edit" })]
-                                )
-                              ]),
-                              _vm._v(" "),
-                              _c("a", { attrs: { href: "#" } }, [
-                                _c(
-                                  "button",
-                                  { staticClass: "btn btn-danger btn-sm" },
-                                  [_c("i", { staticClass: "fa fa-trash" })]
-                                )
-                              ])
-                            ])
+                          _c("td"),
+                          _vm._v(" "),
+                          _c("td", [_vm._v("America")])
+                        ]),
+                        _vm._v(" "),
+                        _c("tr", [
+                          _c("th", { attrs: { scope: "row" } }, [
+                            _vm._v("Copyright")
                           ]),
                           _vm._v(" "),
-                          _c("tr", [
-                            _c("td", [_vm._v("Gecko")]),
-                            _vm._v(" "),
-                            _c("td", [_vm._v("Epiphany 2.20")]),
-                            _vm._v(" "),
-                            _c("td", [_vm._v("Gnome")]),
-                            _vm._v(" "),
-                            _c("td", [_vm._v("1.8")]),
-                            _vm._v(" "),
-                            _c("td", [_vm._v("A")]),
-                            _vm._v(" "),
-                            _c("td", [
-                              _c("a", { attrs: { href: "#" } }, [
-                                _c(
-                                  "button",
-                                  { staticClass: "btn btn-info btn-sm" },
-                                  [_c("i", { staticClass: "fa fa-edit" })]
-                                )
-                              ]),
-                              _vm._v(" "),
-                              _c("a", { attrs: { href: "#" } }, [
-                                _c(
-                                  "button",
-                                  { staticClass: "btn btn-danger btn-sm" },
-                                  [_c("i", { staticClass: "fa fa-trash" })]
-                                )
-                              ])
-                            ])
+                          _c("td"),
+                          _vm._v(" "),
+                          _c("td", [_vm._v("Idea Tech Solution")])
+                        ]),
+                        _vm._v(" "),
+                        _c("tr", [
+                          _c("th", { attrs: { scope: "row" } }, [
+                            _vm._v("Edition")
                           ]),
                           _vm._v(" "),
-                          _c("tr", [
-                            _c("td", [_vm._v("Webkit")]),
-                            _vm._v(" "),
-                            _c("td", [_vm._v("Safari 1.2")]),
-                            _vm._v(" "),
-                            _c("td", [_vm._v("OSX.3")]),
-                            _vm._v(" "),
-                            _c("td", [_vm._v("125.5")]),
-                            _vm._v(" "),
-                            _c("td", [_vm._v("A")]),
-                            _vm._v(" "),
-                            _c("td", [
-                              _c("a", { attrs: { href: "#" } }, [
-                                _c(
-                                  "button",
-                                  { staticClass: "btn btn-info btn-sm" },
-                                  [_c("i", { staticClass: "fa fa-edit" })]
-                                )
-                              ]),
-                              _vm._v(" "),
-                              _c("a", { attrs: { href: "#" } }, [
-                                _c(
-                                  "button",
-                                  { staticClass: "btn btn-danger btn-sm" },
-                                  [_c("i", { staticClass: "fa fa-trash" })]
-                                )
-                              ])
-                            ])
+                          _c("td"),
+                          _vm._v(" "),
+                          _c("td", [_vm._v("2nd")])
+                        ]),
+                        _vm._v(" "),
+                        _c("tr", [
+                          _c("th", { attrs: { scope: "row" } }, [
+                            _vm._v("Language")
+                          ]),
+                          _vm._v(" "),
+                          _c("td"),
+                          _vm._v(" "),
+                          _c("td", [_vm._v("English")])
+                        ]),
+                        _vm._v(" "),
+                        _c("tr", [
+                          _c("th", { attrs: { scope: "row" } }, [
+                            _vm._v("Shelf Ref#")
+                          ]),
+                          _vm._v(" "),
+                          _c("td"),
+                          _vm._v(" "),
+                          _c("td", [_vm._v("Idea Tech")])
+                        ]),
+                        _vm._v(" "),
+                        _c("tr", [
+                          _c("th", { attrs: { scope: "row" } }, [
+                            _vm._v("Status")
+                          ]),
+                          _vm._v(" "),
+                          _c("td"),
+                          _vm._v(" "),
+                          _c("td", [_vm._v("New")])
+                        ]),
+                        _vm._v(" "),
+                        _c("tr", [
+                          _c("th", { attrs: { scope: "row" } }, [
+                            _vm._v("Summary")
+                          ]),
+                          _vm._v(" "),
+                          _c("td"),
+                          _vm._v(" "),
+                          _c("td", [
+                            _vm._v(
+                              " Lorem ipsum dolor sit, amet consectetur adipisicing elit. Nam dolor harum molestiae laboriosam excepturi quia amet.\n                                      Officiis, neque voluptatum blanditiis dignissimos repellat culpa consequuntur provident vitae labore fugit recusandae cumque! "
+                            )
                           ])
                         ])
-                      ]
-                    )
+                      ])
+                    ])
                   ])
                 ])
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "modal-footer" }, [
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-danger",
+                    attrs: { type: "button", "data-dismiss": "modal" }
+                  },
+                  [_vm._v("Close")]
+                ),
+                _vm._v(" "),
+                _c(
+                  "button",
+                  { staticClass: "btn btn-primary", attrs: { type: "submit" } },
+                  [_vm._v("Create")]
+                )
               ])
             ])
-          ])
-        ])
-      ])
-    ])
+          ]
+        )
+      ]
+    )
   }
 ]
 render._withStripped = true
@@ -45910,7 +46167,727 @@ var render = function() {
     [
       _c("headerComponent"),
       _vm._v(" "),
-      _vm._m(0),
+      _c("div", { staticClass: "content-wrapper" }, [
+        _c("div", { staticClass: "content" }, [
+          _c("div", { staticClass: "container-fluid" }, [
+            _c("div", { staticClass: "container" }, [
+              _vm._m(0),
+              _vm._v(" "),
+              _c(
+                "div",
+                {
+                  staticClass: "modal fade",
+                  attrs: {
+                    id: "addNew",
+                    tabindex: "-1",
+                    role: "dialog",
+                    "aria-labelledby": "addNewLabel",
+                    "aria-hidden": "true"
+                  }
+                },
+                [
+                  _c(
+                    "div",
+                    {
+                      staticClass:
+                        "modal-dialog modal-dialog-centered modal-lg",
+                      attrs: { role: "document" }
+                    },
+                    [
+                      _c("div", { staticClass: "modal-content" }, [
+                        _vm._m(1),
+                        _vm._v(" "),
+                        _c("form", [
+                          _c("div", { staticClass: "modal-body" }, [
+                            _c("div", { staticClass: "col-md-12" }, [
+                              _c(
+                                "div",
+                                {
+                                  staticStyle: { width: "48%", float: "left" }
+                                },
+                                [
+                                  _c(
+                                    "div",
+                                    { staticClass: "form-group" },
+                                    [
+                                      _c("input", {
+                                        directives: [
+                                          {
+                                            name: "model",
+                                            rawName: "v-model",
+                                            value: _vm.form.isbn,
+                                            expression: "form.isbn"
+                                          }
+                                        ],
+                                        staticClass: "form-control",
+                                        class: {
+                                          "is-invalid": _vm.form.errors.has(
+                                            "isbn"
+                                          )
+                                        },
+                                        attrs: {
+                                          type: "text",
+                                          name: "isbn",
+                                          placeholder: "Search ISBN"
+                                        },
+                                        domProps: { value: _vm.form.isbn },
+                                        on: {
+                                          input: function($event) {
+                                            if ($event.target.composing) {
+                                              return
+                                            }
+                                            _vm.$set(
+                                              _vm.form,
+                                              "isbn",
+                                              $event.target.value
+                                            )
+                                          }
+                                        }
+                                      }),
+                                      _vm._v(" "),
+                                      _c("has-error", {
+                                        attrs: { form: _vm.form, field: "isbn" }
+                                      })
+                                    ],
+                                    1
+                                  )
+                                ]
+                              ),
+                              _vm._v(" "),
+                              _c(
+                                "div",
+                                {
+                                  staticStyle: { width: "48%", float: "right" }
+                                },
+                                [
+                                  _c(
+                                    "div",
+                                    { staticClass: "form-group" },
+                                    [
+                                      _c("input", {
+                                        directives: [
+                                          {
+                                            name: "model",
+                                            rawName: "v-model",
+                                            value: _vm.form.supplier,
+                                            expression: "form.supplier"
+                                          }
+                                        ],
+                                        staticClass: "form-control",
+                                        class: {
+                                          "is-invalid": _vm.form.errors.has(
+                                            "supplier"
+                                          )
+                                        },
+                                        attrs: {
+                                          type: "text",
+                                          name: "isbn",
+                                          placeholder: "Search Supplier"
+                                        },
+                                        domProps: { value: _vm.form.supplier },
+                                        on: {
+                                          input: function($event) {
+                                            if ($event.target.composing) {
+                                              return
+                                            }
+                                            _vm.$set(
+                                              _vm.form,
+                                              "supplier",
+                                              $event.target.value
+                                            )
+                                          }
+                                        }
+                                      }),
+                                      _vm._v(" "),
+                                      _c("has-error", {
+                                        attrs: {
+                                          form: _vm.form,
+                                          field: "supplier"
+                                        }
+                                      })
+                                    ],
+                                    1
+                                  )
+                                ]
+                              ),
+                              _vm._v(" "),
+                              _c("div", [
+                                _c(
+                                  "div",
+                                  { staticClass: "form-group" },
+                                  [
+                                    _c("input", {
+                                      directives: [
+                                        {
+                                          name: "model",
+                                          rawName: "v-model",
+                                          value: _vm.form.book_name,
+                                          expression: "form.book_name"
+                                        }
+                                      ],
+                                      staticClass: "form-control",
+                                      class: {
+                                        "is-invalid": _vm.form.errors.has(
+                                          "book_name"
+                                        )
+                                      },
+                                      attrs: {
+                                        type: "text",
+                                        name: "book_name",
+                                        placeholder: "Book"
+                                      },
+                                      domProps: { value: _vm.form.book_name },
+                                      on: {
+                                        input: function($event) {
+                                          if ($event.target.composing) {
+                                            return
+                                          }
+                                          _vm.$set(
+                                            _vm.form,
+                                            "book_name",
+                                            $event.target.value
+                                          )
+                                        }
+                                      }
+                                    }),
+                                    _vm._v(" "),
+                                    _c("has-error", {
+                                      attrs: {
+                                        form: _vm.form,
+                                        field: "book_name"
+                                      }
+                                    })
+                                  ],
+                                  1
+                                )
+                              ]),
+                              _vm._v(" "),
+                              _c(
+                                "div",
+                                {
+                                  staticClass: "col-md-6",
+                                  staticStyle: {
+                                    "padding-left": "0px !important",
+                                    float: "left"
+                                  }
+                                },
+                                [
+                                  _c(
+                                    "div",
+                                    { staticClass: "form-group" },
+                                    [
+                                      _c("label", [_vm._v("Copies")]),
+                                      _vm._v(" "),
+                                      _c("input", {
+                                        directives: [
+                                          {
+                                            name: "model",
+                                            rawName: "v-model",
+                                            value: _vm.form.copies,
+                                            expression: "form.copies"
+                                          }
+                                        ],
+                                        staticClass: "form-control",
+                                        class: {
+                                          "is-invalid": _vm.form.errors.has(
+                                            "copies"
+                                          )
+                                        },
+                                        attrs: {
+                                          type: "number",
+                                          name: "copies",
+                                          placeholder: "Copies"
+                                        },
+                                        domProps: { value: _vm.form.copies },
+                                        on: {
+                                          input: function($event) {
+                                            if ($event.target.composing) {
+                                              return
+                                            }
+                                            _vm.$set(
+                                              _vm.form,
+                                              "copies",
+                                              $event.target.value
+                                            )
+                                          }
+                                        }
+                                      }),
+                                      _vm._v(" "),
+                                      _c("has-error", {
+                                        attrs: {
+                                          form: _vm.form,
+                                          field: "copies"
+                                        }
+                                      })
+                                    ],
+                                    1
+                                  ),
+                                  _vm._v(" "),
+                                  _c("div", { staticClass: "form-group" }, [
+                                    _c("label", [
+                                      _vm._v(
+                                        "Publishers Price [In Original Currency]"
+                                      )
+                                    ]),
+                                    _vm._v(" "),
+                                    _c(
+                                      "div",
+                                      {
+                                        staticStyle: {
+                                          width: "38%",
+                                          float: "left"
+                                        }
+                                      },
+                                      [
+                                        _c(
+                                          "select",
+                                          {
+                                            directives: [
+                                              {
+                                                name: "model",
+                                                rawName: "v-model",
+                                                value: _vm.form.select_price,
+                                                expression: "form.select_price"
+                                              }
+                                            ],
+                                            class: {
+                                              "is-invalid": _vm.form.errors.has(
+                                                "select_price"
+                                              )
+                                            },
+                                            staticStyle: {
+                                              padding: "6px",
+                                              "padding-right": "60px"
+                                            },
+                                            attrs: {
+                                              id: "type",
+                                              name: "select_price"
+                                            },
+                                            on: {
+                                              change: function($event) {
+                                                var $$selectedVal = Array.prototype.filter
+                                                  .call(
+                                                    $event.target.options,
+                                                    function(o) {
+                                                      return o.selected
+                                                    }
+                                                  )
+                                                  .map(function(o) {
+                                                    var val =
+                                                      "_value" in o
+                                                        ? o._value
+                                                        : o.value
+                                                    return val
+                                                  })
+                                                _vm.$set(
+                                                  _vm.form,
+                                                  "select_price",
+                                                  $event.target.multiple
+                                                    ? $$selectedVal
+                                                    : $$selectedVal[0]
+                                                )
+                                              }
+                                            }
+                                          },
+                                          [
+                                            _c(
+                                              "option",
+                                              { attrs: { active: "" } },
+                                              [_vm._v("TK")]
+                                            ),
+                                            _vm._v(" "),
+                                            _c("option", [_vm._v("USD")]),
+                                            _vm._v(" "),
+                                            _c("option", [_vm._v("R")])
+                                          ]
+                                        ),
+                                        _vm._v(" "),
+                                        _c("has-error", {
+                                          attrs: {
+                                            form: _vm.form,
+                                            field: "select_price"
+                                          }
+                                        })
+                                      ],
+                                      1
+                                    ),
+                                    _vm._v(" "),
+                                    _c(
+                                      "div",
+                                      {
+                                        staticStyle: {
+                                          width: "60%",
+                                          float: "right"
+                                        }
+                                      },
+                                      [
+                                        _c("input", {
+                                          directives: [
+                                            {
+                                              name: "model",
+                                              rawName: "v-model",
+                                              value: _vm.form.pub_price,
+                                              expression: "form.pub_price"
+                                            }
+                                          ],
+                                          staticClass: "form-control",
+                                          class: {
+                                            "is-invalid": _vm.form.errors.has(
+                                              "pub_price"
+                                            )
+                                          },
+                                          attrs: {
+                                            type: "text",
+                                            name: "pub_price",
+                                            placeholder: "Publishers Price"
+                                          },
+                                          domProps: {
+                                            value: _vm.form.pub_price
+                                          },
+                                          on: {
+                                            input: function($event) {
+                                              if ($event.target.composing) {
+                                                return
+                                              }
+                                              _vm.$set(
+                                                _vm.form,
+                                                "pub_price",
+                                                $event.target.value
+                                              )
+                                            }
+                                          }
+                                        }),
+                                        _vm._v(" "),
+                                        _c("has-error", {
+                                          attrs: {
+                                            form: _vm.form,
+                                            field: "pub_price"
+                                          }
+                                        })
+                                      ],
+                                      1
+                                    )
+                                  ]),
+                                  _vm._v(" "),
+                                  _c(
+                                    "div",
+                                    {
+                                      staticStyle: {
+                                        width: "48%",
+                                        float: "left",
+                                        "padding-top": "16px"
+                                      }
+                                    },
+                                    [
+                                      _c(
+                                        "div",
+                                        { staticClass: "form-group" },
+                                        [
+                                          _c("label", [_vm._v("Conv. Rate")]),
+                                          _vm._v(" "),
+                                          _c("input", {
+                                            directives: [
+                                              {
+                                                name: "model",
+                                                rawName: "v-model",
+                                                value: _vm.form.conv_rate,
+                                                expression: "form.conv_rate"
+                                              }
+                                            ],
+                                            staticClass: "form-control",
+                                            class: {
+                                              "is-invalid": _vm.form.errors.has(
+                                                "conv_rate"
+                                              )
+                                            },
+                                            attrs: {
+                                              type: "text",
+                                              name: "conv_rate",
+                                              placeholder: "Conv. Rate"
+                                            },
+                                            domProps: {
+                                              value: _vm.form.conv_rate
+                                            },
+                                            on: {
+                                              input: function($event) {
+                                                if ($event.target.composing) {
+                                                  return
+                                                }
+                                                _vm.$set(
+                                                  _vm.form,
+                                                  "conv_rate",
+                                                  $event.target.value
+                                                )
+                                              }
+                                            }
+                                          }),
+                                          _vm._v(" "),
+                                          _c("has-error", {
+                                            attrs: {
+                                              form: _vm.form,
+                                              field: "conv_rate"
+                                            }
+                                          })
+                                        ],
+                                        1
+                                      )
+                                    ]
+                                  ),
+                                  _vm._v(" "),
+                                  _c(
+                                    "div",
+                                    {
+                                      staticStyle: {
+                                        width: "48%",
+                                        float: "right",
+                                        "padding-top": "16px"
+                                      }
+                                    },
+                                    [
+                                      _c(
+                                        "div",
+                                        { staticClass: "form-group" },
+                                        [
+                                          _c("label", [_vm._v("Rate")]),
+                                          _vm._v(" "),
+                                          _c("input", {
+                                            directives: [
+                                              {
+                                                name: "model",
+                                                rawName: "v-model",
+                                                value: _vm.form.st_rate,
+                                                expression: "form.st_rate"
+                                              }
+                                            ],
+                                            staticClass: "form-control",
+                                            class: {
+                                              "is-invalid": _vm.form.errors.has(
+                                                "st_rate"
+                                              )
+                                            },
+                                            attrs: {
+                                              type: "text",
+                                              name: "st_rate",
+                                              placeholder: "Rate"
+                                            },
+                                            domProps: {
+                                              value: _vm.form.st_rate
+                                            },
+                                            on: {
+                                              input: function($event) {
+                                                if ($event.target.composing) {
+                                                  return
+                                                }
+                                                _vm.$set(
+                                                  _vm.form,
+                                                  "st_rate",
+                                                  $event.target.value
+                                                )
+                                              }
+                                            }
+                                          }),
+                                          _vm._v(" "),
+                                          _c("has-error", {
+                                            attrs: {
+                                              form: _vm.form,
+                                              field: "st_rate"
+                                            }
+                                          })
+                                        ],
+                                        1
+                                      )
+                                    ]
+                                  )
+                                ]
+                              ),
+                              _vm._v(" "),
+                              _c(
+                                "div",
+                                {
+                                  staticClass: "col-md-6",
+                                  staticStyle: {
+                                    "padding-right": "0px !important",
+                                    float: "left"
+                                  }
+                                },
+                                [
+                                  _c(
+                                    "div",
+                                    { staticClass: "form-group" },
+                                    [
+                                      _c("label", [_vm._v("Cost Price in BD")]),
+                                      _vm._v(" "),
+                                      _c("input", {
+                                        directives: [
+                                          {
+                                            name: "model",
+                                            rawName: "v-model",
+                                            value: _vm.form.cost_price,
+                                            expression: "form.cost_price"
+                                          }
+                                        ],
+                                        staticClass: "form-control",
+                                        class: {
+                                          "is-invalid": _vm.form.errors.has(
+                                            "cost_price"
+                                          )
+                                        },
+                                        attrs: {
+                                          type: "text",
+                                          name: "cost_price",
+                                          placeholder: "Cost in BD"
+                                        },
+                                        domProps: {
+                                          value: _vm.form.cost_price
+                                        },
+                                        on: {
+                                          click: function($event) {
+                                            return _vm.costBd()
+                                          },
+                                          input: function($event) {
+                                            if ($event.target.composing) {
+                                              return
+                                            }
+                                            _vm.$set(
+                                              _vm.form,
+                                              "cost_price",
+                                              $event.target.value
+                                            )
+                                          }
+                                        }
+                                      }),
+                                      _vm._v(" "),
+                                      _c("has-error", {
+                                        attrs: {
+                                          form: _vm.form,
+                                          field: "cost_price"
+                                        }
+                                      })
+                                    ],
+                                    1
+                                  ),
+                                  _vm._v(" "),
+                                  _c(
+                                    "div",
+                                    { staticClass: "form-group" },
+                                    [
+                                      _c("label", [_vm._v("Rate")]),
+                                      _vm._v(" "),
+                                      _c("input", {
+                                        directives: [
+                                          {
+                                            name: "model",
+                                            rawName: "v-model",
+                                            value: _vm.form.my_rate,
+                                            expression: "form.my_rate"
+                                          }
+                                        ],
+                                        staticClass: "form-control",
+                                        class: {
+                                          "is-invalid": _vm.form.errors.has(
+                                            "my_rate"
+                                          )
+                                        },
+                                        attrs: {
+                                          type: "text",
+                                          name: "my_rate",
+                                          placeholder: "Rate"
+                                        },
+                                        domProps: { value: _vm.form.my_rate },
+                                        on: {
+                                          input: function($event) {
+                                            if ($event.target.composing) {
+                                              return
+                                            }
+                                            _vm.$set(
+                                              _vm.form,
+                                              "my_rate",
+                                              $event.target.value
+                                            )
+                                          }
+                                        }
+                                      }),
+                                      _vm._v(" "),
+                                      _c("has-error", {
+                                        attrs: {
+                                          form: _vm.form,
+                                          field: "my_rate"
+                                        }
+                                      })
+                                    ],
+                                    1
+                                  ),
+                                  _vm._v(" "),
+                                  _c(
+                                    "div",
+                                    { staticClass: "form-group" },
+                                    [
+                                      _c("label", [
+                                        _vm._v("Sales Price in BD")
+                                      ]),
+                                      _vm._v(" "),
+                                      _c("input", {
+                                        directives: [
+                                          {
+                                            name: "model",
+                                            rawName: "v-model",
+                                            value: _vm.form.sales_price,
+                                            expression: "form.sales_price"
+                                          }
+                                        ],
+                                        staticClass: "form-control",
+                                        class: {
+                                          "is-invalid": _vm.form.errors.has(
+                                            "sales_price"
+                                          )
+                                        },
+                                        attrs: {
+                                          type: "text",
+                                          name: "sales_price",
+                                          placeholder: "Sales in BD"
+                                        },
+                                        domProps: {
+                                          value: _vm.form.sales_price
+                                        },
+                                        on: {
+                                          input: function($event) {
+                                            if ($event.target.composing) {
+                                              return
+                                            }
+                                            _vm.$set(
+                                              _vm.form,
+                                              "sales_price",
+                                              $event.target.value
+                                            )
+                                          }
+                                        }
+                                      }),
+                                      _vm._v(" "),
+                                      _c("has-error", {
+                                        attrs: {
+                                          form: _vm.form,
+                                          field: "sales_price"
+                                        }
+                                      })
+                                    ],
+                                    1
+                                  )
+                                ]
+                              )
+                            ]),
+                            _vm._v(" "),
+                            _vm._m(2)
+                          ])
+                        ])
+                      ])
+                    ]
+                  )
+                ]
+              )
+            ])
+          ])
+        ])
+      ]),
       _vm._v(" "),
       _c("footerComponent")
     ],
@@ -45922,280 +46899,156 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "content-wrapper" }, [
-      _c("div", { staticClass: "content" }, [
-        _c("div", { staticClass: "container-fluid" }, [
-          _c("div", { staticClass: "container" }, [
-            _c("div", { staticClass: "row mt-5" }, [
-              _c("div", { staticClass: "col-md-12" }, [
-                _c("div", { staticClass: "card" }, [
-                  _c("div", { staticClass: "card-header" }, [
-                    _c("h3", { staticClass: "card-title" }, [
-                      _vm._v("Stock History")
+    return _c("div", { staticClass: "row mt-5" }, [
+      _c("div", { staticClass: "col-md-12" }, [
+        _c("div", { staticClass: "card" }, [
+          _c("div", { staticClass: "card-header" }, [
+            _c("h3", { staticClass: "card-title" }, [_vm._v("Stock History")]),
+            _vm._v(" "),
+            _c("div", { staticClass: "card-tools" }, [
+              _c(
+                "button",
+                {
+                  staticClass: "btn btn-success",
+                  attrs: { "data-toggle": "modal", "data-target": "#addNew" }
+                },
+                [
+                  _c("i", { staticClass: "fas fa-user-plus fa-fw" }),
+                  _vm._v(" Add New")
+                ]
+              )
+            ])
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "card-body table-responsive p-0" }, [
+            _c("table", { staticClass: "table table-hover" }, [
+              _c("thead", [
+                _c("tr", [
+                  _c("th", [_vm._v("ISBN/Code")]),
+                  _vm._v(" "),
+                  _c("th", [_vm._v("Title")]),
+                  _vm._v(" "),
+                  _c("th", [_vm._v("Copies")]),
+                  _vm._v(" "),
+                  _c("th", [_vm._v("Cost Price")]),
+                  _vm._v(" "),
+                  _c("th", [_vm._v("Publisher Price")]),
+                  _vm._v(" "),
+                  _c("th", [_vm._v("Total Price")]),
+                  _vm._v(" "),
+                  _c("th", [_vm._v("Modify")])
+                ])
+              ]),
+              _vm._v(" "),
+              _c("tbody", [
+                _c("tr", [
+                  _c("td", [_vm._v("9888554541515")]),
+                  _vm._v(" "),
+                  _c("td", [_vm._v("দক্ষিনের বারান্দা")]),
+                  _vm._v(" "),
+                  _c("td", [_vm._v("1")]),
+                  _vm._v(" "),
+                  _c("td", [_vm._v("130.00")]),
+                  _vm._v(" "),
+                  _c("td", [_vm._v("160.00")]),
+                  _vm._v(" "),
+                  _c("td", [_vm._v("200 TK.")]),
+                  _vm._v(" "),
+                  _c("td", [_vm._v("130 TK.")]),
+                  _vm._v(" "),
+                  _c("td", [
+                    _c("a", { attrs: { href: "#" } }, [
+                      _c("button", { staticClass: "btn btn-info btn-sm" }, [
+                        _c("i", { staticClass: "fa fa-edit" })
+                      ])
                     ]),
                     _vm._v(" "),
-                    _c("div", { staticClass: "card-tools" }, [
-                      _c(
-                        "button",
-                        {
-                          staticClass: "btn btn-success",
-                          attrs: {
-                            "data-toggle": "modal",
-                            "data-target": "#addNew"
-                          }
-                        },
-                        [
-                          _vm._v("Add New "),
-                          _c("i", { staticClass: "fas fa-user-plus fa-fw" })
-                        ]
-                      )
+                    _c("a", { attrs: { href: "#" } }, [
+                      _c("button", { staticClass: "btn btn-danger btn-sm" }, [
+                        _c("i", { staticClass: "fa fa-trash" })
+                      ])
                     ])
-                  ]),
+                  ])
+                ]),
+                _vm._v(" "),
+                _c("tr", [
+                  _c("td", [_vm._v("8878475415555")]),
                   _vm._v(" "),
-                  _c("div", { staticClass: "card-body table-responsive p-0" }, [
-                    _c("table", { staticClass: "table table-hover" }, [
-                      _c("thead", [
-                        _c("tr", [
-                          _c("th", [_vm._v("ISBN/Code")]),
-                          _vm._v(" "),
-                          _c("th", [_vm._v("Title")]),
-                          _vm._v(" "),
-                          _c("th", [_vm._v("Copies")]),
-                          _vm._v(" "),
-                          _c("th", [_vm._v("Cost Price")]),
-                          _vm._v(" "),
-                          _c("th", [_vm._v("Publisher Price")]),
-                          _vm._v(" "),
-                          _c("th", [_vm._v("Total Price")]),
-                          _vm._v(" "),
-                          _c("th", [_vm._v("Modify")])
-                        ])
-                      ]),
-                      _vm._v(" "),
-                      _c("tbody", [
-                        _c("tr", [
-                          _c("td", [_vm._v("9888554541515")]),
-                          _vm._v(" "),
-                          _c("td", [_vm._v("দক্ষিনের বারান্দা")]),
-                          _vm._v(" "),
-                          _c("td", [_vm._v("1")]),
-                          _vm._v(" "),
-                          _c("td", [_vm._v("130.00")]),
-                          _vm._v(" "),
-                          _c("td", [_vm._v("160.00")]),
-                          _vm._v(" "),
-                          _c("td", [_vm._v("200 TK.")]),
-                          _vm._v(" "),
-                          _c("td", [_vm._v("130 TK.")]),
-                          _vm._v(" "),
-                          _c("td", [
-                            _c("a", { attrs: { href: "#" } }, [
-                              _c(
-                                "button",
-                                { staticClass: "btn btn-info btn-sm" },
-                                [_c("i", { staticClass: "fa fa-edit" })]
-                              )
-                            ]),
-                            _vm._v(" "),
-                            _c("a", { attrs: { href: "#" } }, [
-                              _c(
-                                "button",
-                                { staticClass: "btn btn-danger btn-sm" },
-                                [_c("i", { staticClass: "fa fa-trash" })]
-                              )
-                            ])
-                          ])
-                        ]),
-                        _vm._v(" "),
-                        _c("tr", [
-                          _c("td", [_vm._v("8878475415555")]),
-                          _vm._v(" "),
-                          _c("td", [
-                            _vm._v("শান্তি নিকেতনএর পাঠভবনের সহজপাঠ  ")
-                          ]),
-                          _vm._v(" "),
-                          _c("td", [_vm._v("1")]),
-                          _vm._v(" "),
-                          _c("td", [_vm._v("130.00")]),
-                          _vm._v(" "),
-                          _c("td", [_vm._v("160.00")]),
-                          _vm._v(" "),
-                          _c("td", [_vm._v("200 TK.")]),
-                          _vm._v(" "),
-                          _c("td", [_vm._v("130 TK.")]),
-                          _vm._v(" "),
-                          _c("td", [
-                            _c("a", { attrs: { href: "#" } }, [
-                              _c(
-                                "button",
-                                { staticClass: "btn btn-info btn-sm" },
-                                [_c("i", { staticClass: "fa fa-edit" })]
-                              )
-                            ]),
-                            _vm._v(" "),
-                            _c("a", { attrs: { href: "#" } }, [
-                              _c(
-                                "button",
-                                { staticClass: "btn btn-danger btn-sm" },
-                                [_c("i", { staticClass: "fa fa-trash" })]
-                              )
-                            ])
-                          ])
-                        ])
+                  _c("td", [_vm._v("শান্তি নিকেতনএর পাঠভবনের সহজপাঠ ")]),
+                  _vm._v(" "),
+                  _c("td", [_vm._v("1")]),
+                  _vm._v(" "),
+                  _c("td", [_vm._v("130.00")]),
+                  _vm._v(" "),
+                  _c("td", [_vm._v("160.00")]),
+                  _vm._v(" "),
+                  _c("td", [_vm._v("200 TK.")]),
+                  _vm._v(" "),
+                  _c("td", [_vm._v("130 TK.")]),
+                  _vm._v(" "),
+                  _c("td", [
+                    _c("a", { attrs: { href: "#" } }, [
+                      _c("button", { staticClass: "btn btn-info btn-sm" }, [
+                        _c("i", { staticClass: "fa fa-edit" })
+                      ])
+                    ]),
+                    _vm._v(" "),
+                    _c("a", { attrs: { href: "#" } }, [
+                      _c("button", { staticClass: "btn btn-danger btn-sm" }, [
+                        _c("i", { staticClass: "fa fa-trash" })
                       ])
                     ])
                   ])
                 ])
               ])
-            ]),
-            _vm._v(" "),
-            _c(
-              "div",
-              {
-                staticClass: "modal fade",
-                attrs: {
-                  id: "addNew",
-                  tabindex: "-1",
-                  role: "dialog",
-                  "aria-labelledby": "addNewLabel",
-                  "aria-hidden": "true"
-                }
-              },
-              [
-                _c(
-                  "div",
-                  {
-                    staticClass: "modal-dialog modal-dialog-centered modal-lg",
-                    attrs: { role: "document" }
-                  },
-                  [
-                    _c("div", { staticClass: "modal-content" }, [
-                      _c("div", { staticClass: "modal-header" }, [
-                        _c(
-                          "h5",
-                          {
-                            staticClass: "modal-title",
-                            attrs: { id: "addNewLabel" }
-                          },
-                          [_vm._v("Add New Supplier ")]
-                        ),
-                        _vm._v(" "),
-                        _c(
-                          "div",
-                          {
-                            staticStyle: {
-                              width: "40%",
-                              float: "left",
-                              margin: "auto"
-                            }
-                          },
-                          [
-                            _c("input", {
-                              attrs: {
-                                type: "text",
-                                placeholder: "ISBN/Code No."
-                              }
-                            })
-                          ]
-                        )
-                      ]),
-                      _vm._v(" "),
-                      _c("div", { staticClass: "modal-body" }, [
-                        _c(
-                          "div",
-                          { staticStyle: { width: "48%", float: "left" } },
-                          [
-                            _c("div", { staticClass: "form-group" }, [
-                              _c("input", {
-                                staticClass: "form-control",
-                                attrs: {
-                                  type: "text",
-                                  name: "name",
-                                  placeholder: "Name"
-                                }
-                              })
-                            ]),
-                            _vm._v(" "),
-                            _c("div", { staticClass: "form-group" }, [
-                              _c("input", {
-                                staticClass: "form-control",
-                                attrs: {
-                                  type: "text",
-                                  name: "name",
-                                  placeholder: "Address"
-                                }
-                              })
-                            ]),
-                            _vm._v(" "),
-                            _c("div", { staticClass: "form-group" }, [
-                              _c("input", {
-                                staticClass: "form-control",
-                                attrs: {
-                                  type: "text",
-                                  name: "name",
-                                  placeholder: "Phone "
-                                }
-                              })
-                            ])
-                          ]
-                        ),
-                        _vm._v(" "),
-                        _c(
-                          "div",
-                          { staticStyle: { width: "48%", float: "right" } },
-                          [
-                            _c("div", { staticClass: "form-group" }, [
-                              _c("input", {
-                                staticClass: "form-control",
-                                attrs: {
-                                  type: "text",
-                                  name: "name",
-                                  placeholder: "Fax"
-                                }
-                              })
-                            ]),
-                            _vm._v(" "),
-                            _c("div", { staticClass: "form-group" }, [
-                              _c("input", {
-                                staticClass: "form-control",
-                                attrs: {
-                                  type: "text",
-                                  name: "email",
-                                  placeholder: "Email"
-                                }
-                              })
-                            ])
-                          ]
-                        )
-                      ]),
-                      _vm._v(" "),
-                      _c("div", { staticClass: "modal-footer" }, [
-                        _c(
-                          "button",
-                          {
-                            staticClass: "btn btn-danger",
-                            attrs: { type: "button", "data-dismiss": "modal" }
-                          },
-                          [_vm._v("Close")]
-                        ),
-                        _vm._v(" "),
-                        _c(
-                          "button",
-                          {
-                            staticClass: "btn btn-primary",
-                            attrs: { type: "button" }
-                          },
-                          [_vm._v("Create")]
-                        )
-                      ])
-                    ])
-                  ]
-                )
-              ]
-            )
+            ])
           ])
         ])
       ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "modal-header" }, [
+      _c("h5", { staticClass: "modal-title", attrs: { id: "addNewLabel" } }, [
+        _vm._v("Add Consignment")
+      ]),
+      _vm._v(" "),
+      _c(
+        "button",
+        {
+          staticClass: "close",
+          attrs: {
+            type: "button",
+            "data-dismiss": "modal",
+            "aria-label": "Close"
+          }
+        },
+        [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
+      )
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "modal-footer" }, [
+      _c(
+        "button",
+        {
+          staticClass: "btn btn-danger",
+          attrs: { type: "button", "data-dismiss": "modal" }
+        },
+        [_vm._v("Close")]
+      ),
+      _vm._v(" "),
+      _c(
+        "button",
+        { staticClass: "btn btn-primary", attrs: { type: "button" } },
+        [_vm._v("Create")]
+      )
     ])
   }
 ]
@@ -46353,7 +47206,47 @@ var render = function() {
         _c("div", { staticClass: "content" }, [
           _c("div", { staticClass: "container-fluid" }, [
             _c("div", { staticClass: "container" }, [
-              _vm._m(0),
+              _c("div", { staticClass: "row mt-5" }, [
+                _c("div", { staticClass: "col-md-12" }, [
+                  _c("div", { staticClass: "card" }, [
+                    _vm._m(0),
+                    _vm._v(" "),
+                    _c(
+                      "div",
+                      { staticClass: "card-body table-responsive p-0" },
+                      [
+                        _c("table", { staticClass: "table table-hover" }, [
+                          _vm._m(1),
+                          _vm._v(" "),
+                          _c(
+                            "tbody",
+                            _vm._l(_vm.supplierlist, function(supplier) {
+                              return _c("tr", { key: supplier.id }, [
+                                _c("td", [_vm._v(_vm._s(supplier.id))]),
+                                _vm._v(" "),
+                                _c("td", [_vm._v(_vm._s(supplier.supplier))]),
+                                _vm._v(" "),
+                                _c("td", [_vm._v(_vm._s(supplier.address))]),
+                                _vm._v(" "),
+                                _c("td", [_vm._v(_vm._s(supplier.phone))]),
+                                _vm._v(" "),
+                                _c("td", [_vm._v(_vm._s(supplier.fax))]),
+                                _vm._v(" "),
+                                _c("td", [_vm._v(_vm._s(supplier.mobile))]),
+                                _vm._v(" "),
+                                _c("td", [_vm._v(_vm._s(supplier.email))]),
+                                _vm._v(" "),
+                                _vm._m(2, true)
+                              ])
+                            }),
+                            0
+                          )
+                        ])
+                      ]
+                    )
+                  ])
+                ])
+              ]),
               _vm._v(" "),
               _c(
                 "div",
@@ -46376,7 +47269,7 @@ var render = function() {
                     },
                     [
                       _c("div", { staticClass: "modal-content" }, [
-                        _vm._m(1),
+                        _vm._m(3),
                         _vm._v(" "),
                         _c(
                           "form",
@@ -46661,7 +47554,7 @@ var render = function() {
                               )
                             ]),
                             _vm._v(" "),
-                            _vm._m(2)
+                            _vm._m(4)
                           ]
                         )
                       ])
@@ -46684,136 +47577,60 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "row mt-5" }, [
-      _c("div", { staticClass: "col-md-12" }, [
-        _c("div", { staticClass: "card" }, [
-          _c("div", { staticClass: "card-header" }, [
-            _c("h3", { staticClass: "card-title" }, [
-              _vm._v("Supplier History")
-            ]),
-            _vm._v(" "),
-            _c("div", { staticClass: "card-tools" }, [
-              _c(
-                "button",
-                {
-                  staticClass: "btn btn-success",
-                  attrs: { "data-toggle": "modal", "data-target": "#addNew" }
-                },
-                [
-                  _vm._v("Add New "),
-                  _c("i", { staticClass: "fas fa-user-plus fa-fw" })
-                ]
-              )
-            ])
-          ]),
-          _vm._v(" "),
-          _c("div", { staticClass: "card-body table-responsive p-0" }, [
-            _c("table", { staticClass: "table table-hover" }, [
-              _c("thead", [
-                _c("tr", [
-                  _c("th", [_vm._v("ID")]),
-                  _vm._v(" "),
-                  _c("th", [_vm._v("Name")]),
-                  _vm._v(" "),
-                  _c("th", [_vm._v("Address")]),
-                  _vm._v(" "),
-                  _c("th", [_vm._v("Phone")]),
-                  _vm._v(" "),
-                  _c("th", [_vm._v("Fax")]),
-                  _vm._v(" "),
-                  _c("th", [_vm._v("Email")]),
-                  _vm._v(" "),
-                  _c("th", [_vm._v("Modify")])
-                ])
-              ]),
-              _vm._v(" "),
-              _c("tbody", [
-                _c("tr", [
-                  _c("td", [_vm._v("183")]),
-                  _vm._v(" "),
-                  _c("td", [_vm._v("Iqbal")]),
-                  _vm._v(" "),
-                  _c("td", [_vm._v("Farmgate")]),
-                  _vm._v(" "),
-                  _c("td", [_vm._v("017XXXXXXXXX")]),
-                  _vm._v(" "),
-                  _c("td", [_vm._v("navudyog@vsnl.net")]),
-                  _vm._v(" "),
-                  _c("td", [_vm._v("iqbalgmail.com@")]),
-                  _vm._v(" "),
-                  _c("td", [
-                    _c("a", { attrs: { href: "#" } }, [
-                      _c("button", { staticClass: "btn btn-info btn-sm" }, [
-                        _c("i", { staticClass: "fa fa-edit" })
-                      ])
-                    ]),
-                    _vm._v(" "),
-                    _c("a", { attrs: { href: "#" } }, [
-                      _c("button", { staticClass: "btn btn-danger btn-sm" }, [
-                        _c("i", { staticClass: "fa fa-trash" })
-                      ])
-                    ])
-                  ])
-                ]),
-                _vm._v(" "),
-                _c("tr", [
-                  _c("td", [_vm._v("183")]),
-                  _vm._v(" "),
-                  _c("td", [_vm._v("Hossain")]),
-                  _vm._v(" "),
-                  _c("td", [_vm._v("Motizil")]),
-                  _vm._v(" "),
-                  _c("td", [_vm._v("017XXXXXXXXX")]),
-                  _vm._v(" "),
-                  _c("td", [_vm._v("navudyog@vsnl.net")]),
-                  _vm._v(" "),
-                  _c("td", [_vm._v("iqbalgmail.com@")]),
-                  _vm._v(" "),
-                  _c("td", [
-                    _c("a", { attrs: { href: "#" } }, [
-                      _c("button", { staticClass: "btn btn-info btn-sm" }, [
-                        _c("i", { staticClass: "fa fa-edit" })
-                      ])
-                    ]),
-                    _vm._v(" "),
-                    _c("a", { attrs: { href: "#" } }, [
-                      _c("button", { staticClass: "btn btn-danger btn-sm" }, [
-                        _c("i", { staticClass: "fa fa-trash" })
-                      ])
-                    ])
-                  ])
-                ]),
-                _vm._v(" "),
-                _c("tr", [
-                  _c("td", [_vm._v("183")]),
-                  _vm._v(" "),
-                  _c("td", [_vm._v("Saju Hossain")]),
-                  _vm._v(" "),
-                  _c("td", [_vm._v("Dhaka")]),
-                  _vm._v(" "),
-                  _c("td", [_vm._v("017XXXXXXXXX")]),
-                  _vm._v(" "),
-                  _c("td", [_vm._v("navudyog@vsnl.net")]),
-                  _vm._v(" "),
-                  _c("td", [_vm._v("iqbalgmail.com@")]),
-                  _vm._v(" "),
-                  _c("td", [
-                    _c("a", { attrs: { href: "#" } }, [
-                      _c("button", { staticClass: "btn btn-info btn-sm" }, [
-                        _c("i", { staticClass: "fa fa-edit" })
-                      ])
-                    ]),
-                    _vm._v(" "),
-                    _c("a", { attrs: { href: "#" } }, [
-                      _c("button", { staticClass: "btn btn-danger btn-sm" }, [
-                        _c("i", { staticClass: "fa fa-trash" })
-                      ])
-                    ])
-                  ])
-                ])
-              ])
-            ])
-          ])
+    return _c("div", { staticClass: "card-header" }, [
+      _c("h3", { staticClass: "card-title" }, [_vm._v("Supplier History")]),
+      _vm._v(" "),
+      _c("div", { staticClass: "card-tools" }, [
+        _c(
+          "button",
+          {
+            staticClass: "btn btn-success",
+            attrs: { "data-toggle": "modal", "data-target": "#addNew" }
+          },
+          [
+            _vm._v("Add New "),
+            _c("i", { staticClass: "fas fa-user-plus fa-fw" })
+          ]
+        )
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("thead", [
+      _c("tr", [
+        _c("th", [_vm._v("ID")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Name")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Address")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Phone")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Fax")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Email")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Action")])
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("td", [
+      _c("a", { attrs: { href: "#" } }, [
+        _c("button", { staticClass: "btn btn-info btn-sm" }, [
+          _c("i", { staticClass: "fa fa-edit" })
+        ])
+      ]),
+      _vm._v(" "),
+      _c("a", { attrs: { href: "#" } }, [
+        _c("button", { staticClass: "btn btn-danger btn-sm" }, [
+          _c("i", { staticClass: "fa fa-trash" })
         ])
       ])
     ])
@@ -47340,9 +48157,9 @@ var staticRenderFns = [
         ]),
         _vm._v(" "),
         _c("strong", [
-          _vm._v("Copyright © 2014-2019 "),
+          _vm._v("Copyright © 2020 "),
           _c("a", { attrs: { href: "https://adminlte.io" } }, [
-            _vm._v("AdminLTE.io")
+            _vm._v("Idea Tech Solution")
           ]),
           _vm._v(".")
         ]),
@@ -63884,7 +64701,9 @@ __webpack_require__.r(__webpack_exports__);
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Booklist_vue_vue_type_template_id_5ffcee1c___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Booklist.vue?vue&type=template&id=5ffcee1c& */ "./resources/js/components/Booklist.vue?vue&type=template&id=5ffcee1c&");
 /* harmony import */ var _Booklist_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Booklist.vue?vue&type=script&lang=js& */ "./resources/js/components/Booklist.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+/* empty/unused harmony star reexport *//* harmony import */ var _Booklist_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./Booklist.vue?vue&type=style&index=0&lang=css& */ "./resources/js/components/Booklist.vue?vue&type=style&index=0&lang=css&");
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
 
 
 
@@ -63892,7 +64711,7 @@ __webpack_require__.r(__webpack_exports__);
 
 /* normalize component */
 
-var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__["default"])(
   _Booklist_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
   _Booklist_vue_vue_type_template_id_5ffcee1c___WEBPACK_IMPORTED_MODULE_0__["render"],
   _Booklist_vue_vue_type_template_id_5ffcee1c___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
@@ -63921,6 +64740,22 @@ component.options.__file = "resources/js/components/Booklist.vue"
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Booklist_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./Booklist.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Booklist.vue?vue&type=script&lang=js&");
 /* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Booklist_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/Booklist.vue?vue&type=style&index=0&lang=css&":
+/*!*******************************************************************************!*\
+  !*** ./resources/js/components/Booklist.vue?vue&type=style&index=0&lang=css& ***!
+  \*******************************************************************************/
+/*! no static exports found */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_Booklist_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/style-loader!../../../node_modules/css-loader??ref--6-1!../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../node_modules/postcss-loader/src??ref--6-2!../../../node_modules/vue-loader/lib??vue-loader-options!./Booklist.vue?vue&type=style&index=0&lang=css& */ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Booklist.vue?vue&type=style&index=0&lang=css&");
+/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_Booklist_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_Booklist_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__);
+/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_Booklist_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__) if(__WEBPACK_IMPORT_KEY__ !== 'default') (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_Booklist_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__[key]; }) }(__WEBPACK_IMPORT_KEY__));
+ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_Booklist_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default.a); 
 
 /***/ }),
 
@@ -64741,8 +65576,8 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! D:\Hasinur\Inventory-sales\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! D:\Hasinur\Inventory-sales\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! D:\Hasinur\Inventory\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! D:\Hasinur\Inventory\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })
