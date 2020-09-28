@@ -6,27 +6,14 @@ use Illuminate\Http\Request;
 use App\Supplier;
 
 class SupplierController extends Controller
-{
-<<<<<<< HEAD
+{ 
     public function index(){
-
-=======
-    
-    public function index(){
-        
->>>>>>> 73134112e99528f9923f4572277b04a40abe2bce
         $data = Supplier::all();
         return response()->json([
             'data'=>$data,
             'message'=>"success"
         ],200);
     }
-<<<<<<< HEAD
-
-=======
-    
-    
->>>>>>> 73134112e99528f9923f4572277b04a40abe2bce
     public function store(Request $request){
         $this->validate($request, [
             'supplier'  => 'required',

@@ -235,6 +235,7 @@ export default {
                 this.booklist = response.data.data;
             })
         },
+        
         bookByid(book){
             for(let index in this.singleBookDetails){
                 if(book.hasOwnProperty(index)){
@@ -243,12 +244,7 @@ export default {
             }
         }
 
-        // bookByid(key){
-        //     axios.post('/getBookbyId/${key}')
-        //     .then((response)=>{
-        //         this.booklistId = response.data.data;
-        //     })
-        // }
+    
 
 
     },
