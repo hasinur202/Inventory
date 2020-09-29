@@ -154,7 +154,7 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-md-4">
-                                        <label>Shelf Ref# Country</label>
+                                        <label>Shelf Ref#</label>
                                     </div>
                                     <div class="col-md-8">
                                         <input v-model="singleBookDetails.ref" readonly>
@@ -235,7 +235,7 @@ export default {
                 this.booklist = response.data.data;
             })
         },
-        
+
         bookByid(book){
             for(let index in this.singleBookDetails){
                 if(book.hasOwnProperty(index)){
@@ -244,7 +244,7 @@ export default {
             }
         }
 
-    
+
 
 
     },
@@ -282,7 +282,7 @@ export default {
 
     .row .col-md-8 {
         padding: 4px;
-        
+
     }
     .row .col-md-4 label{
         margin-bottom: 0 !important;

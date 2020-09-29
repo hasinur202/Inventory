@@ -24,7 +24,9 @@ Route::get('/', 'HomeController@index');
 // Route::get('{path}', "HomeController@index")->where(['path', '.*-in-.*|stay-in-.*']);
 
 //vue route
+//Store Author
 Route::post('/storeAuthor', 'AuthorController@store');
+//Store Publisher
 Route::post('/storePublisher', 'PublisherController@store');
 //Store Category
 Route::post('/storeCategory', 'CategoryController@store');
@@ -32,20 +34,18 @@ Route::post('/storeCategory', 'CategoryController@store');
 Route::post('/storeBook', 'BookController@store');
 //Store Supplier Info
 Route::post('/storeSupplier', 'SupplierController@store');
+//Store Consignment Info
+Route::post('/storeConsignment', 'ConsignmentController@store');
 
+
+//getBook
 Route::get('getBook', 'BookController@index');
-//getBook by Id
-// Route::get('/getBookbyId/{key}', 'BookController@getBookById');
-
-
 //Get Author details
-Route::get('/getAuthor', 'AuthorController@searchAuthor');
+Route::get('/getAuthor', 'AuthorController@index');
 //get supplier
 Route::get('/getSupplier', 'SupplierController@index');
-Route::get('/getAuthor', 'AuthorController@index');
-
-
-Route::get('/getSupplier', 'SupplierController@index');
+//get Consignment
+Route::get('/getConsignment', 'ConsignmentController@index');
 
 
 //login/logout

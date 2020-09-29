@@ -21,8 +21,10 @@ class CreateConsignmentsTable extends Migration
             $table->unsignedBigInteger('supplier_id');
             $table->foreign('supplier_id')->references('id')->on('suppliers');
             $table->string('copies');
-            $table->string('cost_price');
+            $table->string('currency')->default('TK');
             $table->string('pub_price');
+            $table->string('sales_price');
+            $table->string('cost_price');
             $table->string('total_price');
             $table->timestamps();
         });

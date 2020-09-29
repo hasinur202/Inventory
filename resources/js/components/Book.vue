@@ -19,7 +19,7 @@
                     <div class="row">
                         <div class="col-md-12">
                             <label for="exampleInputIsbn" class="isbn">ISBN Auto</label>
-                            <input @click="myFunction(1000000000000, 9000000000000)" v-model="form.isbnCheck" type="checkbox" name="isbnCheck" class="form-check-input">
+                            <input @click="myFunction(1000000000000, 9000000000000)" v-model="form.isbnCheck" type="checkbox" class="form-check-input">
                             <label class="form-check-label"> Auto Generate</label>
                         </div>
 
@@ -252,7 +252,7 @@ import footerComponent from "./footer";
                 this.getSesrchValue = false;
             },
             searchVal(){
-                
+
                 if (this.form.author == '') {
                     this.getSesrchValue = false;
                 }else{

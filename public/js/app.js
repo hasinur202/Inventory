@@ -2658,45 +2658,30 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "Consignment",
+  data: function data() {
+    return {
+      consignmentList: []
+    };
+  },
+  methods: {
+    viewConsignment: function viewConsignment() {
+      var _this = this;
+
+      axios.get('/getConsignment').then(function (response) {
+        _this.consignmentList = response.data.data;
+      });
+    }
+  },
   components: {
     headerComponent: _header__WEBPACK_IMPORTED_MODULE_0__["default"],
     footerComponent: _footer__WEBPACK_IMPORTED_MODULE_1__["default"]
   },
   mounted: function mounted() {
-    console.log('Component mounted.');
+    this.viewConsignment();
   }
 });
 
@@ -2987,44 +2972,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -3036,19 +2983,23 @@ __webpack_require__.r(__webpack_exports__);
       getSearchSupp: false,
       allBook: [],
       suppliers: [],
+      consignmentList: [],
       form: new Form({
         consign_ref: '',
         isbn: '',
-        supplier: '',
+        book_id: '',
+        supplier_id: '',
         book_name: '',
+        supplier: '',
         copies: '',
-        select_price: '',
         pub_price: '',
-        conv_rate: '',
-        st_rate: '',
+        currency: 'TK',
+        conv_rate: '0.65',
+        st_rate: '0.8',
         cost_price: '',
         my_rate: '',
-        sales_price: ''
+        sales_price: '',
+        total_price: ''
       })
     };
   },
@@ -3060,6 +3011,7 @@ __webpack_require__.r(__webpack_exports__);
     });
   },
   computed: {
+    //isbn filtered from allbook
     filterd: function filterd() {
       var _this2 = this;
 
@@ -3070,12 +3022,44 @@ __webpack_require__.r(__webpack_exports__);
     filterdSupp: function filterdSupp() {
       var _this3 = this;
 
+      //supllier filtered
       return this.suppliers.filter(function (val) {
         return val.supplier.toLowerCase().startsWith(_this3.form.supplier.toLowerCase());
       });
     }
   },
   methods: {
+    createConsignment: function createConsignment() {
+      var _this4 = this;
+
+      // Submit the form via a POST request
+      this.form.post('/storeConsignment').then(function () {
+        _this4.form.book_name = "";
+        _this4.form.isbn = "";
+        _this4.form.book_id = "";
+        _this4.form.copies = "";
+        _this4.form.pub_price = "";
+        _this4.form.cost_price = "";
+        _this4.form.my_rate = "";
+        _this4.form.sales_price = "";
+        _this4.form.total_price = "";
+        axios.get('/getConsignment').then(function (response) {
+          _this4.consignmentList = response.data.data;
+        });
+        Toast.fire({
+          icon: 'success',
+          title: 'Consignment Added Successfully'
+        });
+      });
+    },
+    viewConsignment: function viewConsignment() {
+      var _this5 = this;
+
+      axios.get('/getConsignment').then(function (response) {
+        _this5.consignmentList = response.data.data;
+      });
+    },
+    //this method for generate random number
     myFunction: function myFunction(min, max) {
       if (this.form.consign_ref == '') {
         this.form.consign_ref = Math.floor(Math.random() * (max - min)) + min;
@@ -3083,6 +3067,7 @@ __webpack_require__.r(__webpack_exports__);
         this.form.consign_ref = "";
       }
     },
+    //search value for isbn
     searchVal: function searchVal() {
       if (this.form.isbn == '') {
         this.getSearchValue = false;
@@ -3090,29 +3075,34 @@ __webpack_require__.r(__webpack_exports__);
         this.getSearchValue = true;
       }
     },
+    //get value isbn and bookname from booktable
     getVal: function getVal(val) {
-      var _this4 = this;
+      var _this6 = this;
 
       this.form.isbn = val.isbn;
       this.allBook.forEach(function (el) {
-        if (_this4.form.isbn == el.isbn) {
-          _this4.form.book_name = el.book_name;
-          _this4.getSearchValue = false;
+        if (_this6.form.isbn == el.isbn) {
+          _this6.form.book_name = el.book_name;
+          _this6.form.book_id = el.id;
+          _this6.getSearchValue = false;
         }
       });
     },
+    //getting supllier value
     getSupp: function getSupp(val) {
       this.form.supplier = val.supplier;
+      this.form.supplier_id = val.id;
       this.getSearchSupp = false;
     },
+    //method for searching supplier
     searchSupp: function searchSupp() {
-      var _this5 = this;
+      var _this7 = this;
 
       if (this.form.supplier == '') {
         this.getSearchSupp = false;
       } else {
         axios.get('/getSupplier').then(function (response) {
-          _this5.suppliers = response.data.data;
+          _this7.suppliers = response.data.data;
         });
         this.getSearchSupp = true;
       }
@@ -3129,23 +3119,24 @@ __webpack_require__.r(__webpack_exports__);
     my_rate: function my_rate(event) {
       this.my_rate = event.target.value;
     },
+    copies: function copies(event) {
+      this.copies = event.target.value;
+    },
     costBd: function costBd() {
-      if (parseFloat(this.form.conv_rate) > 0) {
-        if (parseFloat(this.form.pub_price) > 0) {
-          this.form.cost_price = Math.floor(parseFloat(this.form.conv_rate) * parseFloat(this.form.pub_price));
-        }
+      if (parseFloat(this.form.pub_price) > 0 && parseFloat(this.form.conv_rate) > 0) {
+        this.form.cost_price = Math.floor(parseFloat(this.form.conv_rate) * parseFloat(this.form.pub_price));
       }
 
-      if (parseFloat(this.form.st_rate) > 0) {
-        if (parseFloat(this.form.pub_price) > 0) {
-          this.form.sales_price = Math.floor(parseFloat(this.form.st_rate) * parseFloat(this.form.pub_price));
-        }
+      if (parseFloat(this.form.pub_price) > 0 && parseFloat(this.form.st_rate) > 0) {
+        this.form.sales_price = Math.floor(parseFloat(this.form.st_rate) * parseFloat(this.form.pub_price));
       }
 
-      if (parseFloat(this.form.my_rate) > 0) {
-        if (parseFloat(this.form.pub_price)) {
-          this.form.sales_price = Math.floor(parseFloat(this.form.my_rate) * parseFloat(this.form.pub_price));
-        }
+      if (parseFloat(this.form.pub_price) > 0 && parseFloat(this.form.my_rate) > 0) {
+        this.form.sales_price = Math.floor(parseFloat(this.form.my_rate) * parseFloat(this.form.pub_price));
+      }
+
+      if (parseFloat(this.form.cost_price) > 0 && parseInt(this.form.copies) > 0) {
+        this.form.total_price = Math.floor(parseFloat(this.form.cost_price) * parseFloat(this.form.copies));
       }
     }
   },
@@ -3154,7 +3145,7 @@ __webpack_require__.r(__webpack_exports__);
     footerComponent: _footer__WEBPACK_IMPORTED_MODULE_1__["default"]
   },
   mounted: function mounted() {
-    console.log('Component mounted.');
+    this.viewConsignment();
   }
 });
 
@@ -3252,10 +3243,258 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "Sales",
+  data: function data() {
+    return {
+      randomNumber: '',
+      getSearchValue: false,
+      getSearchSupp: false,
+      allBook: [],
+      suppliers: [],
+      consignmentList: [],
+      form: new Form({
+        consign_ref: '',
+        isbn: '',
+        book_id: '',
+        supplier_id: '',
+        book_name: '',
+        supplier: '',
+        copies: '',
+        pub_price: '',
+        currency: 'TK',
+        conv_rate: '0.65',
+        st_rate: '0.8',
+        cost_price: '',
+        my_rate: '',
+        sales_price: '',
+        total_price: ''
+      })
+    };
+  },
+  methods: {
+    //this method for generate random number
+    myFunction: function myFunction(min, max) {
+      if (this.form.consign_ref == '') {
+        this.form.consign_ref = Math.floor(Math.random() * (max - min)) + min;
+      } else {
+        this.form.consign_ref = "";
+      }
+    }
+  },
   components: {
     headerComponent: _header__WEBPACK_IMPORTED_MODULE_0__["default"],
     footerComponent: _footer__WEBPACK_IMPORTED_MODULE_1__["default"]
@@ -8600,7 +8839,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.ulstyle[data-v-c6eb49f0]{\r\n    list-style: none;\r\n    padding-left: 0px;\r\n    float:left;\r\n    width:100%;\n}\n.ulstyle > li[data-v-c6eb49f0]:hover {\r\n    background:#ddd;\r\n    color: blue;\r\n    border-radius: 5px;\n}\n.ulstyle > li > p[data-v-c6eb49f0]{\r\n    padding: 5px;\r\n    cursor:pointer;\r\n    margin-bottom:4px;\n}\n.card-title[data-v-c6eb49f0]{\r\n    float:left;\n}\n.ulstyles[data-v-c6eb49f0]{\r\n    list-style: none;\r\n    padding-left: 0px;\r\n    float:left;\r\n    width:28%;\r\n    margin-left:35.5rem;\n}\n.ulstyles > li[data-v-c6eb49f0]:hover {\r\n    background:#ddd;\r\n    color: blue;\r\n    border-radius: 5px;\n}\n.ulstyles > li > p[data-v-c6eb49f0]{\r\n    padding: 5px;\r\n    cursor:pointer;\r\n    margin-bottom:4px;\n}\n.supp[data-v-c6eb49f0]{\r\n    width: 28%;\r\n    float: right;\r\n    margin-right: 8.5rem;\r\n    margin-top: -4px !important;\n}\r\n", ""]);
+exports.push([module.i, "\n.ulstyle[data-v-c6eb49f0]{\n    list-style: none;\n    padding-left: 0px;\n    float:left;\n    width:100%;\n}\n.ulstyle > li[data-v-c6eb49f0]:hover {\n    background:#ddd;\n    color: blue;\n    border-radius: 5px;\n}\n.ulstyle > li > p[data-v-c6eb49f0]{\n    padding: 5px;\n    cursor:pointer;\n    margin-bottom:4px;\n    float:left;\n    width:100%;\n}\n.card-title[data-v-c6eb49f0]{\n    float:left;\n}\n.supp[data-v-c6eb49f0]{\n    width: 100%;\n    float: right;\n}\n", ""]);
 
 // exports
 
@@ -44894,7 +45133,7 @@ var render = function() {
                                 }
                               ],
                               staticClass: "form-check-input",
-                              attrs: { type: "checkbox", name: "isbnCheck" },
+                              attrs: { type: "checkbox" },
                               domProps: {
                                 checked: Array.isArray(_vm.form.isbnCheck)
                                   ? _vm._i(_vm.form.isbnCheck, null) > -1
@@ -45786,12 +46025,12 @@ var staticRenderFns = [
       "div",
       { staticClass: "card-footer", staticStyle: { display: "block" } },
       [
-        _vm._v("\r\n                    Visit "),
+        _vm._v("\n                    Visit "),
         _c("a", { attrs: { href: "https://select2.github.io/" } }, [
           _vm._v("Select2 documentation")
         ]),
         _vm._v(
-          " for more examples and information about\r\n                    the plugin.\r\n                "
+          " for more examples and information about\n                    the plugin.\n                "
         )
       ]
     )
@@ -46512,7 +46751,7 @@ var staticRenderFns = [
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
     return _c("div", { staticClass: "col-md-4" }, [
-      _c("label", [_vm._v("Shelf Ref# Country")])
+      _c("label", [_vm._v("Shelf Ref#")])
     ])
   },
   function() {
@@ -46615,7 +46854,46 @@ var render = function() {
                       )
                     ]),
                     _vm._v(" "),
-                    _vm._m(0)
+                    _c(
+                      "div",
+                      { staticClass: "card-body table-responsive p-0" },
+                      [
+                        _c("table", { staticClass: "table table-hover" }, [
+                          _vm._m(0),
+                          _vm._v(" "),
+                          _c(
+                            "tbody",
+                            _vm._l(_vm.consignmentList, function(consignment) {
+                              return _c("tr", { key: consignment.id }, [
+                                _c("td", [
+                                  _vm._v(
+                                    "Consignment/2020/" +
+                                      _vm._s(consignment.consign_ref)
+                                  )
+                                ]),
+                                _vm._v(" "),
+                                _c("td", [
+                                  _vm._v(_vm._s(consignment.created_at))
+                                ]),
+                                _vm._v(" "),
+                                _c("td", [_vm._v("Purchase")]),
+                                _vm._v(" "),
+                                _c("td", [
+                                  _vm._v(
+                                    _vm._s(consignment.get_supplier.supplier)
+                                  )
+                                ]),
+                                _vm._v(" "),
+                                _c("td", [_vm._v("Cash")]),
+                                _vm._v(" "),
+                                _vm._m(1, true)
+                              ])
+                            }),
+                            0
+                          )
+                        ])
+                      ]
+                    )
                   ])
                 ])
               ])
@@ -46634,102 +46912,36 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "card-body table-responsive p-0" }, [
-      _c("table", { staticClass: "table table-hover" }, [
-        _c("thead", [
-          _c("tr", [
-            _c("th", [_vm._v("Consignment Ref#")]),
-            _vm._v(" "),
-            _c("th", [_vm._v("Consignment Date")]),
-            _vm._v(" "),
-            _c("th", [_vm._v("Type")]),
-            _vm._v(" "),
-            _c("th", [_vm._v("Supplier")]),
-            _vm._v(" "),
-            _c("th", [_vm._v("Pay Mode")]),
-            _vm._v(" "),
-            _c("th", [_vm._v("Modify")])
-          ])
-        ]),
+    return _c("thead", [
+      _c("tr", [
+        _c("th", [_vm._v("Consignment Ref#")]),
         _vm._v(" "),
-        _c("tbody", [
-          _c("tr", [
-            _c("td", [_vm._v("Consignment/2020/0003")]),
-            _vm._v(" "),
-            _c("td", [_vm._v("20 Jan, 2020")]),
-            _vm._v(" "),
-            _c("td", [_vm._v("Purchase")]),
-            _vm._v(" "),
-            _c("td", [_vm._v("Shahjahan")]),
-            _vm._v(" "),
-            _c("td", [_vm._v("Cash")]),
-            _vm._v(" "),
-            _c("td", [
-              _c("a", { attrs: { href: "#" } }, [
-                _c("button", { staticClass: "btn btn-info btn-sm" }, [
-                  _c("i", { staticClass: "fa fa-edit" })
-                ])
-              ]),
-              _vm._v(" "),
-              _c("a", { attrs: { href: "#" } }, [
-                _c("button", { staticClass: "btn btn-danger btn-sm" }, [
-                  _c("i", { staticClass: "fa fa-trash" })
-                ])
-              ])
-            ])
-          ]),
-          _vm._v(" "),
-          _c("tr", [
-            _c("td", [_vm._v("Consignment/2020/0004")]),
-            _vm._v(" "),
-            _c("td", [_vm._v("01 Agust, 2020")]),
-            _vm._v(" "),
-            _c("td", [_vm._v("Purchase")]),
-            _vm._v(" "),
-            _c("td", [_vm._v("Bivas")]),
-            _vm._v(" "),
-            _c("td", [_vm._v("Bkash")]),
-            _vm._v(" "),
-            _c("td", [
-              _c("a", { attrs: { href: "#" } }, [
-                _c("button", { staticClass: "btn btn-info btn-sm" }, [
-                  _c("i", { staticClass: "fa fa-edit" })
-                ])
-              ]),
-              _vm._v(" "),
-              _c("a", { attrs: { href: "#" } }, [
-                _c("button", { staticClass: "btn btn-danger btn-sm" }, [
-                  _c("i", { staticClass: "fa fa-trash" })
-                ])
-              ])
-            ])
-          ]),
-          _vm._v(" "),
-          _c("tr", [
-            _c("td", [_vm._v("Consignment/2020/0004")]),
-            _vm._v(" "),
-            _c("td", [_vm._v("22 October, 2020")]),
-            _vm._v(" "),
-            _c("td", [_vm._v("Purchase")]),
-            _vm._v(" "),
-            _c("td", [_vm._v("Bengal Publication Ltd.")]),
-            _vm._v(" "),
-            _c("td", [_vm._v("Rocket")]),
-            _vm._v(" "),
-            _c("td", [
-              _c("a", { attrs: { href: "#" } }, [
-                _c("button", { staticClass: "btn btn-info btn-sm" }, [
-                  _c("i", { staticClass: "fa fa-edit" })
-                ])
-              ]),
-              _vm._v(" "),
-              _c("a", { attrs: { href: "#" } }, [
-                _c("button", { staticClass: "btn btn-danger btn-sm" }, [
-                  _c("i", { staticClass: "fa fa-trash" })
-                ])
-              ])
-            ])
-          ])
+        _c("th", [_vm._v("Consignment Date")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Type")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Supplier")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Pay Mode")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Modify")])
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("td", [
+      _c("a", { attrs: { href: "#" } }, [
+        _c("button", { staticClass: "btn btn-info btn-sm" }, [
+          _c("i", { staticClass: "fa fa-edit" })
+        ])
+      ]),
+      _vm._v(" "),
+      _c("a", { attrs: { href: "#" } }, [
+        _c("button", { staticClass: "btn btn-danger btn-sm" }, [
+          _c("i", { staticClass: "fa fa-trash" })
         ])
       ])
     ])
@@ -46829,171 +47041,59 @@ var render = function() {
               _c("div", { staticClass: "row mt-5" }, [
                 _c("div", { staticClass: "col-md-12" }, [
                   _c("div", { staticClass: "card" }, [
-                    _c("div", { staticClass: "card" }, [
-                      _c("div", { staticClass: "card-header" }, [
-                        _c("h3", { staticClass: "card-title" }, [
-                          _vm._v("New Consignment")
-                        ]),
-                        _vm._v(" "),
-                        _c("div", { staticClass: "form-group" }, [
-                          _c("input", {
-                            directives: [
-                              {
-                                name: "model",
-                                rawName: "v-model",
-                                value: _vm.form.supplier,
-                                expression: "form.supplier"
-                              }
-                            ],
-                            staticClass: "form-control supp",
-                            class: {
-                              "is-invalid": _vm.form.errors.has("supplier")
-                            },
-                            attrs: {
-                              type: "text",
-                              placeholder: "Select Supplier"
-                            },
-                            domProps: { value: _vm.form.supplier },
-                            on: {
-                              keyup: function($event) {
-                                return _vm.searchSupp()
-                              },
-                              input: function($event) {
-                                if ($event.target.composing) {
-                                  return
-                                }
-                                _vm.$set(
-                                  _vm.form,
-                                  "supplier",
-                                  $event.target.value
-                                )
-                              }
-                            }
-                          })
-                        ]),
-                        _vm._v(" "),
-                        _c(
-                          "div",
-                          {
-                            directives: [
-                              {
-                                name: "show",
-                                rawName: "v-show",
-                                value: _vm.getSearchSupp,
-                                expression: "getSearchSupp"
-                              }
-                            ],
-                            staticClass: "form-group"
-                          },
-                          [
-                            _c(
-                              "ul",
-                              { staticClass: "ulstyles" },
-                              _vm._l(_vm.filterdSupp, function(val) {
-                                return _c("li", { key: val.id }, [
-                                  _c(
-                                    "p",
-                                    {
-                                      on: {
-                                        click: function($event) {
-                                          $event.preventDefault()
-                                          return _vm.getSupp(val)
-                                        }
-                                      }
-                                    },
-                                    [_vm._v(_vm._s(val.supplier))]
-                                  )
-                                ])
-                              }),
-                              0
-                            )
-                          ]
-                        ),
-                        _vm._v(" "),
-                        _vm._m(0)
-                      ])
-                    ]),
+                    _vm._m(0),
                     _vm._v(" "),
-                    _c("div", { staticClass: "card-header" }, [
-                      _c("h3", { staticClass: "card-title" }, [
-                        _vm._v("Stock History")
-                      ]),
-                      _vm._v(" "),
-                      _vm._m(1),
-                      _vm._v(" "),
-                      _c("div", { staticClass: "col-md-12" }, [
-                        _c(
-                          "label",
-                          {
-                            staticClass: "isbn",
-                            attrs: { for: "exampleInputIsbn" }
-                          },
-                          [_vm._v("Consignment Ref#")]
-                        ),
-                        _vm._v(" "),
-                        _c("input", {
-                          staticClass: "form-check-input",
-                          attrs: { type: "checkbox" },
-                          on: {
-                            click: function($event) {
-                              return _vm.myFunction(
-                                1000000000000,
-                                9000000000000
-                              )
-                            }
-                          }
-                        }),
-                        _vm._v(" "),
-                        _c("label", { staticClass: "form-check-label" }, [
-                          _vm._v(" Auto Generate")
-                        ])
-                      ]),
-                      _vm._v(" "),
-                      _c(
-                        "div",
-                        { staticClass: "form-group" },
-                        [
-                          _c("input", {
-                            directives: [
-                              {
-                                name: "model",
-                                rawName: "v-model",
-                                value: _vm.form.consign_ref,
-                                expression: "form.consign_ref"
-                              }
-                            ],
-                            staticClass: "form-control",
-                            class: {
-                              "is-invalid": _vm.form.errors.has("consign_ref")
-                            },
-                            attrs: {
-                              type: "text",
-                              placeholder: "Consignment Ref#."
-                            },
-                            domProps: { value: _vm.form.consign_ref },
-                            on: {
-                              input: function($event) {
-                                if ($event.target.composing) {
-                                  return
-                                }
-                                _vm.$set(
-                                  _vm.form,
-                                  "consign_ref",
-                                  $event.target.value
-                                )
-                              }
-                            }
-                          }),
+                    _vm._m(1),
+                    _vm._v(" "),
+                    _c(
+                      "div",
+                      { staticClass: "card-body table-responsive p-0" },
+                      [
+                        _c("table", { staticClass: "table table-hover" }, [
+                          _vm._m(2),
                           _vm._v(" "),
-                          _c("has-error", {
-                            attrs: { form: _vm.form, field: "consign_ref" }
-                          })
-                        ],
-                        1
-                      )
-                    ]),
-                    _vm._v(" "),
-                    _vm._m(2)
+                          _c(
+                            "tbody",
+                            _vm._l(_vm.consignmentList, function(consignment) {
+                              return _c("tr", { key: consignment.id }, [
+                                _c("td", [
+                                  _vm._v(_vm._s(consignment.get_book.isbn))
+                                ]),
+                                _vm._v(" "),
+                                _c("td", [
+                                  _vm._v(_vm._s(consignment.get_book.book_name))
+                                ]),
+                                _vm._v(" "),
+                                _c("td", [_vm._v(_vm._s(consignment.copies))]),
+                                _vm._v(" "),
+                                _c("td", [
+                                  _vm._v(_vm._s(consignment.cost_price))
+                                ]),
+                                _vm._v(" "),
+                                _c("td", [
+                                  _vm._v(_vm._s(consignment.sales_price))
+                                ]),
+                                _vm._v(" "),
+                                _c("td", [
+                                  _vm._v(
+                                    _vm._s(consignment.pub_price) +
+                                      " " +
+                                      _vm._s(consignment.currency)
+                                  )
+                                ]),
+                                _vm._v(" "),
+                                _c("td", [
+                                  _vm._v(_vm._s(consignment.total_price))
+                                ]),
+                                _vm._v(" "),
+                                _vm._m(3, true)
+                              ])
+                            }),
+                            0
+                          )
+                        ])
+                      ]
+                    )
                   ])
                 ])
               ]),
@@ -47019,195 +47119,81 @@ var render = function() {
                       attrs: { role: "document" }
                     },
                     [
-                      _c("div", { staticClass: "modal-content" }, [
-                        _vm._m(3),
-                        _vm._v(" "),
-                        _c("form", [
-                          _c("div", { staticClass: "modal-body" }, [
-                            _c("div", { staticClass: "col-md-12" }, [
+                      _c(
+                        "form",
+                        {
+                          on: {
+                            submit: function($event) {
+                              $event.preventDefault()
+                              return _vm.createConsignment($event)
+                            }
+                          }
+                        },
+                        [
+                          _c("div", { staticClass: "modal-content" }, [
+                            _c("div", { staticClass: "modal-header" }, [
                               _c(
-                                "div",
+                                "h5",
                                 {
-                                  staticStyle: { width: "48%", float: "left" }
+                                  staticClass: "modal-title",
+                                  attrs: { id: "addNewLabel" }
                                 },
-                                [
-                                  _c(
-                                    "div",
-                                    { staticClass: "form-group" },
-                                    [
-                                      _c("input", {
-                                        directives: [
-                                          {
-                                            name: "model",
-                                            rawName: "v-model",
-                                            value: _vm.form.isbn,
-                                            expression: "form.isbn"
-                                          }
-                                        ],
-                                        staticClass: "form-control",
-                                        class: {
-                                          "is-invalid": _vm.form.errors.has(
-                                            "isbn"
-                                          )
-                                        },
-                                        attrs: {
-                                          type: "text",
-                                          placeholder: "Search ISBN"
-                                        },
-                                        domProps: { value: _vm.form.isbn },
-                                        on: {
-                                          keyup: function($event) {
-                                            $event.preventDefault()
-                                            return _vm.searchVal()
-                                          },
-                                          input: function($event) {
-                                            if ($event.target.composing) {
-                                              return
-                                            }
-                                            _vm.$set(
-                                              _vm.form,
-                                              "isbn",
-                                              $event.target.value
-                                            )
-                                          }
-                                        }
-                                      }),
-                                      _vm._v(" "),
-                                      _c("has-error", {
-                                        attrs: { form: _vm.form, field: "isbn" }
-                                      })
-                                    ],
-                                    1
-                                  )
-                                ]
+                                [_vm._v("Add Consignment")]
                               ),
                               _vm._v(" "),
                               _c(
                                 "div",
                                 {
-                                  directives: [
-                                    {
-                                      name: "show",
-                                      rawName: "v-show",
-                                      value: _vm.getSearchValue,
-                                      expression: "getSearchValue"
-                                    }
-                                  ],
-                                  staticClass: "form-group"
-                                },
-                                [
-                                  _c(
-                                    "ul",
-                                    { staticClass: "ulstyle" },
-                                    _vm._l(_vm.filterd, function(val) {
-                                      return _c("li", { key: val.id }, [
-                                        _c(
-                                          "p",
-                                          {
-                                            on: {
-                                              click: function($event) {
-                                                $event.preventDefault()
-                                                return _vm.getVal(val)
-                                              }
-                                            }
-                                          },
-                                          [_vm._v(_vm._s(val.isbn))]
-                                        )
-                                      ])
-                                    }),
-                                    0
-                                  )
-                                ]
-                              ),
-                              _vm._v(" "),
-                              _c("div", [
-                                _c(
-                                  "div",
-                                  { staticClass: "form-group" },
-                                  [
-                                    _c("input", {
-                                      directives: [
-                                        {
-                                          name: "model",
-                                          rawName: "v-model",
-                                          value: _vm.form.book_name,
-                                          expression: "form.book_name"
-                                        }
-                                      ],
-                                      staticClass: "form-control",
-                                      class: {
-                                        "is-invalid": _vm.form.errors.has(
-                                          "book_name"
-                                        )
-                                      },
-                                      attrs: {
-                                        type: "text",
-                                        name: "book_name",
-                                        placeholder: "Book"
-                                      },
-                                      domProps: { value: _vm.form.book_name },
-                                      on: {
-                                        input: function($event) {
-                                          if ($event.target.composing) {
-                                            return
-                                          }
-                                          _vm.$set(
-                                            _vm.form,
-                                            "book_name",
-                                            $event.target.value
-                                          )
-                                        }
-                                      }
-                                    }),
-                                    _vm._v(" "),
-                                    _c("has-error", {
-                                      attrs: {
-                                        form: _vm.form,
-                                        field: "book_name"
-                                      }
-                                    })
-                                  ],
-                                  1
-                                )
-                              ]),
-                              _vm._v(" "),
-                              _c(
-                                "div",
-                                {
-                                  staticClass: "col-md-6",
                                   staticStyle: {
-                                    "padding-left": "0px !important",
-                                    float: "left"
+                                    "margin-left": "6rem",
+                                    "margin-top": "5px"
                                   }
                                 },
                                 [
                                   _c(
                                     "div",
-                                    { staticClass: "form-group" },
+                                    {
+                                      staticClass: "form-group",
+                                      staticStyle: {
+                                        float: "left",
+                                        "margin-bottom": "0 !important"
+                                      }
+                                    },
                                     [
-                                      _c("label", [_vm._v("Copies")]),
+                                      _c("input", {
+                                        staticClass: "form-check-input",
+                                        staticStyle: { "margin-top": "7px" },
+                                        attrs: { type: "checkbox" },
+                                        on: {
+                                          click: function($event) {
+                                            return _vm.myFunction(1000, 9000)
+                                          }
+                                        }
+                                      }),
                                       _vm._v(" "),
                                       _c("input", {
                                         directives: [
                                           {
                                             name: "model",
                                             rawName: "v-model",
-                                            value: _vm.form.copies,
-                                            expression: "form.copies"
+                                            value: _vm.form.consign_ref,
+                                            expression: "form.consign_ref"
                                           }
                                         ],
                                         staticClass: "form-control",
                                         class: {
                                           "is-invalid": _vm.form.errors.has(
-                                            "copies"
+                                            "consign_ref"
                                           )
                                         },
+                                        staticStyle: { width: "25.5rem" },
                                         attrs: {
-                                          type: "number",
-                                          name: "copies",
-                                          placeholder: "Copies"
+                                          type: "text",
+                                          placeholder: "Consign. Ref#"
                                         },
-                                        domProps: { value: _vm.form.copies },
+                                        domProps: {
+                                          value: _vm.form.consign_ref
+                                        },
                                         on: {
                                           input: function($event) {
                                             if ($event.target.composing) {
@@ -47215,7 +47201,7 @@ var render = function() {
                                             }
                                             _vm.$set(
                                               _vm.form,
-                                              "copies",
+                                              "consign_ref",
                                               $event.target.value
                                             )
                                           }
@@ -47225,145 +47211,66 @@ var render = function() {
                                       _c("has-error", {
                                         attrs: {
                                           form: _vm.form,
-                                          field: "copies"
+                                          field: "consign_ref"
                                         }
                                       })
                                     ],
                                     1
-                                  ),
-                                  _vm._v(" "),
-                                  _c("div", { staticClass: "form-group" }, [
-                                    _c("label", [
-                                      _vm._v(
-                                        "Publishers Price [In Original Currency]"
-                                      )
-                                    ]),
-                                    _vm._v(" "),
+                                  )
+                                ]
+                              ),
+                              _vm._v(" "),
+                              _vm._m(4)
+                            ]),
+                            _vm._v(" "),
+                            _c("div", { staticClass: "modal-body" }, [
+                              _c("div", { staticClass: "col-md-12" }, [
+                                _c(
+                                  "div",
+                                  {
+                                    staticClass: "col-md-6",
+                                    staticStyle: {
+                                      "padding-left": "0px !important",
+                                      float: "left"
+                                    }
+                                  },
+                                  [
                                     _c(
                                       "div",
-                                      {
-                                        staticStyle: {
-                                          width: "38%",
-                                          float: "left"
-                                        }
-                                      },
-                                      [
-                                        _c(
-                                          "select",
-                                          {
-                                            directives: [
-                                              {
-                                                name: "model",
-                                                rawName: "v-model",
-                                                value: _vm.form.select_price,
-                                                expression: "form.select_price"
-                                              }
-                                            ],
-                                            class: {
-                                              "is-invalid": _vm.form.errors.has(
-                                                "select_price"
-                                              )
-                                            },
-                                            staticStyle: {
-                                              padding: "6px",
-                                              "padding-right": "60px"
-                                            },
-                                            attrs: {
-                                              id: "type",
-                                              name: "select_price"
-                                            },
-                                            on: {
-                                              change: function($event) {
-                                                var $$selectedVal = Array.prototype.filter
-                                                  .call(
-                                                    $event.target.options,
-                                                    function(o) {
-                                                      return o.selected
-                                                    }
-                                                  )
-                                                  .map(function(o) {
-                                                    var val =
-                                                      "_value" in o
-                                                        ? o._value
-                                                        : o.value
-                                                    return val
-                                                  })
-                                                _vm.$set(
-                                                  _vm.form,
-                                                  "select_price",
-                                                  $event.target.multiple
-                                                    ? $$selectedVal
-                                                    : $$selectedVal[0]
-                                                )
-                                              }
-                                            }
-                                          },
-                                          [
-                                            _c(
-                                              "option",
-                                              {
-                                                attrs: { active: "", value: "" }
-                                              },
-                                              [_vm._v("TK")]
-                                            ),
-                                            _vm._v(" "),
-                                            _c("option", [_vm._v("USD")]),
-                                            _vm._v(" "),
-                                            _c("option", [_vm._v("R")])
-                                          ]
-                                        ),
-                                        _vm._v(" "),
-                                        _c("has-error", {
-                                          attrs: {
-                                            form: _vm.form,
-                                            field: "select_price"
-                                          }
-                                        })
-                                      ],
-                                      1
-                                    ),
-                                    _vm._v(" "),
-                                    _c(
-                                      "div",
-                                      {
-                                        staticStyle: {
-                                          width: "60%",
-                                          float: "right"
-                                        }
-                                      },
+                                      { staticClass: "form-group" },
                                       [
                                         _c("input", {
                                           directives: [
                                             {
                                               name: "model",
                                               rawName: "v-model",
-                                              value: _vm.form.pub_price,
-                                              expression: "form.pub_price"
+                                              value: _vm.form.isbn,
+                                              expression: "form.isbn"
                                             }
                                           ],
                                           staticClass: "form-control",
                                           class: {
                                             "is-invalid": _vm.form.errors.has(
-                                              "pub_price"
+                                              "isbn"
                                             )
                                           },
                                           attrs: {
                                             type: "text",
-                                            name: "pub_price",
-                                            placeholder: "Publishers Price"
+                                            placeholder: "Search ISBN"
                                           },
-                                          domProps: {
-                                            value: _vm.form.pub_price
-                                          },
+                                          domProps: { value: _vm.form.isbn },
                                           on: {
-                                            keyup: _vm.costBd,
+                                            keyup: function($event) {
+                                              $event.preventDefault()
+                                              return _vm.searchVal()
+                                            },
                                             input: function($event) {
                                               if ($event.target.composing) {
                                                 return
                                               }
                                               _vm.$set(
                                                 _vm.form,
-                                                "pub_price",
+                                                "isbn",
                                                 $event.target.value
                                               )
                                             }
@@ -47373,187 +47280,171 @@ var render = function() {
                                         _c("has-error", {
                                           attrs: {
                                             form: _vm.form,
-                                            field: "pub_price"
+                                            field: "isbn"
                                           }
                                         })
                                       ],
                                       1
+                                    ),
+                                    _vm._v(" "),
+                                    _c(
+                                      "div",
+                                      {
+                                        directives: [
+                                          {
+                                            name: "show",
+                                            rawName: "v-show",
+                                            value: _vm.getSearchValue,
+                                            expression: "getSearchValue"
+                                          }
+                                        ],
+                                        staticClass: "form-group"
+                                      },
+                                      [
+                                        _c(
+                                          "ul",
+                                          { staticClass: "ulstyle" },
+                                          _vm._l(_vm.filterd, function(val) {
+                                            return _c("li", { key: val.id }, [
+                                              _c(
+                                                "p",
+                                                {
+                                                  on: {
+                                                    click: function($event) {
+                                                      $event.preventDefault()
+                                                      return _vm.getVal(val)
+                                                    }
+                                                  }
+                                                },
+                                                [_vm._v(_vm._s(val.isbn))]
+                                              )
+                                            ])
+                                          }),
+                                          0
+                                        )
+                                      ]
                                     )
-                                  ]),
-                                  _vm._v(" "),
-                                  _c(
-                                    "div",
-                                    {
-                                      staticStyle: {
-                                        width: "48%",
-                                        float: "left",
-                                        "padding-top": "16px"
-                                      }
-                                    },
-                                    [
-                                      _c(
-                                        "div",
-                                        { staticClass: "form-group" },
-                                        [
-                                          _c("label", [_vm._v("Conv. Rate")]),
-                                          _vm._v(" "),
-                                          _c("input", {
-                                            directives: [
-                                              {
-                                                name: "model",
-                                                rawName: "v-model",
-                                                value: _vm.form.conv_rate,
-                                                expression: "form.conv_rate"
-                                              }
-                                            ],
-                                            staticClass: "form-control",
-                                            class: {
-                                              "is-invalid": _vm.form.errors.has(
-                                                "conv_rate"
-                                              )
-                                            },
-                                            attrs: {
-                                              type: "text",
-                                              name: "conv_rate",
-                                              placeholder: "Conv. Rate"
-                                            },
-                                            domProps: {
-                                              value: _vm.form.conv_rate
-                                            },
-                                            on: {
-                                              keyup: _vm.costBd,
-                                              input: function($event) {
-                                                if ($event.target.composing) {
-                                                  return
-                                                }
-                                                _vm.$set(
-                                                  _vm.form,
-                                                  "conv_rate",
-                                                  $event.target.value
-                                                )
-                                              }
-                                            }
-                                          }),
-                                          _vm._v(" "),
-                                          _c("has-error", {
-                                            attrs: {
-                                              form: _vm.form,
-                                              field: "conv_rate"
-                                            }
-                                          })
-                                        ],
-                                        1
-                                      )
-                                    ]
-                                  ),
-                                  _vm._v(" "),
-                                  _c(
-                                    "div",
-                                    {
-                                      staticStyle: {
-                                        width: "48%",
-                                        float: "right",
-                                        "padding-top": "16px"
-                                      }
-                                    },
-                                    [
-                                      _c(
-                                        "div",
-                                        { staticClass: "form-group" },
-                                        [
-                                          _c("label", [_vm._v("Rate")]),
-                                          _vm._v(" "),
-                                          _c("input", {
-                                            directives: [
-                                              {
-                                                name: "model",
-                                                rawName: "v-model",
-                                                value: _vm.form.st_rate,
-                                                expression: "form.st_rate"
-                                              }
-                                            ],
-                                            staticClass: "form-control",
-                                            class: {
-                                              "is-invalid": _vm.form.errors.has(
-                                                "st_rate"
-                                              )
-                                            },
-                                            attrs: {
-                                              type: "text",
-                                              name: "st_rate",
-                                              placeholder: "Rate"
-                                            },
-                                            domProps: {
-                                              value: _vm.form.st_rate
-                                            },
-                                            on: {
-                                              keyup: _vm.costBd,
-                                              input: function($event) {
-                                                if ($event.target.composing) {
-                                                  return
-                                                }
-                                                _vm.$set(
-                                                  _vm.form,
-                                                  "st_rate",
-                                                  $event.target.value
-                                                )
-                                              }
-                                            }
-                                          }),
-                                          _vm._v(" "),
-                                          _c("has-error", {
-                                            attrs: {
-                                              form: _vm.form,
-                                              field: "st_rate"
-                                            }
-                                          })
-                                        ],
-                                        1
-                                      )
-                                    ]
-                                  )
-                                ]
-                              ),
-                              _vm._v(" "),
-                              _c(
-                                "div",
-                                {
-                                  staticClass: "col-md-6",
-                                  staticStyle: {
-                                    "padding-right": "0px !important",
-                                    float: "left"
-                                  }
-                                },
-                                [
-                                  _c(
-                                    "div",
-                                    { staticClass: "form-group" },
-                                    [
-                                      _c("label", [_vm._v("Cost Price in BD")]),
-                                      _vm._v(" "),
+                                  ]
+                                ),
+                                _vm._v(" "),
+                                _c(
+                                  "div",
+                                  {
+                                    staticClass: "col-md-6",
+                                    staticStyle: {
+                                      "padding-left": "0px !important",
+                                      width: "48%",
+                                      float: "right"
+                                    }
+                                  },
+                                  [
+                                    _c("div", { staticClass: "form-group" }, [
                                       _c("input", {
                                         directives: [
                                           {
                                             name: "model",
                                             rawName: "v-model",
-                                            value: _vm.form.cost_price,
-                                            expression: "form.cost_price"
+                                            value: _vm.form.supplier,
+                                            expression: "form.supplier"
+                                          }
+                                        ],
+                                        staticClass: "form-control supp",
+                                        class: {
+                                          "is-invalid": _vm.form.errors.has(
+                                            "supplier"
+                                          )
+                                        },
+                                        attrs: {
+                                          type: "text",
+                                          placeholder: "Select Supplier"
+                                        },
+                                        domProps: { value: _vm.form.supplier },
+                                        on: {
+                                          keyup: function($event) {
+                                            return _vm.searchSupp()
+                                          },
+                                          input: function($event) {
+                                            if ($event.target.composing) {
+                                              return
+                                            }
+                                            _vm.$set(
+                                              _vm.form,
+                                              "supplier",
+                                              $event.target.value
+                                            )
+                                          }
+                                        }
+                                      })
+                                    ]),
+                                    _vm._v(" "),
+                                    _c(
+                                      "div",
+                                      {
+                                        directives: [
+                                          {
+                                            name: "show",
+                                            rawName: "v-show",
+                                            value: _vm.getSearchSupp,
+                                            expression: "getSearchSupp"
+                                          }
+                                        ],
+                                        staticClass: "form-group"
+                                      },
+                                      [
+                                        _c(
+                                          "ul",
+                                          { staticClass: "ulstyle" },
+                                          _vm._l(_vm.filterdSupp, function(
+                                            val
+                                          ) {
+                                            return _c("li", { key: val.id }, [
+                                              _c(
+                                                "p",
+                                                {
+                                                  on: {
+                                                    click: function($event) {
+                                                      $event.preventDefault()
+                                                      return _vm.getSupp(val)
+                                                    }
+                                                  }
+                                                },
+                                                [_vm._v(_vm._s(val.supplier))]
+                                              )
+                                            ])
+                                          }),
+                                          0
+                                        )
+                                      ]
+                                    )
+                                  ]
+                                ),
+                                _vm._v(" "),
+                                _c("div", [
+                                  _c(
+                                    "div",
+                                    { staticClass: "form-group" },
+                                    [
+                                      _c("input", {
+                                        directives: [
+                                          {
+                                            name: "model",
+                                            rawName: "v-model",
+                                            value: _vm.form.book_name,
+                                            expression: "form.book_name"
                                           }
                                         ],
                                         staticClass: "form-control",
                                         class: {
                                           "is-invalid": _vm.form.errors.has(
-                                            "cost_price"
+                                            "book_name"
                                           )
                                         },
                                         attrs: {
                                           readonly: "",
                                           type: "text",
-                                          placeholder: "Cost in BD"
+                                          placeholder: "Select Book by ISBN "
                                         },
-                                        domProps: {
-                                          value: _vm.form.cost_price
-                                        },
+                                        domProps: { value: _vm.form.book_name },
                                         on: {
                                           input: function($event) {
                                             if ($event.target.composing) {
@@ -47561,7 +47452,7 @@ var render = function() {
                                             }
                                             _vm.$set(
                                               _vm.form,
-                                              "cost_price",
+                                              "book_name",
                                               $event.target.value
                                             )
                                           }
@@ -47571,127 +47462,579 @@ var render = function() {
                                       _c("has-error", {
                                         attrs: {
                                           form: _vm.form,
-                                          field: "cost_price"
+                                          field: "book_name"
                                         }
                                       })
                                     ],
                                     1
-                                  ),
-                                  _vm._v(" "),
-                                  _c(
-                                    "div",
-                                    { staticClass: "form-group" },
-                                    [
-                                      _c("label", [_vm._v("Rate")]),
-                                      _vm._v(" "),
-                                      _c("input", {
-                                        directives: [
-                                          {
-                                            name: "model",
-                                            rawName: "v-model",
-                                            value: _vm.form.my_rate,
-                                            expression: "form.my_rate"
-                                          }
-                                        ],
-                                        staticClass: "form-control",
-                                        class: {
-                                          "is-invalid": _vm.form.errors.has(
-                                            "my_rate"
-                                          )
-                                        },
-                                        attrs: {
-                                          type: "text",
-                                          name: "my_rate",
-                                          placeholder: "Rate"
-                                        },
-                                        domProps: { value: _vm.form.my_rate },
-                                        on: {
-                                          keyup: _vm.costBd,
-                                          input: function($event) {
-                                            if ($event.target.composing) {
-                                              return
+                                  )
+                                ]),
+                                _vm._v(" "),
+                                _c(
+                                  "div",
+                                  {
+                                    staticClass: "col-md-6",
+                                    staticStyle: {
+                                      "padding-left": "0px !important",
+                                      float: "left"
+                                    }
+                                  },
+                                  [
+                                    _c(
+                                      "div",
+                                      { staticClass: "form-group" },
+                                      [
+                                        _c("label", [_vm._v("Copies")]),
+                                        _vm._v(" "),
+                                        _c("input", {
+                                          directives: [
+                                            {
+                                              name: "model",
+                                              rawName: "v-model",
+                                              value: _vm.form.copies,
+                                              expression: "form.copies"
                                             }
-                                            _vm.$set(
-                                              _vm.form,
-                                              "my_rate",
-                                              $event.target.value
+                                          ],
+                                          staticClass: "form-control",
+                                          class: {
+                                            "is-invalid": _vm.form.errors.has(
+                                              "copies"
                                             )
+                                          },
+                                          attrs: {
+                                            type: "number",
+                                            name: "copies",
+                                            placeholder: "Copies"
+                                          },
+                                          domProps: { value: _vm.form.copies },
+                                          on: {
+                                            keyup: _vm.costBd,
+                                            input: function($event) {
+                                              if ($event.target.composing) {
+                                                return
+                                              }
+                                              _vm.$set(
+                                                _vm.form,
+                                                "copies",
+                                                $event.target.value
+                                              )
+                                            }
                                           }
-                                        }
-                                      }),
-                                      _vm._v(" "),
-                                      _c("has-error", {
-                                        attrs: {
-                                          form: _vm.form,
-                                          field: "my_rate"
-                                        }
-                                      })
-                                    ],
-                                    1
-                                  ),
-                                  _vm._v(" "),
-                                  _c(
-                                    "div",
-                                    { staticClass: "form-group" },
-                                    [
+                                        }),
+                                        _vm._v(" "),
+                                        _c("has-error", {
+                                          attrs: {
+                                            form: _vm.form,
+                                            field: "copies"
+                                          }
+                                        })
+                                      ],
+                                      1
+                                    ),
+                                    _vm._v(" "),
+                                    _c("div", { staticClass: "form-group" }, [
                                       _c("label", [
-                                        _vm._v("Sales Price in BD")
+                                        _vm._v(
+                                          "Publishers Price [In Original Currency]"
+                                        )
                                       ]),
                                       _vm._v(" "),
-                                      _c("input", {
-                                        directives: [
-                                          {
-                                            name: "model",
-                                            rawName: "v-model",
-                                            value: _vm.form.sales_price,
-                                            expression: "form.sales_price"
+                                      _c(
+                                        "div",
+                                        {
+                                          staticStyle: {
+                                            width: "38%",
+                                            float: "left"
                                           }
-                                        ],
-                                        staticClass: "form-control",
-                                        class: {
-                                          "is-invalid": _vm.form.errors.has(
-                                            "sales_price"
-                                          )
                                         },
-                                        attrs: {
-                                          readonly: "",
-                                          type: "text",
-                                          placeholder: "Sales in BD"
-                                        },
-                                        domProps: {
-                                          value: _vm.form.sales_price
-                                        },
-                                        on: {
-                                          input: function($event) {
-                                            if ($event.target.composing) {
-                                              return
+                                        [
+                                          _c(
+                                            "select",
+                                            {
+                                              directives: [
+                                                {
+                                                  name: "model",
+                                                  rawName: "v-model",
+                                                  value: _vm.form.currency,
+                                                  expression: "form.currency"
+                                                }
+                                              ],
+                                              class: {
+                                                "is-invalid": _vm.form.errors.has(
+                                                  "currency"
+                                                )
+                                              },
+                                              staticStyle: {
+                                                padding: "6px",
+                                                "padding-right": "60px"
+                                              },
+                                              attrs: {
+                                                id: "type",
+                                                name: "currency"
+                                              },
+                                              on: {
+                                                change: function($event) {
+                                                  var $$selectedVal = Array.prototype.filter
+                                                    .call(
+                                                      $event.target.options,
+                                                      function(o) {
+                                                        return o.selected
+                                                      }
+                                                    )
+                                                    .map(function(o) {
+                                                      var val =
+                                                        "_value" in o
+                                                          ? o._value
+                                                          : o.value
+                                                      return val
+                                                    })
+                                                  _vm.$set(
+                                                    _vm.form,
+                                                    "currency",
+                                                    $event.target.multiple
+                                                      ? $$selectedVal
+                                                      : $$selectedVal[0]
+                                                  )
+                                                }
+                                              }
+                                            },
+                                            [
+                                              _c(
+                                                "option",
+                                                { attrs: { value: "TK" } },
+                                                [_vm._v("TK")]
+                                              ),
+                                              _vm._v(" "),
+                                              _c(
+                                                "option",
+                                                { attrs: { value: "INR" } },
+                                                [_vm._v("INR")]
+                                              ),
+                                              _vm._v(" "),
+                                              _c(
+                                                "option",
+                                                { attrs: { value: "USD" } },
+                                                [_vm._v("USD")]
+                                              )
+                                            ]
+                                          ),
+                                          _vm._v(" "),
+                                          _c("has-error", {
+                                            attrs: {
+                                              form: _vm.form,
+                                              field: "currency"
                                             }
-                                            _vm.$set(
-                                              _vm.form,
-                                              "sales_price",
-                                              $event.target.value
-                                            )
-                                          }
-                                        }
-                                      }),
+                                          })
+                                        ],
+                                        1
+                                      ),
                                       _vm._v(" "),
-                                      _c("has-error", {
-                                        attrs: {
-                                          form: _vm.form,
-                                          field: "sales_price"
+                                      _c(
+                                        "div",
+                                        {
+                                          staticStyle: {
+                                            width: "60%",
+                                            float: "right"
+                                          }
+                                        },
+                                        [
+                                          _c("input", {
+                                            directives: [
+                                              {
+                                                name: "model",
+                                                rawName: "v-model",
+                                                value: _vm.form.pub_price,
+                                                expression: "form.pub_price"
+                                              }
+                                            ],
+                                            staticClass: "form-control",
+                                            class: {
+                                              "is-invalid": _vm.form.errors.has(
+                                                "pub_price"
+                                              )
+                                            },
+                                            attrs: {
+                                              type: "text",
+                                              name: "pub_price",
+                                              placeholder: "Publishers Price"
+                                            },
+                                            domProps: {
+                                              value: _vm.form.pub_price
+                                            },
+                                            on: {
+                                              keyup: _vm.costBd,
+                                              input: function($event) {
+                                                if ($event.target.composing) {
+                                                  return
+                                                }
+                                                _vm.$set(
+                                                  _vm.form,
+                                                  "pub_price",
+                                                  $event.target.value
+                                                )
+                                              }
+                                            }
+                                          }),
+                                          _vm._v(" "),
+                                          _c("has-error", {
+                                            attrs: {
+                                              form: _vm.form,
+                                              field: "pub_price"
+                                            }
+                                          })
+                                        ],
+                                        1
+                                      )
+                                    ]),
+                                    _vm._v(" "),
+                                    _c(
+                                      "div",
+                                      {
+                                        staticStyle: {
+                                          width: "48%",
+                                          float: "left",
+                                          "padding-top": "16px"
                                         }
-                                      })
-                                    ],
-                                    1
-                                  )
-                                ]
-                              )
-                            ]),
-                            _vm._v(" "),
-                            _vm._m(4)
+                                      },
+                                      [
+                                        _c(
+                                          "div",
+                                          { staticClass: "form-group" },
+                                          [
+                                            _c("label", [_vm._v("Conv. Rate")]),
+                                            _vm._v(" "),
+                                            _c("input", {
+                                              directives: [
+                                                {
+                                                  name: "model",
+                                                  rawName: "v-model",
+                                                  value: _vm.form.conv_rate,
+                                                  expression: "form.conv_rate"
+                                                }
+                                              ],
+                                              staticClass: "form-control",
+                                              class: {
+                                                "is-invalid": _vm.form.errors.has(
+                                                  "conv_rate"
+                                                )
+                                              },
+                                              attrs: {
+                                                type: "text",
+                                                name: "conv_rate",
+                                                placeholder: "Conv. Rate"
+                                              },
+                                              domProps: {
+                                                value: _vm.form.conv_rate
+                                              },
+                                              on: {
+                                                keyup: _vm.costBd,
+                                                input: function($event) {
+                                                  if ($event.target.composing) {
+                                                    return
+                                                  }
+                                                  _vm.$set(
+                                                    _vm.form,
+                                                    "conv_rate",
+                                                    $event.target.value
+                                                  )
+                                                }
+                                              }
+                                            }),
+                                            _vm._v(" "),
+                                            _c("has-error", {
+                                              attrs: {
+                                                form: _vm.form,
+                                                field: "conv_rate"
+                                              }
+                                            })
+                                          ],
+                                          1
+                                        )
+                                      ]
+                                    ),
+                                    _vm._v(" "),
+                                    _c(
+                                      "div",
+                                      {
+                                        staticStyle: {
+                                          width: "48%",
+                                          float: "right",
+                                          "padding-top": "16px"
+                                        }
+                                      },
+                                      [
+                                        _c(
+                                          "div",
+                                          { staticClass: "form-group" },
+                                          [
+                                            _c("label", [_vm._v("Rate")]),
+                                            _vm._v(" "),
+                                            _c("input", {
+                                              directives: [
+                                                {
+                                                  name: "model",
+                                                  rawName: "v-model",
+                                                  value: _vm.form.st_rate,
+                                                  expression: "form.st_rate"
+                                                }
+                                              ],
+                                              staticClass: "form-control",
+                                              class: {
+                                                "is-invalid": _vm.form.errors.has(
+                                                  "st_rate"
+                                                )
+                                              },
+                                              attrs: {
+                                                type: "text",
+                                                name: "st_rate",
+                                                placeholder: "Rate"
+                                              },
+                                              domProps: {
+                                                value: _vm.form.st_rate
+                                              },
+                                              on: {
+                                                keyup: _vm.costBd,
+                                                input: function($event) {
+                                                  if ($event.target.composing) {
+                                                    return
+                                                  }
+                                                  _vm.$set(
+                                                    _vm.form,
+                                                    "st_rate",
+                                                    $event.target.value
+                                                  )
+                                                }
+                                              }
+                                            }),
+                                            _vm._v(" "),
+                                            _c("has-error", {
+                                              attrs: {
+                                                form: _vm.form,
+                                                field: "st_rate"
+                                              }
+                                            })
+                                          ],
+                                          1
+                                        )
+                                      ]
+                                    )
+                                  ]
+                                ),
+                                _vm._v(" "),
+                                _c(
+                                  "div",
+                                  {
+                                    staticClass: "col-md-6",
+                                    staticStyle: {
+                                      "padding-right": "0px !important",
+                                      float: "left"
+                                    }
+                                  },
+                                  [
+                                    _c(
+                                      "div",
+                                      { staticClass: "form-group" },
+                                      [
+                                        _c("label", [
+                                          _vm._v("Cost Price in BD")
+                                        ]),
+                                        _vm._v(" "),
+                                        _c("input", {
+                                          directives: [
+                                            {
+                                              name: "model",
+                                              rawName: "v-model",
+                                              value: _vm.form.cost_price,
+                                              expression: "form.cost_price"
+                                            }
+                                          ],
+                                          staticClass: "form-control",
+                                          class: {
+                                            "is-invalid": _vm.form.errors.has(
+                                              "cost_price"
+                                            )
+                                          },
+                                          attrs: {
+                                            readonly: "",
+                                            type: "text",
+                                            placeholder: "Cost in BD"
+                                          },
+                                          domProps: {
+                                            value: _vm.form.cost_price
+                                          },
+                                          on: {
+                                            input: function($event) {
+                                              if ($event.target.composing) {
+                                                return
+                                              }
+                                              _vm.$set(
+                                                _vm.form,
+                                                "cost_price",
+                                                $event.target.value
+                                              )
+                                            }
+                                          }
+                                        }),
+                                        _vm._v(" "),
+                                        _c("has-error", {
+                                          attrs: {
+                                            form: _vm.form,
+                                            field: "cost_price"
+                                          }
+                                        })
+                                      ],
+                                      1
+                                    ),
+                                    _vm._v(" "),
+                                    _c(
+                                      "div",
+                                      { staticClass: "form-group" },
+                                      [
+                                        _c("label", [_vm._v("Rate")]),
+                                        _vm._v(" "),
+                                        _c("input", {
+                                          directives: [
+                                            {
+                                              name: "model",
+                                              rawName: "v-model",
+                                              value: _vm.form.my_rate,
+                                              expression: "form.my_rate"
+                                            }
+                                          ],
+                                          staticClass: "form-control",
+                                          class: {
+                                            "is-invalid": _vm.form.errors.has(
+                                              "my_rate"
+                                            )
+                                          },
+                                          attrs: {
+                                            type: "text",
+                                            name: "my_rate",
+                                            placeholder: "Rate"
+                                          },
+                                          domProps: { value: _vm.form.my_rate },
+                                          on: {
+                                            keyup: _vm.costBd,
+                                            input: function($event) {
+                                              if ($event.target.composing) {
+                                                return
+                                              }
+                                              _vm.$set(
+                                                _vm.form,
+                                                "my_rate",
+                                                $event.target.value
+                                              )
+                                            }
+                                          }
+                                        }),
+                                        _vm._v(" "),
+                                        _c("has-error", {
+                                          attrs: {
+                                            form: _vm.form,
+                                            field: "my_rate"
+                                          }
+                                        })
+                                      ],
+                                      1
+                                    ),
+                                    _vm._v(" "),
+                                    _c(
+                                      "div",
+                                      { staticClass: "form-group" },
+                                      [
+                                        _c("label", [
+                                          _vm._v("Sales Price in BD")
+                                        ]),
+                                        _vm._v(" "),
+                                        _c("input", {
+                                          directives: [
+                                            {
+                                              name: "model",
+                                              rawName: "v-model",
+                                              value: _vm.form.sales_price,
+                                              expression: "form.sales_price"
+                                            }
+                                          ],
+                                          staticClass: "form-control",
+                                          class: {
+                                            "is-invalid": _vm.form.errors.has(
+                                              "sales_price"
+                                            )
+                                          },
+                                          attrs: {
+                                            readonly: "",
+                                            type: "text",
+                                            placeholder: "Sales in BD"
+                                          },
+                                          domProps: {
+                                            value: _vm.form.sales_price
+                                          },
+                                          on: {
+                                            input: function($event) {
+                                              if ($event.target.composing) {
+                                                return
+                                              }
+                                              _vm.$set(
+                                                _vm.form,
+                                                "sales_price",
+                                                $event.target.value
+                                              )
+                                            }
+                                          }
+                                        }),
+                                        _vm._v(" "),
+                                        _c("has-error", {
+                                          attrs: {
+                                            form: _vm.form,
+                                            field: "sales_price"
+                                          }
+                                        })
+                                      ],
+                                      1
+                                    ),
+                                    _vm._v(" "),
+                                    _c("input", {
+                                      directives: [
+                                        {
+                                          name: "model",
+                                          rawName: "v-model",
+                                          value: _vm.form.total_price,
+                                          expression: "form.total_price"
+                                        }
+                                      ],
+                                      class: {
+                                        "is-invalid": _vm.form.errors.has(
+                                          "total_price"
+                                        )
+                                      },
+                                      attrs: {
+                                        hidden: "",
+                                        readonly: "",
+                                        type: "text"
+                                      },
+                                      domProps: { value: _vm.form.total_price },
+                                      on: {
+                                        input: function($event) {
+                                          if ($event.target.composing) {
+                                            return
+                                          }
+                                          _vm.$set(
+                                            _vm.form,
+                                            "total_price",
+                                            $event.target.value
+                                          )
+                                        }
+                                      }
+                                    })
+                                  ]
+                                )
+                              ]),
+                              _vm._v(" "),
+                              _vm._m(5)
+                            ])
                           ])
-                        ])
-                      ])
+                        ]
+                      )
                     ]
                   )
                 ]
@@ -47711,114 +48054,22 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "card-tools" }, [
-      _c(
-        "button",
-        {
-          staticClass: "btn btn-success",
-          attrs: { "data-toggle": "modal", "data-target": "#addNew" }
-        },
-        [_c("i", { staticClass: "fas fa-user-plus fa-fw" }), _vm._v(" Add New")]
-      )
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "card-tools" }, [
-      _c("input", {
-        staticClass: "form-control",
-        attrs: { type: "text", name: "", placeholder: "Search Stock" }
-      })
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "card-body table-responsive p-0" }, [
-      _c("table", { staticClass: "table table-hover" }, [
-        _c("thead", [
-          _c("tr", [
-            _c("th", [_vm._v("ISBN/Code")]),
-            _vm._v(" "),
-            _c("th", [_vm._v("Title")]),
-            _vm._v(" "),
-            _c("th", [_vm._v("Copies")]),
-            _vm._v(" "),
-            _c("th", [_vm._v("Cost Price")]),
-            _vm._v(" "),
-            _c("th", [_vm._v("Sales Price")]),
-            _vm._v(" "),
-            _c("th", [_vm._v("Publisher Price")]),
-            _vm._v(" "),
-            _c("th", [_vm._v("Total Price")]),
-            _vm._v(" "),
-            _c("th", [_vm._v("Modify")])
-          ])
-        ]),
+    return _c("div", { staticClass: "card" }, [
+      _c("div", { staticClass: "card-header" }, [
+        _c("h3", { staticClass: "card-title" }, [_vm._v("New Consignment")]),
         _vm._v(" "),
-        _c("tbody", [
-          _c("tr", [
-            _c("td", [_vm._v("9888554541515")]),
-            _vm._v(" "),
-            _c("td", [_vm._v("দক্ষিনের বারান্দা")]),
-            _vm._v(" "),
-            _c("td", [_vm._v("1")]),
-            _vm._v(" "),
-            _c("td", [_vm._v("130.00")]),
-            _vm._v(" "),
-            _c("td", [_vm._v("160.00")]),
-            _vm._v(" "),
-            _c("td", [_vm._v("200 TK.")]),
-            _vm._v(" "),
-            _c("td", [_vm._v("130 TK.")]),
-            _vm._v(" "),
-            _c("td", [
-              _c("a", { attrs: { href: "#" } }, [
-                _c("button", { staticClass: "btn btn-info btn-sm" }, [
-                  _c("i", { staticClass: "fa fa-edit" })
-                ])
-              ]),
-              _vm._v(" "),
-              _c("a", { attrs: { href: "#" } }, [
-                _c("button", { staticClass: "btn btn-danger btn-sm" }, [
-                  _c("i", { staticClass: "fa fa-trash" })
-                ])
-              ])
-            ])
-          ]),
-          _vm._v(" "),
-          _c("tr", [
-            _c("td", [_vm._v("8878475415555")]),
-            _vm._v(" "),
-            _c("td", [_vm._v("শান্তি নিকেতনএর পাঠভবনের সহজপাঠ ")]),
-            _vm._v(" "),
-            _c("td", [_vm._v("1")]),
-            _vm._v(" "),
-            _c("td", [_vm._v("130.00")]),
-            _vm._v(" "),
-            _c("td", [_vm._v("160.00")]),
-            _vm._v(" "),
-            _c("td", [_vm._v("200 TK.")]),
-            _vm._v(" "),
-            _c("td", [_vm._v("130 TK.")]),
-            _vm._v(" "),
-            _c("td", [
-              _c("a", { attrs: { href: "#" } }, [
-                _c("button", { staticClass: "btn btn-info btn-sm" }, [
-                  _c("i", { staticClass: "fa fa-edit" })
-                ])
-              ]),
-              _vm._v(" "),
-              _c("a", { attrs: { href: "#" } }, [
-                _c("button", { staticClass: "btn btn-danger btn-sm" }, [
-                  _c("i", { staticClass: "fa fa-trash" })
-                ])
-              ])
-            ])
-          ])
+        _c("div", { staticClass: "card-tools" }, [
+          _c(
+            "button",
+            {
+              staticClass: "btn btn-success",
+              attrs: { "data-toggle": "modal", "data-target": "#addNew" }
+            },
+            [
+              _c("i", { staticClass: "fas fa-user-plus fa-fw" }),
+              _vm._v(" Add Consignment")
+            ]
+          )
         ])
       ])
     ])
@@ -47827,24 +48078,75 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "modal-header" }, [
-      _c("h5", { staticClass: "modal-title", attrs: { id: "addNewLabel" } }, [
-        _vm._v("Add Consignment")
+    return _c("div", { staticClass: "card-header" }, [
+      _c("h3", { staticClass: "card-title" }, [_vm._v("Stock History")]),
+      _vm._v(" "),
+      _c("div", { staticClass: "card-tools" }, [
+        _c("input", {
+          staticClass: "form-control",
+          attrs: { type: "text", name: "", placeholder: "Search Stock" }
+        })
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("thead", [
+      _c("tr", [
+        _c("th", [_vm._v("ISBN/Code")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Title")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Copies")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Cost Price")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Sales Price")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Publisher Price")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Total Price")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Modify")])
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("td", [
+      _c("a", { attrs: { href: "#" } }, [
+        _c("button", { staticClass: "btn btn-info btn-sm" }, [
+          _c("i", { staticClass: "fa fa-edit" })
+        ])
       ]),
       _vm._v(" "),
-      _c(
-        "button",
-        {
-          staticClass: "close",
-          attrs: {
-            type: "button",
-            "data-dismiss": "modal",
-            "aria-label": "Close"
-          }
-        },
-        [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
-      )
+      _c("a", { attrs: { href: "#" } }, [
+        _c("button", { staticClass: "btn btn-danger btn-sm" }, [
+          _c("i", { staticClass: "fa fa-trash" })
+        ])
+      ])
     ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "button",
+      {
+        staticClass: "close",
+        attrs: {
+          type: "button",
+          "data-dismiss": "modal",
+          "aria-label": "Close"
+        }
+      },
+      [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
+    )
   },
   function() {
     var _vm = this
@@ -47862,7 +48164,7 @@ var staticRenderFns = [
       _vm._v(" "),
       _c(
         "button",
-        { staticClass: "btn btn-primary", attrs: { type: "button" } },
+        { staticClass: "btn btn-primary", attrs: { type: "submit" } },
         [_vm._v("Create")]
       )
     ])
@@ -47957,7 +48259,923 @@ var render = function() {
     [
       _c("headerComponent"),
       _vm._v(" "),
-      _vm._m(0),
+      _c("div", { staticClass: "content-wrapper" }, [
+        _c("div", { staticClass: "content" }, [
+          _c("div", { staticClass: "container-fluid" }, [
+            _c("div", { staticClass: "container" }, [
+              _vm._m(0),
+              _vm._v(" "),
+              _c(
+                "div",
+                {
+                  staticClass: "modal fade",
+                  attrs: {
+                    id: "addNew",
+                    tabindex: "-1",
+                    role: "dialog",
+                    "aria-labelledby": "addNewLabel",
+                    "aria-hidden": "true"
+                  }
+                },
+                [
+                  _c(
+                    "div",
+                    {
+                      staticClass:
+                        "modal-dialog modal-dialog-centered modal-lg",
+                      attrs: { role: "document" }
+                    },
+                    [
+                      _c("div", { staticClass: "modal-content" }, [
+                        _c("div", { staticClass: "modal-header" }, [
+                          _c(
+                            "h5",
+                            {
+                              staticClass: "modal-title",
+                              attrs: { id: "addNewLabel" }
+                            },
+                            [_vm._v("Add Consignment")]
+                          ),
+                          _vm._v(" "),
+                          _c(
+                            "div",
+                            {
+                              staticStyle: {
+                                "margin-left": "6rem",
+                                "margin-top": "5px"
+                              }
+                            },
+                            [
+                              _c(
+                                "div",
+                                {
+                                  staticClass: "form-group",
+                                  staticStyle: {
+                                    float: "left",
+                                    "margin-bottom": "0 !important"
+                                  }
+                                },
+                                [
+                                  _c("input", {
+                                    staticClass: "form-check-input",
+                                    staticStyle: { "margin-top": "7px" },
+                                    attrs: { type: "checkbox" },
+                                    on: {
+                                      click: function($event) {
+                                        return _vm.myFunction(1000, 9000)
+                                      }
+                                    }
+                                  }),
+                                  _vm._v(" "),
+                                  _c("input", {
+                                    directives: [
+                                      {
+                                        name: "model",
+                                        rawName: "v-model",
+                                        value: _vm.form.consign_ref,
+                                        expression: "form.consign_ref"
+                                      }
+                                    ],
+                                    staticClass: "form-control",
+                                    class: {
+                                      "is-invalid": _vm.form.errors.has(
+                                        "consign_ref"
+                                      )
+                                    },
+                                    staticStyle: { width: "25.5rem" },
+                                    attrs: {
+                                      type: "text",
+                                      placeholder: "Consign. Ref#"
+                                    },
+                                    domProps: { value: _vm.form.consign_ref },
+                                    on: {
+                                      input: function($event) {
+                                        if ($event.target.composing) {
+                                          return
+                                        }
+                                        _vm.$set(
+                                          _vm.form,
+                                          "consign_ref",
+                                          $event.target.value
+                                        )
+                                      }
+                                    }
+                                  }),
+                                  _vm._v(" "),
+                                  _c("has-error", {
+                                    attrs: {
+                                      form: _vm.form,
+                                      field: "consign_ref"
+                                    }
+                                  })
+                                ],
+                                1
+                              )
+                            ]
+                          ),
+                          _vm._v(" "),
+                          _vm._m(1)
+                        ]),
+                        _vm._v(" "),
+                        _c("div", { staticClass: "modal-body" }, [
+                          _c("div", { staticClass: "col-md-12" }, [
+                            _c(
+                              "div",
+                              {
+                                staticClass: "col-md-6",
+                                staticStyle: {
+                                  "padding-left": "0px !important",
+                                  float: "left"
+                                }
+                              },
+                              [
+                                _c(
+                                  "div",
+                                  { staticClass: "form-group" },
+                                  [
+                                    _c("input", {
+                                      directives: [
+                                        {
+                                          name: "model",
+                                          rawName: "v-model",
+                                          value: _vm.form.isbn,
+                                          expression: "form.isbn"
+                                        }
+                                      ],
+                                      staticClass: "form-control",
+                                      class: {
+                                        "is-invalid": _vm.form.errors.has(
+                                          "isbn"
+                                        )
+                                      },
+                                      attrs: {
+                                        type: "text",
+                                        placeholder: "Search ISBN"
+                                      },
+                                      domProps: { value: _vm.form.isbn },
+                                      on: {
+                                        keyup: function($event) {
+                                          $event.preventDefault()
+                                          return _vm.searchVal()
+                                        },
+                                        input: function($event) {
+                                          if ($event.target.composing) {
+                                            return
+                                          }
+                                          _vm.$set(
+                                            _vm.form,
+                                            "isbn",
+                                            $event.target.value
+                                          )
+                                        }
+                                      }
+                                    }),
+                                    _vm._v(" "),
+                                    _c("has-error", {
+                                      attrs: { form: _vm.form, field: "isbn" }
+                                    })
+                                  ],
+                                  1
+                                ),
+                                _vm._v(" "),
+                                _c(
+                                  "div",
+                                  {
+                                    directives: [
+                                      {
+                                        name: "show",
+                                        rawName: "v-show",
+                                        value: _vm.getSearchValue,
+                                        expression: "getSearchValue"
+                                      }
+                                    ],
+                                    staticClass: "form-group"
+                                  },
+                                  [
+                                    _c(
+                                      "ul",
+                                      { staticClass: "ulstyle" },
+                                      _vm._l(_vm.filterd, function(val) {
+                                        return _c("li", { key: val.id }, [
+                                          _c(
+                                            "p",
+                                            {
+                                              on: {
+                                                click: function($event) {
+                                                  $event.preventDefault()
+                                                  return _vm.getVal(val)
+                                                }
+                                              }
+                                            },
+                                            [_vm._v(_vm._s(val.isbn))]
+                                          )
+                                        ])
+                                      }),
+                                      0
+                                    )
+                                  ]
+                                )
+                              ]
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "div",
+                              {
+                                staticClass: "col-md-6",
+                                staticStyle: {
+                                  "padding-left": "0px !important",
+                                  width: "48%",
+                                  float: "right",
+                                  "padding-right": "0px"
+                                }
+                              },
+                              [
+                                _c("div", { staticClass: "form-group" }, [
+                                  _c("input", {
+                                    directives: [
+                                      {
+                                        name: "model",
+                                        rawName: "v-model",
+                                        value: _vm.form.supplier,
+                                        expression: "form.supplier"
+                                      }
+                                    ],
+                                    staticClass: "form-control supp",
+                                    class: {
+                                      "is-invalid": _vm.form.errors.has(
+                                        "supplier"
+                                      )
+                                    },
+                                    attrs: {
+                                      type: "text",
+                                      placeholder: "Select Supplier"
+                                    },
+                                    domProps: { value: _vm.form.supplier },
+                                    on: {
+                                      keyup: function($event) {
+                                        return _vm.searchSupp()
+                                      },
+                                      input: function($event) {
+                                        if ($event.target.composing) {
+                                          return
+                                        }
+                                        _vm.$set(
+                                          _vm.form,
+                                          "supplier",
+                                          $event.target.value
+                                        )
+                                      }
+                                    }
+                                  })
+                                ]),
+                                _vm._v(" "),
+                                _c(
+                                  "div",
+                                  {
+                                    directives: [
+                                      {
+                                        name: "show",
+                                        rawName: "v-show",
+                                        value: _vm.getSearchSupp,
+                                        expression: "getSearchSupp"
+                                      }
+                                    ],
+                                    staticClass: "form-group"
+                                  },
+                                  [
+                                    _c(
+                                      "ul",
+                                      { staticClass: "ulstyle" },
+                                      _vm._l(_vm.filterdSupp, function(val) {
+                                        return _c("li", { key: val.id }, [
+                                          _c(
+                                            "p",
+                                            {
+                                              on: {
+                                                click: function($event) {
+                                                  $event.preventDefault()
+                                                  return _vm.getSupp(val)
+                                                }
+                                              }
+                                            },
+                                            [_vm._v(_vm._s(val.supplier))]
+                                          )
+                                        ])
+                                      }),
+                                      0
+                                    )
+                                  ]
+                                )
+                              ]
+                            ),
+                            _vm._v(" "),
+                            _c("div", [
+                              _c(
+                                "div",
+                                { staticClass: "form-group" },
+                                [
+                                  _c("input", {
+                                    directives: [
+                                      {
+                                        name: "model",
+                                        rawName: "v-model",
+                                        value: _vm.form.book_name,
+                                        expression: "form.book_name"
+                                      }
+                                    ],
+                                    staticClass: "form-control",
+                                    class: {
+                                      "is-invalid": _vm.form.errors.has(
+                                        "book_name"
+                                      )
+                                    },
+                                    attrs: {
+                                      readonly: "",
+                                      type: "text",
+                                      placeholder: "Select Book by ISBN "
+                                    },
+                                    domProps: { value: _vm.form.book_name },
+                                    on: {
+                                      input: function($event) {
+                                        if ($event.target.composing) {
+                                          return
+                                        }
+                                        _vm.$set(
+                                          _vm.form,
+                                          "book_name",
+                                          $event.target.value
+                                        )
+                                      }
+                                    }
+                                  }),
+                                  _vm._v(" "),
+                                  _c("has-error", {
+                                    attrs: {
+                                      form: _vm.form,
+                                      field: "book_name"
+                                    }
+                                  })
+                                ],
+                                1
+                              )
+                            ]),
+                            _vm._v(" "),
+                            _c(
+                              "div",
+                              {
+                                staticClass: "col-md-6",
+                                staticStyle: {
+                                  "padding-left": "0px !important",
+                                  float: "left"
+                                }
+                              },
+                              [
+                                _c(
+                                  "div",
+                                  { staticClass: "form-group" },
+                                  [
+                                    _c("label", [_vm._v("Copies")]),
+                                    _vm._v(" "),
+                                    _c("input", {
+                                      directives: [
+                                        {
+                                          name: "model",
+                                          rawName: "v-model",
+                                          value: _vm.form.copies,
+                                          expression: "form.copies"
+                                        }
+                                      ],
+                                      staticClass: "form-control",
+                                      class: {
+                                        "is-invalid": _vm.form.errors.has(
+                                          "copies"
+                                        )
+                                      },
+                                      attrs: {
+                                        type: "number",
+                                        name: "copies",
+                                        placeholder: "Copies"
+                                      },
+                                      domProps: { value: _vm.form.copies },
+                                      on: {
+                                        keyup: _vm.costBd,
+                                        input: function($event) {
+                                          if ($event.target.composing) {
+                                            return
+                                          }
+                                          _vm.$set(
+                                            _vm.form,
+                                            "copies",
+                                            $event.target.value
+                                          )
+                                        }
+                                      }
+                                    }),
+                                    _vm._v(" "),
+                                    _c("has-error", {
+                                      attrs: { form: _vm.form, field: "copies" }
+                                    })
+                                  ],
+                                  1
+                                ),
+                                _vm._v(" "),
+                                _c("div", { staticClass: "form-group" }, [
+                                  _c("label", [
+                                    _vm._v(
+                                      "Publishers Price [In Original Currency]"
+                                    )
+                                  ]),
+                                  _vm._v(" "),
+                                  _c(
+                                    "div",
+                                    {
+                                      staticStyle: {
+                                        width: "38%",
+                                        float: "left"
+                                      }
+                                    },
+                                    [
+                                      _c(
+                                        "select",
+                                        {
+                                          directives: [
+                                            {
+                                              name: "model",
+                                              rawName: "v-model",
+                                              value: _vm.form.currency,
+                                              expression: "form.currency"
+                                            }
+                                          ],
+                                          class: {
+                                            "is-invalid": _vm.form.errors.has(
+                                              "currency"
+                                            )
+                                          },
+                                          staticStyle: {
+                                            padding: "6px",
+                                            "padding-right": "60px"
+                                          },
+                                          attrs: {
+                                            id: "type",
+                                            name: "currency"
+                                          },
+                                          on: {
+                                            change: function($event) {
+                                              var $$selectedVal = Array.prototype.filter
+                                                .call(
+                                                  $event.target.options,
+                                                  function(o) {
+                                                    return o.selected
+                                                  }
+                                                )
+                                                .map(function(o) {
+                                                  var val =
+                                                    "_value" in o
+                                                      ? o._value
+                                                      : o.value
+                                                  return val
+                                                })
+                                              _vm.$set(
+                                                _vm.form,
+                                                "currency",
+                                                $event.target.multiple
+                                                  ? $$selectedVal
+                                                  : $$selectedVal[0]
+                                              )
+                                            }
+                                          }
+                                        },
+                                        [
+                                          _c(
+                                            "option",
+                                            { attrs: { value: "TK" } },
+                                            [_vm._v("TK")]
+                                          ),
+                                          _vm._v(" "),
+                                          _c(
+                                            "option",
+                                            { attrs: { value: "INR" } },
+                                            [_vm._v("INR")]
+                                          ),
+                                          _vm._v(" "),
+                                          _c(
+                                            "option",
+                                            { attrs: { value: "USD" } },
+                                            [_vm._v("USD")]
+                                          )
+                                        ]
+                                      ),
+                                      _vm._v(" "),
+                                      _c("has-error", {
+                                        attrs: {
+                                          form: _vm.form,
+                                          field: "currency"
+                                        }
+                                      })
+                                    ],
+                                    1
+                                  ),
+                                  _vm._v(" "),
+                                  _c(
+                                    "div",
+                                    {
+                                      staticStyle: {
+                                        width: "60%",
+                                        float: "right"
+                                      }
+                                    },
+                                    [
+                                      _c("input", {
+                                        directives: [
+                                          {
+                                            name: "model",
+                                            rawName: "v-model",
+                                            value: _vm.form.pub_price,
+                                            expression: "form.pub_price"
+                                          }
+                                        ],
+                                        staticClass: "form-control",
+                                        class: {
+                                          "is-invalid": _vm.form.errors.has(
+                                            "pub_price"
+                                          )
+                                        },
+                                        attrs: {
+                                          type: "text",
+                                          name: "pub_price",
+                                          placeholder: "Publishers Price"
+                                        },
+                                        domProps: { value: _vm.form.pub_price },
+                                        on: {
+                                          keyup: _vm.costBd,
+                                          input: function($event) {
+                                            if ($event.target.composing) {
+                                              return
+                                            }
+                                            _vm.$set(
+                                              _vm.form,
+                                              "pub_price",
+                                              $event.target.value
+                                            )
+                                          }
+                                        }
+                                      }),
+                                      _vm._v(" "),
+                                      _c("has-error", {
+                                        attrs: {
+                                          form: _vm.form,
+                                          field: "pub_price"
+                                        }
+                                      })
+                                    ],
+                                    1
+                                  )
+                                ]),
+                                _vm._v(" "),
+                                _c(
+                                  "div",
+                                  {
+                                    staticStyle: {
+                                      width: "48%",
+                                      float: "left",
+                                      "padding-top": "16px"
+                                    }
+                                  },
+                                  [
+                                    _c(
+                                      "div",
+                                      { staticClass: "form-group" },
+                                      [
+                                        _c("label", [_vm._v("Conv. Rate")]),
+                                        _vm._v(" "),
+                                        _c("input", {
+                                          directives: [
+                                            {
+                                              name: "model",
+                                              rawName: "v-model",
+                                              value: _vm.form.conv_rate,
+                                              expression: "form.conv_rate"
+                                            }
+                                          ],
+                                          staticClass: "form-control",
+                                          class: {
+                                            "is-invalid": _vm.form.errors.has(
+                                              "conv_rate"
+                                            )
+                                          },
+                                          attrs: {
+                                            type: "text",
+                                            name: "conv_rate",
+                                            placeholder: "Conv. Rate"
+                                          },
+                                          domProps: {
+                                            value: _vm.form.conv_rate
+                                          },
+                                          on: {
+                                            keyup: _vm.costBd,
+                                            input: function($event) {
+                                              if ($event.target.composing) {
+                                                return
+                                              }
+                                              _vm.$set(
+                                                _vm.form,
+                                                "conv_rate",
+                                                $event.target.value
+                                              )
+                                            }
+                                          }
+                                        }),
+                                        _vm._v(" "),
+                                        _c("has-error", {
+                                          attrs: {
+                                            form: _vm.form,
+                                            field: "conv_rate"
+                                          }
+                                        })
+                                      ],
+                                      1
+                                    )
+                                  ]
+                                ),
+                                _vm._v(" "),
+                                _c(
+                                  "div",
+                                  {
+                                    staticStyle: {
+                                      width: "48%",
+                                      float: "right",
+                                      "padding-top": "16px"
+                                    }
+                                  },
+                                  [
+                                    _c(
+                                      "div",
+                                      { staticClass: "form-group" },
+                                      [
+                                        _c("label", [_vm._v("Rate")]),
+                                        _vm._v(" "),
+                                        _c("input", {
+                                          directives: [
+                                            {
+                                              name: "model",
+                                              rawName: "v-model",
+                                              value: _vm.form.st_rate,
+                                              expression: "form.st_rate"
+                                            }
+                                          ],
+                                          staticClass: "form-control",
+                                          class: {
+                                            "is-invalid": _vm.form.errors.has(
+                                              "st_rate"
+                                            )
+                                          },
+                                          attrs: {
+                                            type: "text",
+                                            name: "st_rate",
+                                            placeholder: "Rate"
+                                          },
+                                          domProps: { value: _vm.form.st_rate },
+                                          on: {
+                                            keyup: _vm.costBd,
+                                            input: function($event) {
+                                              if ($event.target.composing) {
+                                                return
+                                              }
+                                              _vm.$set(
+                                                _vm.form,
+                                                "st_rate",
+                                                $event.target.value
+                                              )
+                                            }
+                                          }
+                                        }),
+                                        _vm._v(" "),
+                                        _c("has-error", {
+                                          attrs: {
+                                            form: _vm.form,
+                                            field: "st_rate"
+                                          }
+                                        })
+                                      ],
+                                      1
+                                    )
+                                  ]
+                                )
+                              ]
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "div",
+                              {
+                                staticClass: "col-md-6",
+                                staticStyle: {
+                                  "padding-right": "0px !important",
+                                  float: "left"
+                                }
+                              },
+                              [
+                                _c(
+                                  "div",
+                                  { staticClass: "form-group" },
+                                  [
+                                    _c("label", [_vm._v("Cost Price in BD")]),
+                                    _vm._v(" "),
+                                    _c("input", {
+                                      directives: [
+                                        {
+                                          name: "model",
+                                          rawName: "v-model",
+                                          value: _vm.form.cost_price,
+                                          expression: "form.cost_price"
+                                        }
+                                      ],
+                                      staticClass: "form-control",
+                                      class: {
+                                        "is-invalid": _vm.form.errors.has(
+                                          "cost_price"
+                                        )
+                                      },
+                                      attrs: {
+                                        readonly: "",
+                                        type: "text",
+                                        placeholder: "Cost in BD"
+                                      },
+                                      domProps: { value: _vm.form.cost_price },
+                                      on: {
+                                        input: function($event) {
+                                          if ($event.target.composing) {
+                                            return
+                                          }
+                                          _vm.$set(
+                                            _vm.form,
+                                            "cost_price",
+                                            $event.target.value
+                                          )
+                                        }
+                                      }
+                                    }),
+                                    _vm._v(" "),
+                                    _c("has-error", {
+                                      attrs: {
+                                        form: _vm.form,
+                                        field: "cost_price"
+                                      }
+                                    })
+                                  ],
+                                  1
+                                ),
+                                _vm._v(" "),
+                                _c(
+                                  "div",
+                                  { staticClass: "form-group" },
+                                  [
+                                    _c("label", [_vm._v("Rate")]),
+                                    _vm._v(" "),
+                                    _c("input", {
+                                      directives: [
+                                        {
+                                          name: "model",
+                                          rawName: "v-model",
+                                          value: _vm.form.my_rate,
+                                          expression: "form.my_rate"
+                                        }
+                                      ],
+                                      staticClass: "form-control",
+                                      class: {
+                                        "is-invalid": _vm.form.errors.has(
+                                          "my_rate"
+                                        )
+                                      },
+                                      attrs: {
+                                        type: "text",
+                                        name: "my_rate",
+                                        placeholder: "Rate"
+                                      },
+                                      domProps: { value: _vm.form.my_rate },
+                                      on: {
+                                        keyup: _vm.costBd,
+                                        input: function($event) {
+                                          if ($event.target.composing) {
+                                            return
+                                          }
+                                          _vm.$set(
+                                            _vm.form,
+                                            "my_rate",
+                                            $event.target.value
+                                          )
+                                        }
+                                      }
+                                    }),
+                                    _vm._v(" "),
+                                    _c("has-error", {
+                                      attrs: {
+                                        form: _vm.form,
+                                        field: "my_rate"
+                                      }
+                                    })
+                                  ],
+                                  1
+                                ),
+                                _vm._v(" "),
+                                _c(
+                                  "div",
+                                  { staticClass: "form-group" },
+                                  [
+                                    _c("label", [_vm._v("Sales Price in BD")]),
+                                    _vm._v(" "),
+                                    _c("input", {
+                                      directives: [
+                                        {
+                                          name: "model",
+                                          rawName: "v-model",
+                                          value: _vm.form.sales_price,
+                                          expression: "form.sales_price"
+                                        }
+                                      ],
+                                      staticClass: "form-control",
+                                      class: {
+                                        "is-invalid": _vm.form.errors.has(
+                                          "sales_price"
+                                        )
+                                      },
+                                      attrs: {
+                                        readonly: "",
+                                        type: "text",
+                                        placeholder: "Sales in BD"
+                                      },
+                                      domProps: { value: _vm.form.sales_price },
+                                      on: {
+                                        input: function($event) {
+                                          if ($event.target.composing) {
+                                            return
+                                          }
+                                          _vm.$set(
+                                            _vm.form,
+                                            "sales_price",
+                                            $event.target.value
+                                          )
+                                        }
+                                      }
+                                    }),
+                                    _vm._v(" "),
+                                    _c("has-error", {
+                                      attrs: {
+                                        form: _vm.form,
+                                        field: "sales_price"
+                                      }
+                                    })
+                                  ],
+                                  1
+                                ),
+                                _vm._v(" "),
+                                _c("input", {
+                                  directives: [
+                                    {
+                                      name: "model",
+                                      rawName: "v-model",
+                                      value: _vm.form.total_price,
+                                      expression: "form.total_price"
+                                    }
+                                  ],
+                                  class: {
+                                    "is-invalid": _vm.form.errors.has(
+                                      "total_price"
+                                    )
+                                  },
+                                  attrs: {
+                                    hidden: "",
+                                    readonly: "",
+                                    type: "text"
+                                  },
+                                  domProps: { value: _vm.form.total_price },
+                                  on: {
+                                    input: function($event) {
+                                      if ($event.target.composing) {
+                                        return
+                                      }
+                                      _vm.$set(
+                                        _vm.form,
+                                        "total_price",
+                                        $event.target.value
+                                      )
+                                    }
+                                  }
+                                })
+                              ]
+                            )
+                          ]),
+                          _vm._v(" "),
+                          _vm._m(2)
+                        ])
+                      ])
+                    ]
+                  )
+                ]
+              )
+            ])
+          ])
+        ])
+      ]),
       _vm._v(" "),
       _c("footerComponent")
     ],
@@ -47969,19 +49187,115 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "content-wrapper" }, [
-      _c("div", { staticClass: "content" }, [
-        _c("div", { staticClass: "container-fluid" }, [
-          _c("div", { staticClass: "container" }, [
-            _c("div", { staticClass: "row justify-content-center" }, [
-              _c("div", { staticClass: "col-md-8" }, [
-                _c("div", { staticClass: "card" }, [
-                  _c("div", { staticClass: "card-header" }, [
-                    _vm._v("Sales Component")
-                  ]),
+    return _c("div", { staticClass: "row mt-5" }, [
+      _c("div", { staticClass: "col-md-12" }, [
+        _c("div", { staticClass: "card" }, [
+          _c("div", { staticClass: "card" }, [
+            _c("div", { staticClass: "card-header" }, [
+              _c("h3", { staticClass: "card-title" }, [_vm._v("New Invoice")]),
+              _vm._v(" "),
+              _c("div", { staticClass: "card-tools" })
+            ])
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "card-header" }, [
+            _c("h3", { staticClass: "card-title" }, [_vm._v("Invoice Items")]),
+            _vm._v(" "),
+            _c("div", { staticClass: "card-tools" }, [
+              _c(
+                "button",
+                {
+                  staticClass: "btn btn-success",
+                  attrs: { "data-toggle": "modal", "data-target": "#addNew" }
+                },
+                [
+                  _c("i", { staticClass: "fas fa-user-plus fa-fw" }),
+                  _vm._v(" Add")
+                ]
+              )
+            ])
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "card-body table-responsive p-0" }, [
+            _c("table", { staticClass: "table table-hover" }, [
+              _c("thead", [
+                _c("tr", [
+                  _c("th", [_vm._v("ISBN/Code")]),
                   _vm._v(" "),
-                  _c("div", { staticClass: "card-body" }, [
-                    _vm._v("I'm an example component.")
+                  _c("th", [_vm._v("Title")]),
+                  _vm._v(" "),
+                  _c("th", [_vm._v("Copies")]),
+                  _vm._v(" "),
+                  _c("th", [_vm._v("Unit Price")]),
+                  _vm._v(" "),
+                  _c("th", [_vm._v("Sales Price")]),
+                  _vm._v(" "),
+                  _c("th", [_vm._v("Discount")]),
+                  _vm._v(" "),
+                  _c("th", [_vm._v("Net Price")]),
+                  _vm._v(" "),
+                  _c("th", [_vm._v("Modify")])
+                ])
+              ]),
+              _vm._v(" "),
+              _c("tbody", [
+                _c("tr", [
+                  _c("td", [_vm._v("45454545515125")]),
+                  _vm._v(" "),
+                  _c("td", [_vm._v("Physics")]),
+                  _vm._v(" "),
+                  _c("td", [_vm._v("4")]),
+                  _vm._v(" "),
+                  _c("td", [_vm._v("400")]),
+                  _vm._v(" "),
+                  _c("td", [_vm._v("300")]),
+                  _vm._v(" "),
+                  _c("td", [_vm._v("200")]),
+                  _vm._v(" "),
+                  _c("td", [_vm._v("700")]),
+                  _vm._v(" "),
+                  _c("td", [
+                    _c("a", { attrs: { href: "#" } }, [
+                      _c("button", { staticClass: "btn btn-info btn-sm" }, [
+                        _c("i", { staticClass: "fa fa-edit" })
+                      ])
+                    ]),
+                    _vm._v(" "),
+                    _c("a", { attrs: { href: "#" } }, [
+                      _c("button", { staticClass: "btn btn-danger btn-sm" }, [
+                        _c("i", { staticClass: "fa fa-trash" })
+                      ])
+                    ])
+                  ])
+                ]),
+                _vm._v(" "),
+                _c("tr", [
+                  _c("td", [_vm._v("525454545515125")]),
+                  _vm._v(" "),
+                  _c("td", [_vm._v("Bangladesh Studies")]),
+                  _vm._v(" "),
+                  _c("td", [_vm._v("2")]),
+                  _vm._v(" "),
+                  _c("td", [_vm._v("200")]),
+                  _vm._v(" "),
+                  _c("td", [_vm._v("400")]),
+                  _vm._v(" "),
+                  _c("td", [_vm._v("300")]),
+                  _vm._v(" "),
+                  _c("td", [_vm._v("500")]),
+                  _vm._v(" "),
+                  _c("td", [
+                    _c("a", { attrs: { href: "#" } }, [
+                      _c("button", { staticClass: "btn btn-info btn-sm" }, [
+                        _c("i", { staticClass: "fa fa-edit" })
+                      ])
+                    ]),
+                    _vm._v(" "),
+                    _c("a", { attrs: { href: "#" } }, [
+                      _c("button", { staticClass: "btn btn-danger btn-sm" }, [
+                        _c("i", { staticClass: "fa fa-trash" })
+                      ])
+                    ])
                   ])
                 ])
               ])
@@ -47989,6 +49303,44 @@ var staticRenderFns = [
           ])
         ])
       ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "button",
+      {
+        staticClass: "close",
+        attrs: {
+          type: "button",
+          "data-dismiss": "modal",
+          "aria-label": "Close"
+        }
+      },
+      [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
+    )
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "modal-footer" }, [
+      _c(
+        "button",
+        {
+          staticClass: "btn btn-danger",
+          attrs: { type: "button", "data-dismiss": "modal" }
+        },
+        [_vm._v("Close")]
+      ),
+      _vm._v(" "),
+      _c(
+        "button",
+        { staticClass: "btn btn-primary", attrs: { type: "submit" } },
+        [_vm._v("Create")]
+      )
     ])
   }
 ]
@@ -66410,8 +67762,8 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! D:\Office Project\Inventory\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! D:\Office Project\Inventory\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! D:\Hasinur\Inventory\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! D:\Hasinur\Inventory\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })
