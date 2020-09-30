@@ -139,6 +139,33 @@
               </router-link>
             </li>
 
+            <li class="nav-item has-treeview">
+              <a href="#" class="nav-link">
+                <i class="nav-icon fa fa-file text-orange"></i>
+                <p> Report <i class="right fas fa-angle-left"></i></p>
+              </a>
+              <ul class="nav nav-treeview">
+                <li class="nav-item">
+                  <router-link to="/salesState" class="nav-link">
+                    <i class="fas fa-circle nav-icon text-blue"></i>
+                    <p>Sales Satement</p>
+                  </router-link>
+                </li>
+                <li class="nav-item">
+                  <router-link to="/salesSum" class="nav-link">
+                    <i class="fas fa-circle nav-icon text-info"></i>
+                    <p>Sales Summary</p>
+                  </router-link>
+                </li>
+                <li class="nav-item">
+                  <router-link to="/stock" class="nav-link">
+                    <i class="fas fa-circle nav-icon"></i>
+                    <p>Stock Report</p>
+                  </router-link>
+                </li>
+              </ul>
+            </li>
+
             <li class="nav-item">
               <router-link to="/supplier" class="nav-link">
                 <i class="nav-icon fas fa-industry text-green"></i>
@@ -146,14 +173,8 @@
               </router-link>
             </li>
 
-            <li class="nav-item">
-              <router-link to="/report" class="nav-link">
-                <i class="nav-icon fa fa-file text-orange"></i>
-                <p>Report</p>
-              </router-link>
-            </li>
 
-                      <li class="nav-item has-treeview">
+            <li class="nav-item has-treeview">
               <a href="#" class="nav-link">
                 <i class="nav-icon fas fa-cog text-green"></i>
                 <p>
@@ -345,7 +366,7 @@ export default {
         // Submit the form via a POST request
         this.form.post('/storeAuthor')
         .then(() => {
-             
+
             this.form.reset();
             Toast.fire({
             icon: 'success',

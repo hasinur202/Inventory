@@ -60,6 +60,15 @@
                                         </table>
                                     </div>
                                     <!-- /.card-body -->
+                                    <div class="card-body" style="border: 2px solid cadetblue; border-radius:6px">
+                                        <div class="col-md-6" style="float:left;">
+                                            <p style="float:right; margin-bottom:0;">Total Publishers Price: 18000 TK.</p>
+                                        </div>
+                                        <div class="col-md-6" style="float:right;">
+                                            <button class="btn btn-success" style="float:right;">Save</button>
+                                        </div>
+                                    </div>
+
                                 </div>
                                 <!-- /.card -->
                             </div>
