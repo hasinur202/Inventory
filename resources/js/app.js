@@ -2,6 +2,19 @@ require('./bootstrap');
 
 window.Vue = require('vue');
 
+
+import moment from 'moment'
+// Vue.filter('postTime', (vlaue) => {
+//     return moment(value).fromNow();
+// })
+Vue.config.productionTip = false
+Vue.filter('formatDate', function(value) {
+    if (value) {
+        return moment(String(value)).format('DD/MM/YYYY hh:mm')
+    }
+});
+
+
 //v-form
 import { Form, HasError, AlertError } from 'vform';
 import routes from "./routes";

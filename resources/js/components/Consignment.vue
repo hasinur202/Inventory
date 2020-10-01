@@ -35,13 +35,18 @@
                     <tbody>
                         <tr v-for="consignment in consignmentList" :key="consignment.id">
                             <td>Consignment/2020/{{ consignment.consign_ref }}</td>
-                            <td>{{ consignment.created_at }}</td>
+                            <td>{{ consignment.created_at | formatDate }}</td>
                             <td>Purchase</td>
                             <td>{{ consignment.get_supplier.supplier  }}</td>
                             <td>Cash</td>
                                 <td>
-                                <a href="#"><button class="btn btn-info btn-sm"><i class="fa fa-edit"></i></button></a>
-                                <a href="#"><button class="btn btn-danger btn-sm"><i class="fa fa-trash"></i></button></a>
+                                    <!-- <router-link to="/viewconsignment" @click="consignmentByid(consignment)" class="nav-link" style="padding:0; float:left;padding-right:5px;">
+                                        <button class="btn btn-info btn-sm"><i class="fa fa-eye"></i></button>
+                                    </router-link> -->
+                                    <a href="#"  @click="consignmentByid(consignment)">
+                                        <button class="btn btn-info btn-sm"><i class="fa fa-eye"></i></button>
+                                    </a>
+                                    <a href="#"><button class="btn btn-danger btn-sm"><i class="fa fa-trash"></i></button></a>
                             </td>
                         </tr>
                     </tbody>
@@ -69,6 +74,8 @@ export default {
   name: "Consignment",
   data(){
       return {
+
+          consign_detailsAll: [],
           consignmentList:[],
       }
 
@@ -81,6 +88,16 @@ export default {
             this.consignmentList = response.data.data;
         })
     },
+
+    consignmentByid(consignment){
+        // console.log(consignment.consign_ref)
+
+        axios.get('/getConsignId/'+consignment.consign_ref)
+        .then((response)=>{
+            // this.consign_detailsAll = response.data.data;
+            console.log(response.data.data)
+        })
+    }
 
   },
 

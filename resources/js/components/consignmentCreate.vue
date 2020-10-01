@@ -11,10 +11,10 @@
                   <div class="card">
                     <div class="card-header">
                       <h3 class="card-title">New Consignment</h3>
-                      <!-- <div class="card-tools">
-                                            <button class="btn btn-success" data-toggle="modal" data-target="#addNew"><i
-                                                    class="fas fa-user-plus fa-fw"></i> Add Consignment</button>
-                      </div>-->
+                      <div class="card-tools">
+                            <button class="btn btn-success" data-toggle="modal" data-target="#addNew"><i
+                                    class="fas fa-user-plus fa-fw"></i> Add Consignment</button>
+                      </div>
                     </div>
                   </div>
 
@@ -24,6 +24,11 @@
                       <input type="text" name placeholder="Search Stock" class="form-control" />
                     </div>
                   </div>
+
+
+                <div class="modal fade" id="addNew" tabindex="-1" role="dialog" aria-labelledby="addNewLabel"
+                            aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
                   <!-- /.card-header -->
                   <div class="modal-content">
                     <div class="modal-header">
@@ -51,6 +56,7 @@
                           >{{errors.consign_ref[0]}}</span>
                         </div>
                       </div>
+
                     </div>
 
                     <div class="modal-body">
@@ -72,7 +78,7 @@
                           </div>
                           <div class="form-group" v-show="getSearchValue">
                             <ul class="ulstyle">
-                              <li v-for="val in allBook" :key="val.id">
+                              <li v-for="val in filterd" :key="val.id">
                                 <p @click.prevent="getVal(val)">{{ val.isbn }}</p>
                               </li>
                             </ul>
@@ -94,7 +100,7 @@
                           </div>
                           <div class="form-group" v-show="getSearchSupp">
                             <ul class="ulstyle">
-                              <li v-for="val in suppliers" :key="val.id">
+                              <li v-for="val in filterdSupp" :key="val.id">
                                 <p @click.prevent="getSupp(val)">{{ val.supplier }}</p>
                               </li>
                             </ul>
@@ -227,7 +233,10 @@
                       </div>
                     </div>
                   </div>
+                </div>
+                </div>
                   <!--- end col md-12 -->
+
 
                   <div class="card-body table-responsive p-0">
                     <table class="table table-hover">
@@ -271,7 +280,7 @@
                   <!-- /.card-body -->
                   <div class="card-body" style="border: 2px solid cadetblue; border-radius:6px">
                     <div class="col-md-6" style="float:left;">
-                      <p style="float:right; margin-bottom:0;">Total Publishers Price: 18000 TK.</p>
+                      <p style="float:right; margin-bottom:0;">Total Publishers Price: {{ total_consign_price }} TK.</p>
                     </div>
                     <div class="col-md-6" style="float:right;">
                       <button
@@ -286,13 +295,6 @@
               </div>
             </div>
 
-            <!-- <div class="modal fade" id="addNew" tabindex="-1" role="dialog" aria-labelledby="addNewLabel"
-                            aria-hidden="true">
-                            <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-
-                            
-                            </div>
-            </div>-->
           </div>
         </div>
       </div>
@@ -310,7 +312,7 @@ export default {
   data() {
     return {
       errors: {},
-      randomNumber: "",
+      total_consign_price: "",
       getSearchValue: false,
       getSearchSupp: false,
       allBook: [],
@@ -335,7 +337,7 @@ export default {
         consign_ref: "",
         total_price: 0,
         details: [],
-        supplier: "rifat"
+        supplier: ""
       }
     };
   },
@@ -346,6 +348,7 @@ export default {
   },
 
   computed: {
+
     //isbn filtered from allbook
     filterd() {
       return this.allBook.filter(val =>
@@ -367,6 +370,11 @@ export default {
     finalUpdate() {
       axios.post("/storeConsignment", this.dataArray).then(() => {
         console.log("success");
+        this.dataArray.details = [];
+        Toast.fire({
+            icon: 'success',
+            title: 'Consignments Saved Successfully'
+        })
       });
     },
     createConsignment() {
@@ -380,8 +388,8 @@ export default {
         isbn: "",
         book_name: "",
         currency: "TK",
-        conv_rate: "",
-        st_rate: "",
+        conv_rate: "0.65",
+        st_rate: "0.8",
         my_ratem: "",
         total_price: ""
       };

@@ -36,6 +36,7 @@ Route::post('/storeBook', 'BookController@store');
 Route::post('/storeSupplier', 'SupplierController@store');
 //Store Consignment Info
 Route::post('/storeConsignment', 'ConsignmentController@store');
+Route::post('/final-update', 'ConsignmentController@final_update');
 
 
 //getBook
@@ -46,7 +47,13 @@ Route::get('/getAuthor', 'AuthorController@index');
 Route::get('/getSupplier', 'SupplierController@index');
 //get Consignment
 Route::get('/getConsignment', 'ConsignmentController@index');
-Route::post('/final-update', 'ConsignmentController@final_update');
+
+
+
+Route::get('/getConsignId/{consign_ref}', 'ConsignmentController@getIdConsign');
+
+Route::get('/getConsignSale', 'ConsignmentController@getSaleConsign');
+
 
 
 //login/logout

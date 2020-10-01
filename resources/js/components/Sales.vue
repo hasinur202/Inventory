@@ -8,18 +8,64 @@
                         <div class="row mt-5">
                             <div class="col-md-12">
                                 <div class="card">
-                                    <div class="card">
+                                <div class="card">
                                     <div class="card-header">
-                                        <h3 class="card-title">New Invoice</h3>
-                                        <div class="card-tools">
-
-
-
-
-
-                                        </div>
+                                        <h3 class="card-title">Customer Information</h3>
+                                            <div class="card-tools">
+                                                <input
+                                                    @click="myFunction(1000, 9000)"
+                                                    type="checkbox"
+                                                    class="form-check-input"
+                                                    style="margin-top:7px;"
+                                                />
+                                                <input
+                                                    v-model="dataArray.invoice_ref"
+                                                    type="text"
+                                                    placeholder="Invoice. Ref#"
+                                                    class="form-control"
+                                                    style="width: 25.5rem;"
+                                                />
+                                                <span
+                                                    class="text-danger"
+                                                    v-if="errors.hasOwnProperty('invoice_ref')"
+                                                >{{errors.invoice_ref[0]}}</span>
+                                            </div>
                                     </div>
+
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <input v-model="dataArray.customer_name" type="text" placeholder="Customer Name" class="form-control">
+                                                </div>
+                                                <div class="form-group">
+                                                    <input v-model="dataArray.email" type="text" placeholder="Email" class="form-control">
+                                                </div>
+                                                <div class="form-group">
+                                                    <input v-model="dataArray.phone" type="text" placeholder="Phone" class="form-control">
+                                                </div>
+                                            </div>
+
+                                            <!-- /.col -->
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <textarea v-model="dataArray.address" type="text" name="summary" placeholder="Address" class="form-control"></textarea>
+                                                </div>
+
+                                                <!-- <div class="col-md-6" style="float:right; text-align:center;padding-right:0px">
+                                                    <div class="form-group">
+                                                        <button type="button" class="btn btn-danger" >Cancel</button>
+                                                        <button type="submit" class="btn btn-primary">Save</button>
+                                                    </div>
+                                                </div> -->
+                                            </div>
+                    <!-- /.col -->
                                     </div>
+                                </div>
+
+
+                            </div>
+
 
                                     <div class="card-header">
                                         <h3 class="card-title">Invoice Items</h3>
@@ -80,6 +126,15 @@
                                         </table>
                                     </div>
                                     <!-- /.card-body -->
+                                    <!-- /.card-body -->
+                                    <div class="card-body" style="border: 2px solid cadetblue; border-radius:6px">
+                                        <div class="col-md-6" style="float:left;">
+                                            <p style="float:right; margin-bottom:0;">Total Publishers Price: 18000 TK.</p>
+                                        </div>
+                                        <div class="col-md-6" style="float:right;">
+                                            <button class="btn btn-info" style="float:right;">Save</button>
+                                        </div>
+                                    </div>
                                 </div>
                                 <!-- /.card -->
                             </div>
@@ -89,130 +144,110 @@
                             aria-hidden="true">
                             <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
                                 <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="addNewLabel">Add Consignment</h5>
+                                    <div class="modal-header" style="padding-bottom:5px !important;">
+                                        <h5 class="modal-title" id="addNewLabel">Add Invoice</h5>
 
-                                    <div style="margin-left:6rem; margin-top:5px;">
-                                        <div class="form-group" style="float:left; margin-bottom:0 !important;">
-                                            <input @click="myFunction(1000, 9000)" type="checkbox" class="form-check-input" style="margin-top:7px;">
-
-                                            <input v-model="form.consign_ref" :class="{ 'is-invalid': form.errors.has('consign_ref') }"
-                                            type="text" placeholder="Consign. Ref#" class="form-control" style="width: 25.5rem;">
-                                            <has-error :form="form" field="consign_ref"></has-error>
+                                        <div style="margin-left:6rem;">
+                                            <div class="form-group" style="float:left; margin-bottom:0 !important;">
+                                                <input
+                                                @keyup.prevent="searchVal()"
+                                                v-model="detailsFormData.isbn"
+                                                type="text" placeholder="Search ISBN" class="form-control" style="width: 25.5rem;">
+                                                <span
+                                                class="text-danger"
+                                                v-if="errors.hasOwnProperty('isbn')"
+                                                >{{errors.isbn[0]}}</span>
+                                            </div>
+                                            <div class="form-group" v-show="getSearchValue">
+                                                <ul class="ulstyle">
+                                                <li v-for="val in filterd" :key="val.id">
+                                                    <p @click.prevent="getVal(val)">{{ val.isbn }}</p>
+                                                </li>
+                                                </ul>
+                                            </div>
                                         </div>
-                                    </div>
 
                                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                             <span aria-hidden="true">&times;</span>
                                         </button>
                                     </div>
 
+
                                     <div class="modal-body">
                                         <div class="col-md-12">
-                                        <div class="col-md-6" style="padding-left:0px !important; float:left">
-                                            <div class="form-group">
-                                                <input @keyup.prevent="searchVal()" v-model="form.isbn" :class="{ 'is-invalid': form.errors.has('isbn') }" type="text" placeholder="Search ISBN"
-                                                    class="form-control">
-                                                <has-error :form="form" field="isbn"></has-error>
-                                            </div>
-                                            <div class="form-group" v-show="getSearchValue">
-                                                <ul class="ulstyle">
-                                                    <li v-for="val in filterd" :key="val.id">
-                                                        <p @click.prevent="getVal(val)">{{ val.isbn }}</p>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        </div>
-
-                                        <div class="col-md-6" style="padding-left:0px !important; width:48%; float:right; padding-right:0px;">
-                                            <div class="form-group">
-                                                <input @keyup="searchSupp()"  v-model="form.supplier" :class="{ 'is-invalid': form.errors.has('supplier') }"
-                                                type="text" placeholder="Select Supplier" class="form-control supp">
-                                            </div>
-                                            <div class="form-group" v-show="getSearchSupp">
-                                                <ul class="ulstyle">
-                                                    <li v-for="val in filterdSupp" :key="val.id">
-                                                        <p @click.prevent="getSupp(val)">{{ val.supplier }}</p>
-                                                    </li>
-                                                </ul>
-                                            </div>
+                                            <div>
+                                                <div class="form-group">
+                                                    <input  v-model="detailsFormData.consign_ref" readonly type="text" placeholder="Select Batch by ISBN "
+                                                        class="form-control">
+                                                </div>
                                             </div>
 
                                             <div>
                                                 <div class="form-group">
-                                                    <input  v-model="form.book_name" readonly :class="{ 'is-invalid': form.errors.has('book_name') }" type="text" placeholder="Select Book by ISBN "
+                                                    <input  v-model="detailsFormData.book_name" readonly type="text" placeholder="Select Book by ISBN "
                                                         class="form-control">
-                                                    <has-error :form="form" field="book_name"></has-error>
                                                 </div>
                                             </div>
 
                                             <div class="col-md-6" style="padding-left:0px !important; float:left">
                                                 <div class="form-group">
-                                                    <label>Copies</label>
-                                                    <input  v-model="form.copies" @keyup="costBd" :class="{ 'is-invalid': form.errors.has('copies') }" type="number" name="copies" placeholder="Copies"
+                                                    <label>Publishers Price</label>
+                                                    <input v-model="detailsFormData.pub_price" readonly type="text" placeholder="Publishers Price"
                                                         class="form-control">
-                                                    <has-error :form="form" field="copies"></has-error>
+                                                </div>
+
+                                                <div style="width:48%; float: left;">
+                                                    <div class="form-group">
+                                                        <label>Balance</label>
+                                                        <input  v-model="detailsFormData.balance" readonly type="text" placeholder="Available in Stock"
+                                                            class="form-control">
+                                                    </div>
+                                                </div>
+
+                                                <div style="width:48%; float: right;">
+                                                    <div class="form-group">
+                                                        <label>Copies</label>
+                                                        <input v-model="detailsFormData.copies" @keyup="costBd" type="number" placeholder="Rate"
+                                                            class="form-control">
+                                                    </div>
                                                 </div>
 
                                                 <div class="form-group">
-                                                    <label>Publishers Price [In Original Currency]</label>
-                                                    <div style="width:38%; float:left;">
-                                                        <select v-model="form.currency" :class="{ 'is-invalid': form.errors.has('currency') }" id="type" name="currency"
-                                                            style="padding: 6px; padding-right: 60px;">
-                                                            <option value="TK">TK</option>
-                                                            <option value="INR">INR</option>
-                                                            <option value="USD">USD</option>
-                                                        </select>
-                                                        <has-error :form="form" field="currency"></has-error>
-                                                    </div>
-                                                    <div style="width:60%; float: right;">
-                                                        <input v-model="form.pub_price" @keyup="costBd" :class="{ 'is-invalid': form.errors.has('pub_price') }" type="text" name="pub_price" placeholder="Publishers Price"
-                                                            class="form-control">
-                                                        <has-error :form="form" field="pub_price"></has-error>
-                                                    </div>
-                                                </div>
-
-                                                <div style="width:48%; float: left; padding-top:16px;">
-                                                    <div class="form-group">
-                                                        <label>Conv. Rate</label>
-                                                        <input  v-model="form.conv_rate" @keyup="costBd" :class="{ 'is-invalid': form.errors.has('conv_rate') }" type="text" name="conv_rate" placeholder="Conv. Rate"
-                                                            class="form-control">
-                                                        <has-error :form="form" field="conv_rate"></has-error>
-                                                    </div>
-                                                </div>
-
-                                                <div style="width:48%; float: right; padding-top:16px">
-                                                    <div class="form-group">
-                                                        <label>Rate</label>
-                                                        <input  v-model="form.st_rate" @keyup="costBd" :class="{ 'is-invalid': form.errors.has('st_rate') }" type="text" name="st_rate" placeholder="Rate"
-                                                            class="form-control">
-                                                        <has-error :form="form" field="st_rate"></has-error>
-                                                    </div>
+                                                    <label>Discount [%]</label>
+                                                    <input  v-model="detailsFormData.discount_p" @keyup="costBd" type="text" placeholder="Discount in %"
+                                                        class="form-control">
                                                 </div>
                                             </div>
 
+
                                             <div class="col-md-6" style="padding-right:0px !important; float:left;">
-                                                <div class="form-group">
-                                                    <label>Cost Price in BD</label>
-                                                    <input v-model="form.cost_price" readonly :class="{ 'is-invalid': form.errors.has('cost_price') }" type="text" placeholder="Cost in BD"
-                                                        class="form-control">
-                                                    <has-error :form="form" field="cost_price"></has-error>
+                                                <div style="width:48%; float: left;">
+                                                    <div class="form-group">
+                                                        <label>Rate</label>
+                                                        <input  v-model="detailsFormData.st_rate" @keyup="costBd" type="text" placeholder="Rate"
+                                                            class="form-control">
+                                                    </div>
+                                                </div>
+
+                                                <div style="width:48%; float: right;">
+                                                    <div class="form-group">
+                                                        <label>Unit Price</label>
+                                                        <input readonly v-model="detailsFormData.unit_price" type="text" placeholder="Unit Price"
+                                                            class="form-control">
+                                                    </div>
                                                 </div>
 
                                                 <div class="form-group">
-                                                    <label>Rate</label>
-                                                    <input  v-model="form.my_rate" @keyup="costBd" :class="{ 'is-invalid': form.errors.has('my_rate') }" type="text" name="my_rate" placeholder="Rate"
+                                                    <label>Total Price</label>
+                                                    <input readonly v-model="detailsFormData.total_price" type="text" placeholder="Total Price"
                                                         class="form-control">
-                                                    <has-error :form="form" field="my_rate"></has-error>
                                                 </div>
 
                                                 <div class="form-group">
-                                                    <label>Sales Price in BD</label>
-                                                    <input  v-model="form.sales_price" readonly :class="{ 'is-invalid': form.errors.has('sales_price') }" type="text" placeholder="Sales in BD"
+                                                    <label>Discount</label>
+                                                    <input  v-model="detailsFormData.discount" type="text" placeholder="Discount in Amount"
                                                         class="form-control">
-                                                    <has-error :form="form" field="sales_price"></has-error>
                                                 </div>
-                                                 <input hidden v-model="form.total_price" readonly :class="{ 'is-invalid': form.errors.has('total_price') }" type="text">
 
                                             </div>
                                         </div>
@@ -243,58 +278,178 @@ export default {
   name: "Sales",
 
   data(){
-            return{
-                randomNumber:'',
-                getSearchValue: false,
-                getSearchSupp: false,
-                allBook:[],
-                suppliers:[],
-                consignmentList:[],
-                form: new Form({
-                    consign_ref:'',
-                    isbn:'',
-                    book_id:'',
-                    supplier_id:'',
-                    book_name:'',
-                    supplier:'',
-                    copies:'',
-                    pub_price:'',
-                    currency:'TK',
-                    conv_rate:'0.65',
-                    st_rate:'0.8',
-                    cost_price:'',
-                    my_rate:'',
-                    sales_price:'',
-                    total_price:'',
-                })
+        return{
+            errors: {},
+            getSearchValue: false,
+            getSearchSupp: false,
+            allConsign:[],
+            suppliers:[],
+            consignmentList:[],
+            detailsFormData: {
+                book_id: "",
+                consign_ref: "",
+                pub_price: "250",
+                balance: "",
+                copies: "1",
+                st_rate: "0.8",
+                unit_price: "",
+                isbn: "",
+                book_name: "",
+                total_price: "",
+                discount:"",
+            },
+            dataArray: {
+                customer_id: "",
+                invoice_ref: "",
+                total_price: 0,
+                total_discount:"",
+                pay_mode:"",
+                total_qty: "",
+                receivable:"",
+                net_receivable:"",
+                total_receivable:"",
+                details: [],
+            }
+        }
+    },
+
+
+    created() {
+        axios.get("/getConsignSale").then(response => {
+        this.allConsign = response.data.data;
+        });
+    },
+
+    computed:{
+        filterd() {
+            return this.allConsign.filter(val =>
+                val.isbn.startsWith(this.detailsFormData.isbn)
+            );
+        },
+    },
+
+    methods:{
+        createConsignment() {
+            this.dataArray.details.push(this.detailsFormData);
+            this.detailsFormData = {
+            book_id: "",
+            consign_ref: "",
+            pub_price: "",
+            balance: "",
+            copies: "",
+            st_rate: "",
+            unit_price: "",
+            isbn: "",
+            book_name: "",
+            st_rate: "",
+            total_price: "",
+            discount:"",
+        };
+
+            this.dataArray.total_price = this.dataArray.details.reduce(function(acc, curr){
+                return parseFloat(acc) + parseFloat(curr.total_price)
+            }, 0)
+        },
+        //this method for generate random number
+        myFunction: function(min, max) {
+            if (this.dataArray.invoice_ref == "") {
+                this.dataArray.invoice_ref =
+                Math.floor(Math.random() * (max - min)) + min;
+            } else {
+                this.dataArray.invoice_ref = "";
             }
         },
 
-        methods:{
+        //search value for isbn
+        searchVal() {
+            if (this.detailsFormData.isbn == "") {
+                this.getSearchValue = false;
+            } else {
+                this.getSearchValue = true;
+            }
+        },
 
-
-            //this method for generate random number
-            myFunction: function (min, max) {
-                if(this.form.consign_ref == ''){
-                    this.form.consign_ref = Math.floor(Math.random() * (max - min)) + min;
-                }else{
-                    this.form.consign_ref =""
+        //get value isbn and bookname from booktable
+        getVal(val) {
+            this.detailsFormData.isbn = val.isbn;
+            this.allBook.forEach(el => {
+                if (this.detailsFormData.isbn == el.isbn) {
+                this.detailsFormData.book_id = el.id;
+                this.detailsFormData.book_name = el.book_name;
+                this.getSearchValue = false;
                 }
-            },
+            });
+        },
+
+        pub_price: function (event) {
+            this.pub_price = event.target.value;
+        },
+        st_rate: function (event) {
+            this.st_rate = event.target.value;
+        },
+        discount_p: function (event) {
+            this.discount_p = event.target.value;
+        },
+        copies: function (event) {
+            this.copies = event.target.value;
+        },
+
+        costBd(){
+            if(parseFloat(this.detailsFormData.pub_price) > 0 && parseFloat(this.detailsFormData.st_rate) > 0){
+                this.detailsFormData.unit_price = Math.floor(parseFloat(this.detailsFormData.pub_price) * parseFloat(this.detailsFormData.st_rate))
+            }
+
+            if(parseFloat(this.detailsFormData.pub_price) > 0 && parseFloat(this.detailsFormData.st_rate) > 0 && parseInt(this.detailsFormData.copies) > 0){
+                this.detailsFormData.total_price = Math.floor(parseFloat(this.detailsFormData.st_rate) * parseFloat(this.detailsFormData.pub_price) * parseInt(this.detailsFormData.copies))
+            }
+
+            if(parseFloat(this.detailsFormData.discount_p) > 0){
+                if(parseFloat(this.detailsFormData.pub_price) > 0 && parseFloat(this.detailsFormData.st_rate) > 0 && parseInt(this.detailsFormData.copies) > 0){
+                    var unit_price = Math.floor(parseFloat(this.detailsFormData.pub_price) * parseFloat(this.detailsFormData.st_rate));
+                    var b_unit_price = Math.floor((parseFloat(this.detailsFormData.pub_price) * parseFloat(this.detailsFormData.st_rate) * parseFloat(this.detailsFormData.discount_p))/100);
+                    var most_unit = unit_price - b_unit_price;
+                    this.detailsFormData.unit_price = most_unit
+                    this.detailsFormData.total_price = most_unit * parseInt(this.detailsFormData.copies);
+                }
+            }
 
         },
 
 
 
+    },
 
+    components: {
+        headerComponent,
+        footerComponent
+    },
 
-
-  components: {
-    headerComponent,
-    footerComponent
-  },
   mounted() {
       console.log('Component mounted.')
   }
 };
 </script>
+
+
+<style scoped>
+.ulstyle {
+  list-style: none;
+  padding-left: 0px;
+  float: left;
+  width: 100%;
+}
+.ulstyle > li:hover {
+  background: #ddd;
+  color: blue;
+  border-radius: 5px;
+}
+.ulstyle > li > p {
+  padding: 5px;
+  cursor: pointer;
+  margin-bottom: 4px;
+  float: left;
+  width: 100%;
+}
+
+
+</style>

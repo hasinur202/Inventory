@@ -20,6 +20,22 @@ class ConsignmentController extends Controller
         ], 200);
     }
 
+    public function getSaleConsign(){
+
+       //
+    }
+
+    public function getIdConsign($consign_ref){
+
+        $data2 = Consignment::where('consign_ref', $consign_ref)->get('id');
+        $data = ConsignmentDetails::where('consignment_id',$data2)->get('cost_price');
+        return response()->json([
+            'data' => $data,
+            'message' => "success"
+        ], 200);
+
+    }
+
 
     public function store(Request $request)
     {
@@ -31,7 +47,7 @@ class ConsignmentController extends Controller
             }
             DB::commit();
             return response(['message' => 'Consignment Created!']);
-        }catch(Exception $e){   
+        }catch(Exception $e){
             DB::rollBack();
             return response(['message' => 'Opps! some Error!'], 500);
         }
