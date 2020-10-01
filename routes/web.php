@@ -46,6 +46,7 @@ Route::get('/getAuthor', 'AuthorController@index');
 Route::get('/getSupplier', 'SupplierController@index');
 //get Consignment
 Route::get('/getConsignment', 'ConsignmentController@index');
+Route::post('/final-update', 'ConsignmentController@final_update');
 
 
 //login/logout

@@ -8,49 +8,18 @@
                         <div class="row mt-5">
                             <div class="col-md-12">
                                 <div class="card">
-                                <div class="card">
+                                    <div class="card">
                                     <div class="card-header">
-                                        <h3 class="card-title">Customer Information</h3>
+                                        <h3 class="card-title">New Invoice</h3>
                                         <div class="card-tools">
 
+
+
+
+
                                         </div>
-
                                     </div>
-
-                                    <div class="card-body">
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <input type="text" placeholder="Customer Name" class="form-control">
-                                                </div>
-                                                <div class="form-group">
-                                                    <input type="text" placeholder="Email" class="form-control">
-                                                </div>
-                                                <div class="form-group">
-                                                    <input type="text" placeholder="Phone" class="form-control">
-                                                </div>
-                                            </div>
-
-                                            <!-- /.col -->
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <textarea type="text" name="summary" placeholder="Address" class="form-control"></textarea>
-                                                </div>
-
-                                                <div class="col-md-6" style="float:right; text-align:center;padding-right:0px">
-                                                    <div class="form-group">
-                                                        <button type="button" class="btn btn-danger" >Cancel</button>
-                                                        <button type="submit" class="btn btn-primary">Save</button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                    <!-- /.col -->
                                     </div>
-                                </div>
-
-
-                            </div>
-
 
                                     <div class="card-header">
                                         <h3 class="card-title">Invoice Items</h3>
@@ -111,15 +80,6 @@
                                         </table>
                                     </div>
                                     <!-- /.card-body -->
-                                    <!-- /.card-body -->
-                                    <div class="card-body" style="border: 2px solid cadetblue; border-radius:6px">
-                                        <div class="col-md-6" style="float:left;">
-                                            <p style="float:right; margin-bottom:0;">Total Publishers Price: 18000 TK.</p>
-                                        </div>
-                                        <div class="col-md-6" style="float:right;">
-                                            <button class="btn btn-info" style="float:right;">Save</button>
-                                        </div>
-                                    </div>
                                 </div>
                                 <!-- /.card -->
                             </div>
@@ -129,15 +89,19 @@
                             aria-hidden="true">
                             <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
                                 <div class="modal-content">
-                                    <div class="modal-header" style="padding-bottom:5px !important;">
+                                    <div class="modal-header">
                                         <h5 class="modal-title" id="addNewLabel">Add Consignment</h5>
-                                    <div style="margin-left:6rem;">
+
+                                    <div style="margin-left:6rem; margin-top:5px;">
                                         <div class="form-group" style="float:left; margin-bottom:0 !important;">
-                                            <input v-model="form.isbn" :class="{ 'is-invalid': form.errors.has('isbn') }"
-                                            type="text" placeholder="Search ISBN" class="form-control" style="width: 25.5rem;">
-                                            <has-error :form="form" field="isbn"></has-error>
+                                            <input @click="myFunction(1000, 9000)" type="checkbox" class="form-check-input" style="margin-top:7px;">
+
+                                            <input v-model="form.consign_ref" :class="{ 'is-invalid': form.errors.has('consign_ref') }"
+                                            type="text" placeholder="Consign. Ref#" class="form-control" style="width: 25.5rem;">
+                                            <has-error :form="form" field="consign_ref"></has-error>
                                         </div>
                                     </div>
+
                                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                             <span aria-hidden="true">&times;</span>
                                         </button>
@@ -145,12 +109,33 @@
 
                                     <div class="modal-body">
                                         <div class="col-md-12">
-                                            <div>
-                                                <div class="form-group">
-                                                    <input  v-model="form.batch" readonly :class="{ 'is-invalid': form.errors.has('batch') }" type="text" placeholder="Select Batch by ISBN "
-                                                        class="form-control">
-                                                    <has-error :form="form" field="batch"></has-error>
-                                                </div>
+                                        <div class="col-md-6" style="padding-left:0px !important; float:left">
+                                            <div class="form-group">
+                                                <input @keyup.prevent="searchVal()" v-model="form.isbn" :class="{ 'is-invalid': form.errors.has('isbn') }" type="text" placeholder="Search ISBN"
+                                                    class="form-control">
+                                                <has-error :form="form" field="isbn"></has-error>
+                                            </div>
+                                            <div class="form-group" v-show="getSearchValue">
+                                                <ul class="ulstyle">
+                                                    <li v-for="val in filterd" :key="val.id">
+                                                        <p @click.prevent="getVal(val)">{{ val.isbn }}</p>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6" style="padding-left:0px !important; width:48%; float:right; padding-right:0px;">
+                                            <div class="form-group">
+                                                <input @keyup="searchSupp()"  v-model="form.supplier" :class="{ 'is-invalid': form.errors.has('supplier') }"
+                                                type="text" placeholder="Select Supplier" class="form-control supp">
+                                            </div>
+                                            <div class="form-group" v-show="getSearchSupp">
+                                                <ul class="ulstyle">
+                                                    <li v-for="val in filterdSupp" :key="val.id">
+                                                        <p @click.prevent="getSupp(val)">{{ val.supplier }}</p>
+                                                    </li>
+                                                </ul>
+                                            </div>
                                             </div>
 
                                             <div>
@@ -163,71 +148,71 @@
 
                                             <div class="col-md-6" style="padding-left:0px !important; float:left">
                                                 <div class="form-group">
-                                                    <label>Publishers Price</label>
-                                                    <input  v-model="form.pub_price" readonly :class="{ 'is-invalid': form.errors.has('pub_price') }" type="text" placeholder="Publishers Price"
+                                                    <label>Copies</label>
+                                                    <input  v-model="form.copies" @keyup="costBd" :class="{ 'is-invalid': form.errors.has('copies') }" type="number" name="copies" placeholder="Copies"
                                                         class="form-control">
-                                                    <has-error :form="form" field="pub_price"></has-error>
-                                                </div>
-
-                                                <div style="width:48%; float: left;">
-                                                    <div class="form-group">
-                                                        <label>Balance</label>
-                                                        <input  v-model="form.balance" readonly :class="{ 'is-invalid': form.errors.has('balance') }" type="text" placeholder="Available in Stock"
-                                                            class="form-control">
-                                                        <has-error :form="form" field="balance"></has-error>
-                                                    </div>
-                                                </div>
-
-                                                <div style="width:48%; float: right;">
-                                                    <div class="form-group">
-                                                        <label>Copies</label>
-                                                        <input  v-model="form.copies" @keyup="costBd" :class="{ 'is-invalid': form.errors.has('copies') }" type="number" placeholder="Rate"
-                                                            class="form-control">
-                                                        <has-error :form="form" field="copies"></has-error>
-                                                    </div>
+                                                    <has-error :form="form" field="copies"></has-error>
                                                 </div>
 
                                                 <div class="form-group">
-                                                    <label>Discount [%]</label>
-                                                    <input  v-model="form.discount_p" @keyup="costBd" :class="{ 'is-invalid': form.errors.has('discount_p') }" type="text" placeholder="Discount in %"
-                                                        class="form-control">
-                                                    <has-error :form="form" field="discount_p"></has-error>
+                                                    <label>Publishers Price [In Original Currency]</label>
+                                                    <div style="width:38%; float:left;">
+                                                        <select v-model="form.currency" :class="{ 'is-invalid': form.errors.has('currency') }" id="type" name="currency"
+                                                            style="padding: 6px; padding-right: 60px;">
+                                                            <option value="TK">TK</option>
+                                                            <option value="INR">INR</option>
+                                                            <option value="USD">USD</option>
+                                                        </select>
+                                                        <has-error :form="form" field="currency"></has-error>
+                                                    </div>
+                                                    <div style="width:60%; float: right;">
+                                                        <input v-model="form.pub_price" @keyup="costBd" :class="{ 'is-invalid': form.errors.has('pub_price') }" type="text" name="pub_price" placeholder="Publishers Price"
+                                                            class="form-control">
+                                                        <has-error :form="form" field="pub_price"></has-error>
+                                                    </div>
                                                 </div>
-                                            </div>
 
+                                                <div style="width:48%; float: left; padding-top:16px;">
+                                                    <div class="form-group">
+                                                        <label>Conv. Rate</label>
+                                                        <input  v-model="form.conv_rate" @keyup="costBd" :class="{ 'is-invalid': form.errors.has('conv_rate') }" type="text" name="conv_rate" placeholder="Conv. Rate"
+                                                            class="form-control">
+                                                        <has-error :form="form" field="conv_rate"></has-error>
+                                                    </div>
+                                                </div>
 
-                                            <div class="col-md-6" style="padding-right:0px !important; float:left;">
-                                                <div style="width:48%; float: left;">
+                                                <div style="width:48%; float: right; padding-top:16px">
                                                     <div class="form-group">
                                                         <label>Rate</label>
-                                                        <input  v-model="form.st_rate" @keyup="costBd" :class="{ 'is-invalid': form.errors.has('st_rate') }" type="text" placeholder="Rate"
+                                                        <input  v-model="form.st_rate" @keyup="costBd" :class="{ 'is-invalid': form.errors.has('st_rate') }" type="text" name="st_rate" placeholder="Rate"
                                                             class="form-control">
                                                         <has-error :form="form" field="st_rate"></has-error>
                                                     </div>
                                                 </div>
+                                            </div>
 
-                                                <div style="width:48%; float: right;">
-                                                    <div class="form-group">
-                                                        <label>Unit Price</label>
-                                                        <input readonly v-model="form.unit_price" :class="{ 'is-invalid': form.errors.has('unit_price') }" type="text" placeholder="Unit Price"
-                                                            class="form-control">
-                                                        <has-error :form="form" field="unit_price"></has-error>
-                                                    </div>
+                                            <div class="col-md-6" style="padding-right:0px !important; float:left;">
+                                                <div class="form-group">
+                                                    <label>Cost Price in BD</label>
+                                                    <input v-model="form.cost_price" readonly :class="{ 'is-invalid': form.errors.has('cost_price') }" type="text" placeholder="Cost in BD"
+                                                        class="form-control">
+                                                    <has-error :form="form" field="cost_price"></has-error>
                                                 </div>
 
                                                 <div class="form-group">
-                                                    <label>Total Price</label>
-                                                    <input readonly v-model="form.total_price" :class="{ 'is-invalid': form.errors.has('total_price') }" type="text" placeholder="Total Price"
+                                                    <label>Rate</label>
+                                                    <input  v-model="form.my_rate" @keyup="costBd" :class="{ 'is-invalid': form.errors.has('my_rate') }" type="text" name="my_rate" placeholder="Rate"
                                                         class="form-control">
-                                                    <has-error :form="form" field="total_price"></has-error>
+                                                    <has-error :form="form" field="my_rate"></has-error>
                                                 </div>
 
                                                 <div class="form-group">
-                                                    <label>Discount</label>
-                                                    <input  v-model="form.discount" :class="{ 'is-invalid': form.errors.has('discount') }" type="text" placeholder="Discount in Amount"
+                                                    <label>Sales Price in BD</label>
+                                                    <input  v-model="form.sales_price" readonly :class="{ 'is-invalid': form.errors.has('sales_price') }" type="text" placeholder="Sales in BD"
                                                         class="form-control">
-                                                    <has-error :form="form" field="discount"></has-error>
+                                                    <has-error :form="form" field="sales_price"></has-error>
                                                 </div>
+                                                 <input hidden v-model="form.total_price" readonly :class="{ 'is-invalid': form.errors.has('total_price') }" type="text">
 
                                             </div>
                                         </div>
@@ -259,6 +244,7 @@ export default {
 
   data(){
             return{
+                randomNumber:'',
                 getSearchValue: false,
                 getSearchSupp: false,
                 allBook:[],
@@ -271,53 +257,30 @@ export default {
                     supplier_id:'',
                     book_name:'',
                     supplier:'',
-                    copies:'1',
-                    pub_price:'250',
+                    copies:'',
+                    pub_price:'',
+                    currency:'TK',
+                    conv_rate:'0.65',
                     st_rate:'0.8',
+                    cost_price:'',
+                    my_rate:'',
                     sales_price:'',
                     total_price:'',
-                    unit_price:'',
-                    discount_p:'',
                 })
             }
         },
 
         methods:{
-            pub_price: function (event) {
-                this.pub_price = event.target.value;
-            },
-            st_rate: function (event) {
-                this.st_rate = event.target.value;
-            },
-            discount_p: function (event) {
-                this.discount_p = event.target.value;
-            },
-            copies: function (event) {
-                this.copies = event.target.value;
-            },
 
-            costBd(){
-                if(parseFloat(this.form.pub_price) > 0 && parseFloat(this.form.st_rate) > 0){
-                    this.form.unit_price = Math.floor(parseFloat(this.form.pub_price) * parseFloat(this.form.st_rate))
+
+            //this method for generate random number
+            myFunction: function (min, max) {
+                if(this.form.consign_ref == ''){
+                    this.form.consign_ref = Math.floor(Math.random() * (max - min)) + min;
+                }else{
+                    this.form.consign_ref =""
                 }
-
-                if(parseFloat(this.form.pub_price) > 0 && parseFloat(this.form.st_rate) > 0 && parseInt(this.form.copies) > 0){
-                    this.form.total_price = Math.floor(parseFloat(this.form.st_rate) * parseFloat(this.form.pub_price) * parseInt(this.form.copies))
-                }
-
-                if(parseFloat(this.form.discount_p) > 0){
-                    if(parseFloat(this.form.pub_price) > 0 && parseFloat(this.form.st_rate) > 0 && parseInt(this.form.copies) > 0){
-                        var unit_price = Math.floor(parseFloat(this.form.pub_price) * parseFloat(this.form.st_rate));
-                        var b_unit_price = Math.floor((parseFloat(this.form.pub_price) * parseFloat(this.form.st_rate) * parseFloat(this.form.discount_p))/100);
-                        var most_unit = unit_price - b_unit_price;
-                        this.form.unit_price = most_unit
-                        this.form.total_price = most_unit * parseInt(this.form.copies);
-                    }
-                }
-
             },
-
-
 
         },
 

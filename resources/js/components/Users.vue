@@ -23,8 +23,7 @@
                         <th>ID</th>
                         <th>Name</th>
                         <th>Email</th>
-                        <th>type</th>
-                        <th>Status</th>
+                        <th>Type</th>
                         <th>Modify</th>
                         </tr>
                     </thead>
@@ -32,13 +31,13 @@
                         <tr>
                         <td>183</td>
                         <td>John Doe</td>
-                        <td>admin@admin.com</td>
-                        <td>admin</td>
-                        <td><span class="tag tag-success">Active</span></td>
+                        <td>11-7-2014</td>
+                        <td><span class="tag tag-success">Approved</span></td>
                         <td>
                             <a href="#">
                                 <button class="btn btn-info btn-sm"><i class="fa fa-edit"></i></button>
                             </a>
+
                             <a href="#">
                                 <button class="btn btn-danger btn-sm"><i class="fa fa-trash"></i></button>
                             </a>
@@ -68,48 +67,50 @@
                 </div>
                 <div class="modal-body">
 
-                    <div class="form-group">
-                        <input v-model="form.name" type="text" name="name" placeholder="Name"
-                        class="form-control" :class="{ 'is-invalid': form.errors.has('name') }">
-                        <has-error :form="form" field="name"></has-error>
-                    </div>
-
-                    <div class="form-group">
-                        <input v-model="form.email" type="text" name="email" placeholder="Email"
-                        class="form-control" :class="{ 'is-invalid': form.errors.has('email') }">
-                        <has-error :form="form" field="email"></has-error>
-                    </div>
-
-                    <div class="form-group">
-                        <input v-model="form.phone" type="text" name="phone" placeholder="Phone"
-                        class="form-control" :class="{ 'is-invalid': form.errors.has('phone') }">
-                        <has-error :form="form" field="phone"></has-error>
-                    </div>
-
-                    <div class="form-group">
-                        <select v-model="form.type" id="type" name="type" class="form-control" :class="{ 'is-invalid': form.errors.has('type') }">
-                            <option active value="">Select User Role</option>
-                            <option value="admin">Admin</option>
-                            <option value="user">Standard User</option>
-                            <option value="editor">Editor</option>
-
-                        </select>
-                        <has-error :form="form" field="type"></has-error>
-                    </div>
-
-                    <div class="form-group">
-                        <input v-model="form.password" type="password" name="password" id="password"
-                        class="form-control" :class="{ 'is-invalid': form.errors.has('password') }">
-                        <has-error :form="form" field="password"></has-error>
-                    </div>
+                <div class="form-group">
+                    <input v-model="form.name" type="text" name="name" placeholder="Name"
+                    class="form-control" :class="{ 'is-invalid': form.errors.has('name') }">
+                    <has-error :form="form" field="name"></has-error>
                 </div>
+
+                <div class="form-group">
+                    <input v-model="form.email" type="text" name="email" placeholder="Email"
+                    class="form-control" :class="{ 'is-invalid': form.errors.has('email') }">
+                    <has-error :form="form" field="email"></has-error>
+                </div>
+
+                <div class="form-group">
+                    <input v-model="form.phone" type="text" name="phone" placeholder="Phone"
+                    class="form-control" :class="{ 'is-invalid': form.errors.has('phone') }">
+                    <has-error :form="form" field="phone"></has-error>
+                </div>
+
+                <div class="form-group">
+                    <select v-model="form.type" id="type" name="type" class="form-control" :class="{ 'is-invalid': form.errors.has('type') }">
+                        <option active value="">Select User Role</option>
+                        <option value="admin">Admin</option>
+                        <option value="user">Standard User</option>
+                        <option value="author">Author</option>
+
+                    </select>
+                    <has-error :form="form" field="type"></has-error>
+                </div>
+
+                <div class="form-group">
+                    <input v-model="form.password" type="password" name="password" id="password"
+                    class="form-control" :class="{ 'is-invalid': form.errors.has('password') }">
+                    <has-error :form="form" field="password"></has-error>
+                </div>
+                </div>
+
                 <div class="modal-footer">
                     <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Create</button>
+                    <button type="button" class="btn btn-primary">Create</button>
                 </div>
                 </div>
             </div>
             </div>
+
         </div>
 
         </div>

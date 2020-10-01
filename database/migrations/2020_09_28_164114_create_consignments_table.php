@@ -16,15 +16,8 @@ class CreateConsignmentsTable extends Migration
         Schema::create('consignments', function (Blueprint $table) {
             $table->id();
             $table->string('consign_ref');
-            $table->unsignedBigInteger('book_id');
-            $table->foreign('book_id')->references('id')->on('books');
             $table->unsignedBigInteger('supplier_id');
             $table->foreign('supplier_id')->references('id')->on('suppliers');
-            $table->string('copies');
-            $table->string('currency')->default('TK');
-            $table->string('pub_price');
-            $table->string('sales_price');
-            $table->string('cost_price');
             $table->string('total_price');
             $table->timestamps();
         });

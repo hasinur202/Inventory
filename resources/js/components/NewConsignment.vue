@@ -39,9 +39,9 @@
                                                     <th>Modify</th>
                                                 </tr>
                                             </thead>
-                                            <tbody>
+                                            <tbody v-for="consignment in consignmentList" :key="consignment.id">
 
-                                                <tr v-for="consignment in consignmentList" :key="consignment.id">
+                                                <tr v-if="consignment.hide == 1">
                                                     <td>{{ consignment.get_book.isbn }}</td>
                                                     <td>{{ consignment.get_book.book_name }}</td>
                                                     <td>{{ consignment.copies }}</td>
@@ -56,6 +56,7 @@
                                                                     class="fa fa-trash"></i></button></a>
                                                     </td>
                                                 </tr>
+                                                
                                             </tbody>
                                         </table>
                                     </div>
@@ -65,10 +66,9 @@
                                             <p style="float:right; margin-bottom:0;">Total Publishers Price: 18000 TK.</p>
                                         </div>
                                         <div class="col-md-6" style="float:right;">
-                                            <button class="btn btn-success" style="float:right;">Save</button>
+                                            <button @click.prevent="finalUpdate()" class="btn btn-success" style="float:right;">Save</button>
                                         </div>
                                     </div>
-
                                 </div>
                                 <!-- /.card -->
                             </div>
@@ -283,7 +283,13 @@
         },
 
         methods:{
-
+            finalUpdate(){
+                this.form.post('/final-update')
+                .then(()=>{
+                    console.log('success');
+                })
+                this.viewConsignment();
+            },
             createConsignment(){
                 // Submit the form via a POST request
                 this.form.post('/storeConsignment')
@@ -307,6 +313,7 @@
                     title: 'Consignment Added Successfully'
                 })
             })
+            $('#addNew').hide('toggle')
 
             },
 

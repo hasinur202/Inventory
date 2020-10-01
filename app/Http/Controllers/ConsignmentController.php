@@ -1,47 +1,79 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\Consignment;
+use App\ConsignmentDetails;
+use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ConsignmentController extends Controller
 {
 
-    public function index(){
-        $data = Consignment::latest()->with('get_book','get_supplier')->get();
+    public function index()
+    {
+        $data = Consignment::latest()->with('get_book', 'get_supplier')->get();
         return response()->json([
-            'data'=>$data,
-            'message'=>"success"
-        ],200);
+            'data' => $data,
+            'message' => "success"
+        ], 200);
     }
 
 
-    public function store(Request $request){
-        $this->validate($request, [
-            'book_id'       => 'required',
-            'supplier_id'   => 'required',
-            'consign_ref'   => 'required',
-            'copies'        => 'required',
-            'pub_price'     => 'required',
-            'sales_price'   => 'required',
-            'cost_price'    => 'required',
-            'total_price'   => 'required',
-        ]);
-
-        $consign = new Consignment;
-        $consign->book_id       = $request->book_id;
-        $consign->supplier_id   = $request->supplier_id;
-        $consign->consign_ref   = $request->consign_ref;
-        $consign->copies        = $request->copies;
-        $consign->currency      = $request->currency;
-        $consign->pub_price     = $request->pub_price;
-        $consign->sales_price   = $request->sales_price;
-        $consign->cost_price    = $request->cost_price;
-        $consign->total_price   = $request->total_price;
-
-        $consign->save();
-        return response()->json([
-            'consign'=>$consign
-        ],200);
+    public function store(Request $request)
+    {
+        DB::beginTransaction();
+        try{
+            $consignment = Consignment::create($request->only(['consign_ref', 'supplier_id', 'total_price']));
+            foreach($request->details as $key => $item){
+                ConsignmentDetails::create(array_merge($item, ['qty' => $item['copies'], 'consignment_id' => $consignment->id]));
+            }
+            DB::commit();
+            return response(['message' => 'Consignment Created!']);
+        }catch(Exception $e){   
+            DB::rollBack();
+            return response(['message' => 'Opps! some Error!'], 500);
+        }
     }
+
+    public function final_update(Request $request)
+    {
+        $data = Consignment::where('hide', 1)->update(['hide' => 0]);
+
+        // $data->hide = 0;
+
+        // $data->save();
+
+        return response(['message', 'Updated!'], 200);
+    }
+
+    // public function saveConsignment(Request $request)
+    // {
+    //     [
+    //         'ref' => '1234',
+    //         'total_price'   =>  2000,
+    //         'supplier_id'   =>  2,
+    //         'details'   =>  [
+    //             [
+    //                 'book_id'   =>  1,
+    //                 'cost_price'    =>  100,
+    //                 'quantity'  =>  10,
+    //                 'prict' =>  100,
+    //             ],
+    //             [
+    //                 'book_id'   =>  1,
+    //                 'cost_price'    =>  100,
+    //                 'quantity'  =>  10,
+    //                 'prict' =>  100,
+    //             ]
+    //         ]
+    //     ];
+
+    //     $consignment = Consignment::create(['ref'   => $request->data[0]['ref'], 'supplier' => $request->data[0]['supp']]);
+
+    //     foreach($request->data[0]['details'] as $singleData){
+    //         cd::create([''])
+    //     }
+    // }
 }
