@@ -50,7 +50,12 @@ Route::get('/getConsignment', 'ConsignmentController@index');
 
 
 
-Route::get('/getConsignId/{consign_ref}', 'ConsignmentController@getIdConsign');
+Route::get('/getConsignId', 'ConsignmentController@getIdConsign');
+
+//delete Consignment
+Route::post('/delete-consignment', 'ConsignmentController@deleteConsignment');
+//update consignment
+Route::post('/update-consignment-details', 'ConsignmentController@updateConsignment');
 
 Route::get('/getConsignSale', 'ConsignmentController@getSaleConsign');
 

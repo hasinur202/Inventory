@@ -22,6 +22,7 @@ class CreateConsignmentDetailsTable extends Migration
             $table->float('cost_price');
             $table->float('pub_price');
             $table->float('sales_price');
+            $table->float('total_price');
             $table->integer('qty');
             $table->timestamps();
         });

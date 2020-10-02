@@ -473,40 +473,39 @@ export default {
         parseFloat(this.detailsFormData.pub_price) > 0 &&
         parseFloat(this.detailsFormData.conv_rate) > 0
       ) {
-        this.detailsFormData.cost_price = Math.floor(
+        this.detailsFormData.cost_price = 
           parseFloat(this.detailsFormData.conv_rate) *
             parseFloat(this.detailsFormData.pub_price)
-        );
+        ;
       }
 
       if (
         parseFloat(this.detailsFormData.pub_price) > 0 &&
         parseFloat(this.detailsFormData.st_rate) > 0
       ) {
-        this.detailsFormData.sales_price = Math.floor(
+        this.detailsFormData.sales_price = 
           parseFloat(this.detailsFormData.st_rate) *
-            parseFloat(this.detailsFormData.pub_price)
-        );
+            parseFloat(this.detailsFormData.pub_price);
       }
 
       if (
         parseFloat(this.detailsFormData.pub_price) > 0 &&
         parseFloat(this.detailsFormData.my_rate) > 0
       ) {
-        this.detailsFormData.sales_price = Math.floor(
+        this.detailsFormData.sales_price = 
           parseFloat(this.detailsFormData.my_rate) *
             parseFloat(this.detailsFormData.pub_price)
-        );
+        ;
       }
 
       if (
         parseFloat(this.detailsFormData.cost_price) > 0 &&
         parseInt(this.detailsFormData.copies) > 0
       ) {
-        this.detailsFormData.total_price = Math.floor(
+        this.detailsFormData.total_price = 
           parseFloat(this.detailsFormData.cost_price) *
             parseFloat(this.detailsFormData.copies)
-        );
+        ;
       }
     },
     sidebarClose() {

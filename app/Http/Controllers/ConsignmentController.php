@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Consignment;
 use App\ConsignmentDetails;
+use App\Book;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -25,32 +26,42 @@ class ConsignmentController extends Controller
        //
     }
 
-    public function getIdConsign($consign_ref){
+    public function getIdConsign(Request $request){
 
-        $data2 = Consignment::where('consign_ref', $consign_ref)->get('id');
-        $data = ConsignmentDetails::where('consignment_id',$data2)->get('cost_price');
-        return response()->json([
-            'data' => $data,
-            'message' => "success"
-        ], 200);
+        return ConsignmentDetails::with('book')->where('consignment_id', $request->id)->get();
 
     }
 
 
     public function store(Request $request)
     {
+
+        
+        
+
+
         DB::beginTransaction();
         try{
             $consignment = Consignment::create($request->only(['consign_ref', 'supplier_id', 'total_price']));
             foreach($request->details as $key => $item){
-                ConsignmentDetails::create(array_merge($item, ['qty' => $item['copies'], 'consignment_id' => $consignment->id]));
+               $consig = ConsignmentDetails::create(array_merge($item, ['qty' => $item['copies'], 'consignment_id' => $consignment->id]));
+               
+
+            //    $getqty = Book::where('id', $consig->book_id)->get(['available_quantity']);
+            //    $totalqty = $getqty + $consig->qty;
+
+               $bookk = Book::where('id', $consig->book_id)->update(['available_quantity' => $consig->qty]);
+                
+                
             }
             DB::commit();
-            return response(['message' => 'Consignment Created!']);
+            // return response(['message' => 'Consignment Created!']);
+            return response(['bookk' => $bookk], 200);
         }catch(Exception $e){
             DB::rollBack();
             return response(['message' => 'Opps! some Error!'], 500);
         }
+        
     }
 
     public function final_update(Request $request)
@@ -92,4 +103,58 @@ class ConsignmentController extends Controller
     //         cd::create([''])
     //     }
     // }
+
+
+    public function deleteConsignment(Request $request)
+    {
+        
+        $consignmentDetails = ConsignmentDetails::findOrFail($request->id);
+
+        $consignment = $consignmentDetails->consignment;
+
+        DB::beginTransaction();
+
+        try{
+
+            $reducePrice = $consignmentDetails->total_price;
+
+            $consignmentDetails->delete();
+            
+            $consignment->update(['total_price' => $consignment->total_price -= $reducePrice]);
+
+            DB::commit();
+
+        }catch(Exception $e){
+
+            DB::rollback();
+
+            return response(['message' => 'Opps! Some error!'], 500);
+
+        }
+
+        return response(['message' => 'Details Deleted Successfully!']);
+    }
+
+    public function updateConsignment(Request $request){
+
+        $consignmentDetails = ConsignmentDetails::findOrfail($request->id);
+
+        $consignment = $consignmentDetails->consignment;
+
+        $reducedTotalPrice = $consignment->total_price - $consignmentDetails->total_price;
+
+        $costPrice = $consignmentDetails->cost_price;
+        
+        $totalPrice = $request->qty * $costPrice;
+        
+        $consignmentDetails->update([
+            'qty'   =>  $request->qty,
+            'total_price'   =>  $totalPrice,
+        ]);
+
+        $consignment->update(['total_price' => $reducedTotalPrice + $totalPrice]);
+
+        return response(['message' => 'Data Saved Successfully']);
+
+    }
 }

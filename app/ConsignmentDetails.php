@@ -12,6 +12,7 @@ class ConsignmentDetails extends Model
         'cost_price',
         'pub_price',
         'sales_price',
+        'total_price',
         'qty',
     ];
 
@@ -19,5 +20,10 @@ class ConsignmentDetails extends Model
     public function consignment()
     {
         return $this->belongsTo(Consignment::class);
+    }
+
+    public function book()
+    {
+        return $this->belongsTo(Book::class);
     }
 }

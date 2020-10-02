@@ -2663,6 +2663,74 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -2670,22 +2738,50 @@ __webpack_require__.r(__webpack_exports__);
   data: function data() {
     return {
       consign_detailsAll: [],
-      consignmentList: []
+      consignmentList: [],
+      consignmentDetails: [],
+      qty: "",
+      editDetails: {
+        'book': {
+          'book_name': ''
+        },
+        'qty': ''
+      }
     };
   },
   methods: {
+    showEditModal: function showEditModal(item) {
+      this.editDetails = item;
+      console.log(item);
+      $("#exampleModal").modal("toggle");
+    },
     viewConsignment: function viewConsignment() {
       var _this = this;
 
-      axios.get('/getConsignment').then(function (response) {
+      axios.get("/getConsignment").then(function (response) {
         _this.consignmentList = response.data.data;
       });
     },
     consignmentByid: function consignmentByid(consignment) {
+      var _this2 = this;
+
       // console.log(consignment.consign_ref)
-      axios.get('/getConsignId/' + consignment.consign_ref).then(function (response) {
-        // this.consign_detailsAll = response.data.data;
-        console.log(response.data.data);
+      axios.get("/getConsignId?id=".concat(consignment.id)).then(function (response) {
+        _this2.consignmentDetails = response.data;
+      });
+    },
+    deleteSingleDetails: function deleteSingleDetails(id) {
+      var _this3 = this;
+
+      axios.post("/delete-consignment", {
+        id: id
+      }).then(function (response) {
+        _this3.consignmentDetails = [];
+      });
+    },
+    updateSingleDetails: function updateSingleDetails() {
+      axios.post("/update-consignment-details", this.editDetails).then(function (response) {
+        console.log(response.data);
       });
     }
   },
@@ -3947,6 +4043,55 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -3959,12 +4104,12 @@ __webpack_require__.r(__webpack_exports__);
     return {
       supplierlist: "",
       form: new Form({
-        supplier: '',
-        address: '',
-        phone: '',
-        fax: '',
-        mobile: '',
-        email: ''
+        supplier: "",
+        address: "",
+        phone: "",
+        fax: "",
+        mobile: "",
+        email: ""
       })
     };
   },
@@ -3973,23 +4118,23 @@ __webpack_require__.r(__webpack_exports__);
       var _this = this;
 
       // Submit the form via a POST request
-      this.form.post('/storeSupplier').then(function () {
-        axios.get('/getSupplier').then(function (response) {
+      this.form.post("/storeSupplier").then(function () {
+        axios.get("/getSupplier").then(function (response) {
           _this.supplierlist = response.data.data;
         });
 
         _this.form.reset();
 
         Toast.fire({
-          icon: 'success',
-          title: 'Supplier Added Successfully'
+          icon: "success",
+          title: "Supplier Added Successfully"
         });
       });
     },
     viewSupplier: function viewSupplier() {
       var _this2 = this;
 
-      axios.get('/getSupplier').then(function (response) {
+      axios.get("/getSupplier").then(function (response) {
         _this2.supplierlist = response.data.data;
       });
     }
@@ -4643,19 +4788,19 @@ __webpack_require__.r(__webpack_exports__);
     },
     costBd: function costBd() {
       if (parseFloat(this.detailsFormData.pub_price) > 0 && parseFloat(this.detailsFormData.conv_rate) > 0) {
-        this.detailsFormData.cost_price = Math.floor(parseFloat(this.detailsFormData.conv_rate) * parseFloat(this.detailsFormData.pub_price));
+        this.detailsFormData.cost_price = parseFloat(this.detailsFormData.conv_rate) * parseFloat(this.detailsFormData.pub_price);
       }
 
       if (parseFloat(this.detailsFormData.pub_price) > 0 && parseFloat(this.detailsFormData.st_rate) > 0) {
-        this.detailsFormData.sales_price = Math.floor(parseFloat(this.detailsFormData.st_rate) * parseFloat(this.detailsFormData.pub_price));
+        this.detailsFormData.sales_price = parseFloat(this.detailsFormData.st_rate) * parseFloat(this.detailsFormData.pub_price);
       }
 
       if (parseFloat(this.detailsFormData.pub_price) > 0 && parseFloat(this.detailsFormData.my_rate) > 0) {
-        this.detailsFormData.sales_price = Math.floor(parseFloat(this.detailsFormData.my_rate) * parseFloat(this.detailsFormData.pub_price));
+        this.detailsFormData.sales_price = parseFloat(this.detailsFormData.my_rate) * parseFloat(this.detailsFormData.pub_price);
       }
 
       if (parseFloat(this.detailsFormData.cost_price) > 0 && parseInt(this.detailsFormData.copies) > 0) {
-        this.detailsFormData.total_price = Math.floor(parseFloat(this.detailsFormData.cost_price) * parseFloat(this.detailsFormData.copies));
+        this.detailsFormData.total_price = parseFloat(this.detailsFormData.cost_price) * parseFloat(this.detailsFormData.copies);
       }
     },
     sidebarClose: function sidebarClose() {
@@ -9876,7 +10021,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.ulstyle[data-v-6545489e] {\n  list-style: none;\n  padding-left: 0px;\n  float: left;\n  width: 100%;\n}\n.ulstyle > li[data-v-6545489e]:hover {\n  background: #ddd;\n  color: blue;\n  border-radius: 5px;\n}\n.ulstyle > li > p[data-v-6545489e] {\n  padding: 5px;\n  cursor: pointer;\n  margin-bottom: 4px;\n  float: left;\n  width: 100%;\n}\n\n\n", ""]);
+exports.push([module.i, "\n.ulstyle[data-v-6545489e] {\r\n  list-style: none;\r\n  padding-left: 0px;\r\n  float: left;\r\n  width: 100%;\n}\n.ulstyle > li[data-v-6545489e]:hover {\r\n  background: #ddd;\r\n  color: blue;\r\n  border-radius: 5px;\n}\n.ulstyle > li > p[data-v-6545489e] {\r\n  padding: 5px;\r\n  cursor: pointer;\r\n  margin-bottom: 4px;\r\n  float: left;\r\n  width: 100%;\n}\r\n\r\n\r\n", ""]);
 
 // exports
 
@@ -9895,7 +10040,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.ulstyle[data-v-8e43ef84] {\n  list-style: none;\n  padding-left: 0px;\n  float: left;\n  width: 100%;\n}\n.ulstyle > li[data-v-8e43ef84]:hover {\n  background: #ddd;\n  color: blue;\n  border-radius: 5px;\n}\n.ulstyle > li > p[data-v-8e43ef84] {\n  padding: 5px;\n  cursor: pointer;\n  margin-bottom: 4px;\n  float: left;\n  width: 100%;\n}\n.card-title[data-v-8e43ef84] {\n  float: left;\n}\n.supp[data-v-8e43ef84] {\n  width: 100%;\n  float: right;\n}\n", ""]);
+exports.push([module.i, "\n.ulstyle[data-v-8e43ef84] {\r\n  list-style: none;\r\n  padding-left: 0px;\r\n  float: left;\r\n  width: 100%;\n}\n.ulstyle > li[data-v-8e43ef84]:hover {\r\n  background: #ddd;\r\n  color: blue;\r\n  border-radius: 5px;\n}\n.ulstyle > li > p[data-v-8e43ef84] {\r\n  padding: 5px;\r\n  cursor: pointer;\r\n  margin-bottom: 4px;\r\n  float: left;\r\n  width: 100%;\n}\n.card-title[data-v-8e43ef84] {\r\n  float: left;\n}\n.supp[data-v-8e43ef84] {\r\n  width: 100%;\r\n  float: right;\n}\r\n", ""]);
 
 // exports
 
@@ -9914,7 +10059,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.head_menu{\n        border-radius: 10px;\n        border: 1px solid #fff;\n        background: #494E54;\n        color: #fff !important;\n        margin-left: 14px;\n}\n.head_menu:hover {\n          background: gray !important;\n          color: black !important;\n          border:1px solid #ddd;transition-delay: 0.2s;\n}\n.fixed_position{\n          left:0;\n          right:0; top: 0;\n          position: fixed;\n}\n", ""]);
+exports.push([module.i, "\n.head_menu{\r\n        border-radius: 10px;\r\n        border: 1px solid #fff;\r\n        background: #494E54;\r\n        color: #fff !important;\r\n        margin-left: 14px;\n}\n.head_menu:hover {\r\n          background: gray !important;\r\n          color: black !important;\r\n          border:1px solid #ddd;transition-delay: 0.2s;\n}\n.fixed_position{\r\n          left:0;\r\n          right:0; top: 0;\r\n          position: fixed;\n}\r\n", ""]);
 
 // exports
 
@@ -69434,111 +69579,290 @@ var render = function() {
       _c("div", { staticClass: "content-wrapper" }, [
         _c("div", { staticClass: "content" }, [
           _c("div", { staticClass: "container-fluid" }, [
-            _c("div", { staticClass: "container" }, [
-              _c("div", { staticClass: "row mt-5" }, [
-                _c("div", { staticClass: "col-md-12" }, [
-                  _c("div", { staticClass: "card" }, [
-                    _c("div", { staticClass: "card-header" }, [
-                      _c("h3", { staticClass: "card-title" }, [
-                        _vm._v("Consignment History")
+            _c(
+              "div",
+              { staticClass: "container" },
+              [
+                _c("div", { staticClass: "row mt-5" }, [
+                  _c("div", { staticClass: "col-md-12" }, [
+                    _c("div", { staticClass: "card" }, [
+                      _c("div", { staticClass: "card-header" }, [
+                        _c("h3", { staticClass: "card-title" }, [
+                          _vm._v("Consignment History")
+                        ]),
+                        _vm._v(" "),
+                        _c(
+                          "div",
+                          { staticClass: "card-tools" },
+                          [
+                            _c(
+                              "router-link",
+                              {
+                                staticClass: "nav-link",
+                                attrs: { to: "/newConsignment" }
+                              },
+                              [
+                                _c(
+                                  "button",
+                                  { staticClass: "btn btn-success" },
+                                  [
+                                    _vm._v(
+                                      "\n                        New Consignment\n                        "
+                                    ),
+                                    _c("i", {
+                                      staticClass: "fas fa-user-plus fa-fw"
+                                    })
+                                  ]
+                                )
+                              ]
+                            )
+                          ],
+                          1
+                        )
                       ]),
                       _vm._v(" "),
                       _c(
                         "div",
-                        { staticClass: "card-tools" },
+                        { staticClass: "card-body table-responsive p-0" },
                         [
-                          _c(
-                            "router-link",
-                            {
-                              staticClass: "nav-link",
-                              attrs: { to: "/newConsignment" }
-                            },
-                            [
-                              _c("button", { staticClass: "btn btn-success" }, [
-                                _vm._v("New Consignment"),
-                                _c("i", {
-                                  staticClass: "fas fa-user-plus fa-fw"
-                                })
-                              ])
-                            ]
-                          )
-                        ],
-                        1
-                      )
-                    ]),
-                    _vm._v(" "),
-                    _c(
-                      "div",
-                      { staticClass: "card-body table-responsive p-0" },
-                      [
-                        _c("table", { staticClass: "table table-hover" }, [
-                          _vm._m(0),
-                          _vm._v(" "),
-                          _c(
-                            "tbody",
-                            _vm._l(_vm.consignmentList, function(consignment) {
-                              return _c("tr", { key: consignment.id }, [
-                                _c("td", [
-                                  _vm._v(
-                                    "Consignment/2020/" +
-                                      _vm._s(consignment.consign_ref)
-                                  )
-                                ]),
-                                _vm._v(" "),
-                                _c("td", [
-                                  _vm._v(
-                                    _vm._s(
-                                      _vm._f("formatDate")(
-                                        consignment.created_at
+                          _c("table", { staticClass: "table table-hover" }, [
+                            _vm._m(0),
+                            _vm._v(" "),
+                            _c(
+                              "tbody",
+                              _vm._l(_vm.consignmentList, function(
+                                consignment
+                              ) {
+                                return _c("tr", { key: consignment.id }, [
+                                  _c("td", [
+                                    _vm._v(
+                                      "Consignment/2020/" +
+                                        _vm._s(consignment.consign_ref)
+                                    )
+                                  ]),
+                                  _vm._v(" "),
+                                  _c("td", [
+                                    _vm._v(
+                                      _vm._s(
+                                        _vm._f("formatDate")(
+                                          consignment.created_at
+                                        )
                                       )
                                     )
-                                  )
-                                ]),
-                                _vm._v(" "),
-                                _c("td", [_vm._v("Purchase")]),
-                                _vm._v(" "),
-                                _c("td", [
-                                  _vm._v(
-                                    _vm._s(consignment.get_supplier.supplier)
-                                  )
-                                ]),
-                                _vm._v(" "),
-                                _c("td", [_vm._v("Cash")]),
-                                _vm._v(" "),
-                                _c("td", [
-                                  _c(
-                                    "a",
-                                    {
-                                      attrs: { href: "#" },
-                                      on: {
-                                        click: function($event) {
-                                          return _vm.consignmentByid(
-                                            consignment
-                                          )
-                                        }
-                                      }
-                                    },
-                                    [_vm._m(1, true)]
-                                  ),
+                                  ]),
                                   _vm._v(" "),
-                                  _vm._m(2, true)
+                                  _c("td", [_vm._v("Purchase")]),
+                                  _vm._v(" "),
+                                  _c("td", [
+                                    _vm._v(
+                                      _vm._s(consignment.get_supplier.supplier)
+                                    )
+                                  ]),
+                                  _vm._v(" "),
+                                  _c("td", [_vm._v("Cash")]),
+                                  _vm._v(" "),
+                                  _c("td", [
+                                    _c(
+                                      "button",
+                                      {
+                                        staticClass: "btn btn-info btn-sm",
+                                        on: {
+                                          click: function($event) {
+                                            return _vm.consignmentByid(
+                                              consignment
+                                            )
+                                          }
+                                        }
+                                      },
+                                      [_c("i", { staticClass: "fa fa-eye" })]
+                                    ),
+                                    _vm._v(" "),
+                                    _vm._m(1, true)
+                                  ])
                                 ])
-                              ])
-                            }),
-                            0
-                          )
-                        ])
-                      ]
-                    )
+                              }),
+                              0
+                            )
+                          ])
+                        ]
+                      )
+                    ])
                   ])
-                ])
-              ])
-            ])
+                ]),
+                _vm._v(" "),
+                _vm._l(_vm.consignmentDetails, function(item, index) {
+                  return _c("div", { key: index, staticClass: "row" }, [
+                    _c("div", { staticClass: "col-md-4" }, [
+                      _c("div", { staticClass: "form-group" }, [
+                        _c("label", { attrs: { for: "" } }, [_vm._v("Book")]),
+                        _vm._v(" "),
+                        _c("input", {
+                          staticClass: "form-control",
+                          attrs: { type: "text", readonly: "" },
+                          domProps: { value: item.book.book_name }
+                        })
+                      ])
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "col-md-4" }, [
+                      _c("div", { staticClass: "form-group" }, [
+                        _c("label", { attrs: { for: "" } }, [_vm._v("Copies")]),
+                        _vm._v(" "),
+                        _c("input", {
+                          staticClass: "form-control",
+                          attrs: { type: "text", readonly: "" },
+                          domProps: { value: item.qty }
+                        })
+                      ])
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "col-md-4" }, [
+                      _c(
+                        "button",
+                        {
+                          staticClass: "float-left btn btn-primary btn-sm",
+                          staticStyle: { "margin-top": "25px" },
+                          on: {
+                            click: function($event) {
+                              return _vm.showEditModal(item)
+                            }
+                          }
+                        },
+                        [_vm._v("Edit")]
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "button",
+                        {
+                          staticClass: "float-left btn btn-danger btn-sm",
+                          staticStyle: { "margin-top": "25px" },
+                          on: {
+                            click: function($event) {
+                              return _vm.deleteSingleDetails(item.id)
+                            }
+                          }
+                        },
+                        [_vm._v("Delete")]
+                      )
+                    ])
+                  ])
+                })
+              ],
+              2
+            )
           ])
         ])
       ]),
       _vm._v(" "),
-      _c("footerComponent")
+      _c("footerComponent"),
+      _vm._v(" "),
+      _c(
+        "div",
+        {
+          staticClass: "modal fade",
+          attrs: {
+            id: "exampleModal",
+            tabindex: "-1",
+            role: "dialog",
+            "aria-labelledby": "exampleModalLabel",
+            "aria-hidden": "true"
+          }
+        },
+        [
+          _c(
+            "div",
+            { staticClass: "modal-dialog", attrs: { role: "document" } },
+            [
+              _c("div", { staticClass: "modal-content" }, [
+                _vm._m(2),
+                _vm._v(" "),
+                _c("div", { staticClass: "modal-body" }, [
+                  _c(
+                    "form",
+                    {
+                      on: {
+                        submit: function($event) {
+                          $event.preventDefault()
+                          return _vm.updateSingleDetails($event)
+                        }
+                      }
+                    },
+                    [
+                      _c("div", { staticClass: "modal-body" }, [
+                        _c("div", { staticClass: "form-group" }, [
+                          _c("label", { attrs: { for: "" } }, [
+                            _vm._v("Book Name")
+                          ]),
+                          _vm._v(" "),
+                          _c("input", {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.editDetails.book.book_name,
+                                expression: "editDetails.book.book_name"
+                              }
+                            ],
+                            staticClass: "form-control",
+                            attrs: { type: "text", readonly: "" },
+                            domProps: { value: _vm.editDetails.book.book_name },
+                            on: {
+                              input: function($event) {
+                                if ($event.target.composing) {
+                                  return
+                                }
+                                _vm.$set(
+                                  _vm.editDetails.book,
+                                  "book_name",
+                                  $event.target.value
+                                )
+                              }
+                            }
+                          })
+                        ]),
+                        _vm._v(" "),
+                        _c("div", { staticClass: "form-group" }, [
+                          _c("label", { attrs: { for: "" } }, [
+                            _vm._v("Quantity")
+                          ]),
+                          _vm._v(" "),
+                          _c("input", {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.editDetails.qty,
+                                expression: "editDetails.qty"
+                              }
+                            ],
+                            staticClass: "form-control",
+                            attrs: { type: "number" },
+                            domProps: { value: _vm.editDetails.qty },
+                            on: {
+                              input: function($event) {
+                                if ($event.target.composing) {
+                                  return
+                                }
+                                _vm.$set(
+                                  _vm.editDetails,
+                                  "qty",
+                                  $event.target.value
+                                )
+                              }
+                            }
+                          })
+                        ])
+                      ]),
+                      _vm._v(" "),
+                      _vm._m(3)
+                    ]
+                  )
+                ])
+              ])
+            ]
+          )
+        ]
+      )
     ],
     1
   )
@@ -69568,18 +69892,56 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("button", { staticClass: "btn btn-info btn-sm" }, [
-      _c("i", { staticClass: "fa fa-eye" })
+    return _c("a", { attrs: { href: "#" } }, [
+      _c("button", { staticClass: "btn btn-danger btn-sm" }, [
+        _c("i", { staticClass: "fa fa-trash" })
+      ])
     ])
   },
   function() {
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("a", { attrs: { href: "#" } }, [
-      _c("button", { staticClass: "btn btn-danger btn-sm" }, [
-        _c("i", { staticClass: "fa fa-trash" })
-      ])
+    return _c("div", { staticClass: "modal-header" }, [
+      _c(
+        "h5",
+        { staticClass: "modal-title", attrs: { id: "exampleModalLabel" } },
+        [_vm._v("Modal title")]
+      ),
+      _vm._v(" "),
+      _c(
+        "button",
+        {
+          staticClass: "close",
+          attrs: {
+            type: "button",
+            "data-dismiss": "modal",
+            "aria-label": "Close"
+          }
+        },
+        [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
+      )
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "modal-footer" }, [
+      _c(
+        "button",
+        {
+          staticClass: "btn btn-danger",
+          attrs: { type: "button", "data-dismiss": "modal" }
+        },
+        [_vm._v("Close")]
+      ),
+      _vm._v(" "),
+      _c(
+        "button",
+        { staticClass: "btn btn-primary", attrs: { type: "submit" } },
+        [_vm._v("Create")]
+      )
     ])
   }
 ]
@@ -72156,7 +72518,7 @@ var staticRenderFns = [
             attrs: { "data-toggle": "modal", "data-target": "#addNew" }
           },
           [
-            _vm._v("Add New "),
+            _vm._v("\n                      Add New\n                      "),
             _c("i", { staticClass: "fas fa-user-plus fa-fw" })
           ]
         )
@@ -72209,7 +72571,7 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c("div", { staticClass: "modal-header" }, [
       _c("h5", { staticClass: "modal-title", attrs: { id: "addNewLabel" } }, [
-        _vm._v("Add New Supplier ")
+        _vm._v("Add New Supplier")
       ]),
       _vm._v(" "),
       _c(
@@ -74777,7 +75139,7 @@ var render = function() {
                   }
                 ],
                 staticClass: "form-control",
-                attrs: { type: "email", placeholder: "Email" },
+                attrs: { name: "email", type: "email", placeholder: "Email" },
                 domProps: { value: _vm.form.email },
                 on: {
                   input: function($event) {
@@ -74805,7 +75167,11 @@ var render = function() {
                   }
                 ],
                 staticClass: "form-control",
-                attrs: { type: "password", placeholder: "Password" },
+                attrs: {
+                  name: "password",
+                  type: "password",
+                  placeholder: "Password"
+                },
                 domProps: { value: _vm.form.password },
                 on: {
                   input: function($event) {
@@ -91007,15 +91373,14 @@ __webpack_require__.r(__webpack_exports__);
 /*!*************************************************!*\
   !*** ./resources/js/components/Consignment.vue ***!
   \*************************************************/
-/*! no static exports found */
+/*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Consignment_vue_vue_type_template_id_77705082___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Consignment.vue?vue&type=template&id=77705082& */ "./resources/js/components/Consignment.vue?vue&type=template&id=77705082&");
 /* harmony import */ var _Consignment_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Consignment.vue?vue&type=script&lang=js& */ "./resources/js/components/Consignment.vue?vue&type=script&lang=js&");
-/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _Consignment_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__) if(__WEBPACK_IMPORT_KEY__ !== 'default') (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _Consignment_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__[key]; }) }(__WEBPACK_IMPORT_KEY__));
-/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
 
 
 
@@ -91045,7 +91410,7 @@ component.options.__file = "resources/js/components/Consignment.vue"
 /*!**************************************************************************!*\
   !*** ./resources/js/components/Consignment.vue?vue&type=script&lang=js& ***!
   \**************************************************************************/
-/*! no static exports found */
+/*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -92139,8 +92504,8 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! D:\Hasinur\Inventory\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! D:\Hasinur\Inventory\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! D:\Office Project\Inventory\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! D:\Office Project\Inventory\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })
