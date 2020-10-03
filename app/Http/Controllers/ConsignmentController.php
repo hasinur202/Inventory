@@ -35,45 +35,36 @@ class ConsignmentController extends Controller
 
     public function store(Request $request)
     {
-
-        
-        
-
-
         DB::beginTransaction();
         try{
             $consignment = Consignment::create($request->only(['consign_ref', 'supplier_id', 'total_price']));
             foreach($request->details as $key => $item){
+
                $consig = ConsignmentDetails::create(array_merge($item, ['qty' => $item['copies'], 'consignment_id' => $consignment->id]));
-               
 
-            //    $getqty = Book::where('id', $consig->book_id)->get(['available_quantity']);
-            //    $totalqty = $getqty + $consig->qty;
+               $book = Book::where('id', $consig->book_id)->first();
 
-               $bookk = Book::where('id', $consig->book_id)->update(['available_quantity' => $consig->qty]);
-                
-                
+               $book->update(['available_quantity' => $book->available_quantity + $consig->qty]);
             }
+
             DB::commit();
-            // return response(['message' => 'Consignment Created!']);
-            return response(['bookk' => $bookk], 200);
+            return response(['message' => 'Consignment Created!']);
+            // return response(['bookk' => $bookk], 200);
         }catch(Exception $e){
             DB::rollBack();
             return response(['message' => 'Opps! some Error!'], 500);
         }
-        
+
     }
 
-    public function final_update(Request $request)
-    {
-        $data = Consignment::where('hide', 1)->update(['hide' => 0]);
+    // public function final_update(Request $request)
+    // {
+    //     $data = Consignment::where('hide', 1)->update(['hide' => 0]);
+    //     // $data->hide = 0;
 
-        // $data->hide = 0;
-
-        // $data->save();
-
-        return response(['message', 'Updated!'], 200);
-    }
+    //     // $data->save();
+    //     return response(['message', 'Updated!'], 200);
+    // }
 
     // public function saveConsignment(Request $request)
     // {
@@ -107,7 +98,6 @@ class ConsignmentController extends Controller
 
     public function deleteConsignment(Request $request)
     {
-        
         $consignmentDetails = ConsignmentDetails::findOrFail($request->id);
 
         $consignment = $consignmentDetails->consignment;
@@ -119,7 +109,7 @@ class ConsignmentController extends Controller
             $reducePrice = $consignmentDetails->total_price;
 
             $consignmentDetails->delete();
-            
+
             $consignment->update(['total_price' => $consignment->total_price -= $reducePrice]);
 
             DB::commit();
@@ -143,16 +133,21 @@ class ConsignmentController extends Controller
 
         $reducedTotalPrice = $consignment->total_price - $consignmentDetails->total_price;
 
-        $costPrice = $consignmentDetails->cost_price;
-        
-        $totalPrice = $request->qty * $costPrice;
-        
+        // $costPrice = $consignmentDetails->cost_price;
+
+        // $totalPrice = $request->qty * $costPrice;
+
         $consignmentDetails->update([
             'qty'   =>  $request->qty,
-            'total_price'   =>  $totalPrice,
+            'pub_price' => $request->pub_price,
+            'cost_price' => $request->cost_price,
+            'sales_price' => $request->sales_price,
+            'conv_rate' => $request->conv_rate,
+            'st_rate' => $request->st_rate,
+            'total_price'   =>  $request->total_price,
         ]);
 
-        $consignment->update(['total_price' => $reducedTotalPrice + $totalPrice]);
+        $consignment->update(['total_price' => $reducedTotalPrice + $request->total_price]);
 
         return response(['message' => 'Data Saved Successfully']);
 

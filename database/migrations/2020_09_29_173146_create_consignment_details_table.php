@@ -24,6 +24,9 @@ class CreateConsignmentDetailsTable extends Migration
             $table->float('sales_price');
             $table->float('total_price');
             $table->integer('qty');
+            $table->float('conv_rate');
+            $table->float('st_rate');
+            $table->string('currency');
             $table->timestamps();
         });
     }

@@ -6,7 +6,8 @@
         <div class="container-fluid">
           <div class="container">
             <div class="row mt-5">
-              <div class="col-md-12">
+
+              <div class="col-md-8" style="float:left;">
                 <div class="card">
                   <div class="card-header">
                     <h3 class="card-title">Consignment History</h3>
@@ -27,7 +28,6 @@
                         <tr>
                           <th>Consignment Ref#</th>
                           <th>Consignment Date</th>
-                          <th>Type</th>
                           <th>Supplier</th>
                           <th>Pay Mode</th>
                           <th>Modify</th>
@@ -37,7 +37,6 @@
                         <tr v-for="consignment in consignmentList" :key="consignment.id">
                           <td>Consignment/2020/{{ consignment.consign_ref }}</td>
                           <td>{{ consignment.created_at | formatDate }}</td>
-                          <td>Purchase</td>
                           <td>{{ consignment.get_supplier.supplier }}</td>
                           <td>Cash</td>
                           <td>
@@ -48,9 +47,7 @@
                                 <i class="fa fa-eye"></i>
                               </button>
                             <a href="#">
-                              <button class="btn btn-danger btn-sm">
-                                <i class="fa fa-trash"></i>
-                              </button>
+                              <!-- <button class="btn btn-danger btn-sm"><i class="fa fa-trash"></i></button> -->
                             </a>
                           </td>
                         </tr>
@@ -61,39 +58,192 @@
                 </div>
                 <!-- /.card -->
               </div>
+
+              <div class="col-md-4" style="float:right;">
+                  <div class="card">
+                  <div class="card-body table-responsive p-0">
+                    <table class="table table-hover">
+                      <thead>
+                        <tr>
+                          <th>Quantity</th>
+                          <th>Total Price</th>
+                          <th>Modify</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr v-for="(item, index) in consignmentDetails" :key="index">
+                          <td>{{ item.qty }}</td>
+                          <td>{{ item.total_price }}</td>
+                          <td>
+                              <button
+                                @click="showEditModal(item)"
+                                class="float-left btn btn-primary btn-sm"
+                                ><i class="fa fa-edit"></i></button>
+                                <button
+                                @click="deleteSingleDetails(item.id)"
+                                class="float-left btn btn-danger btn-sm"
+                                ><i class="fa fa-trash"></i></button>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+              </div>
+
+              </div>
+
             </div>
-            <div class="row" v-for="(item, index) in consignmentDetails" :key="index">
-              <div class="col-md-4">
-                <div class="form-group">
-                  <label for>Book</label>
-                  <input :value="item.book.book_name" type="text" class="form-control" readonly />
-                </div>
-              </div>
-              <div class="col-md-4">
-                <div class="form-group">
-                  <label for>Copies</label>
-                  <input :value="item.qty" type="text" class="form-control" readonly />
-                </div>
-              </div>
-              <div class="col-md-4">
-                <button
-                  @click="showEditModal(item)"
-                  style="margin-top:25px"
-                  class="float-left btn btn-primary btn-sm"
-                >Edit</button>
-                <button
-                  @click="deleteSingleDetails(item.id)"
-                  style="margin-top:25px"
-                  class="float-left btn btn-danger btn-sm"
-                >Delete</button>
-              </div>
-            </div>
+
           </div>
         </div>
       </div>
     </div>
     <footerComponent></footerComponent>
-    <div
+
+
+                <div
+                    class="modal fade"
+                    id="exampleModal"
+                    tabindex="-1"
+                    role="dialog"
+                    aria-labelledby="exampleModalLabel"
+                    aria-hidden="true"
+                    >
+                    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                  <!-- /.card-header -->
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="addNewLabel">Edit Consignment</h5>
+                    </div>
+                    <form @submit.prevent="updateSingleDetails">
+                    <div class="modal-body">
+                      <div class="col-md-12">
+                        <div class="col-md-6" style="padding-left:0px !important; float:left">
+                          <div class="form-group">
+                            <input
+                              v-model="editDetails.book.isbn"
+                              type="text"
+                              class="form-control" readonly
+                            />
+                          </div>
+                        </div>
+
+                        <div>
+                          <div class="form-group">
+                            <input
+                              v-model="editDetails.book.book_name"
+                              readonly
+                              type="text"
+                              class="form-control"
+                            />
+                          </div>
+                        </div>
+
+                        <div class="col-md-6" style="padding-left:0px !important; float:left">
+                          <div class="form-group">
+                            <label>Copies</label>
+                            <input
+                              v-model="editDetails.qty"
+                                @keyup="costBd"
+                              type="number"
+                              class="form-control"
+                            />
+                          </div>
+
+                          <div class="form-group">
+                            <label>Publishers Price [In Original Currency]</label>
+                            <div style="width:38%; float:left;">
+                              <select
+                                v-model="editDetails.currency"
+                                id="type"
+                                name="currency"
+                                style="padding: 6px; padding-right: 60px;"
+                              >
+                                <option value="TK">{{ editDetails.currency }}</option>
+                                <option value="INR">INR</option>
+                                <option value="USD">USD</option>
+                              </select>
+                            </div>
+                            <div style="width:60%; float: right;">
+                            <input
+                                @keyup="costBd"
+                              v-model="editDetails.pub_price"
+                              type="number"
+                              class="form-control"
+                            />
+                            </div>
+                          </div>
+
+                          <div style="width:48%; float: left;">
+                            <div class="form-group">
+                              <label>Conv. Rate</label>
+                              <input
+                                @keyup="costBd"
+                                v-model="editDetails.conv_rate"
+                                type="text"
+                                class="form-control"
+                              />
+                            </div>
+                          </div>
+
+                          <div style="width:48%; float: right;">
+                            <div class="form-group">
+                              <label>Rate</label>
+                              <input
+                                @keyup="costBd"
+                                v-model="editDetails.st_rate"
+                                type="text"
+                                class="form-control"
+                              />
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="col-md-6" style="padding-right:0px !important; float:left;">
+                          <div class="form-group">
+                            <label>Cost Price in BD</label>
+                            <input
+                              v-model="editDetails.cost_price"
+                              readonly
+                              type="text"
+                              class="form-control"
+                            />
+                          </div>
+
+                          <div class="form-group">
+                            <label>Sales Price in BD</label>
+                            <input
+                              v-model="editDetails.sales_price"
+                              readonly
+                              type="text"
+                              placeholder="Sales in BD"
+                              class="form-control"
+                            />
+                          </div>
+                          <input hidden v-model="editDetails.total_price" readonly type="text" />
+                        </div>
+                      </div>
+                      <div class="modal-footer">
+                        <button
+                          type="submit"
+                          class="btn btn-primary"
+                        >Update</button>
+                      </div>
+                    </div>
+                    </form>
+                  </div>
+                </div>
+                </div>
+                  <!--- end col md-12 -->
+
+
+
+
+
+
+
+
+    <!-- <div
       class="modal fade"
       id="exampleModal"
       tabindex="-1"
@@ -101,7 +251,7 @@
       aria-labelledby="exampleModalLabel"
       aria-hidden="true"
     >
-      <div class="modal-dialog" role="document">
+      <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
@@ -113,12 +263,20 @@
             <form @submit.prevent="updateSingleDetails">
               <div class="modal-body">
                 <div class="form-group">
-                  <label for>Book Name</label>
-                  <input class="form-control" type="text" v-model="editDetails.book.book_name" readonly />
-                </div>
-                <div class="form-group">
                   <label for>Quantity</label>
                   <input class="form-control" type="number" v-model="editDetails.qty" />
+                </div>
+                <div class="form-group">
+                  <label for>Cost Price</label>
+                  <input class="form-control" type="text" v-model="editDetails.cost_price"/>
+                </div>
+                <div class="form-group">
+                  <label for>Sales Price</label>
+                  <input class="form-control" type="number" v-model="editDetails.sales_price" />
+                </div>
+                <div class="form-group">
+                  <label for>Publishers Price</label>
+                  <input class="form-control" type="number" v-model="editDetails.pub_price" />
                 </div>
               </div>
 
@@ -130,7 +288,10 @@
           </div>
         </div>
       </div>
-    </div>
+    </div> -->
+
+
+
   </div>
 </template>
 
@@ -146,7 +307,16 @@ export default {
       consignmentList: [],
       consignmentDetails: [],
       qty: "",
-      editDetails: {'book' : {'book_name' : ''}, 'qty' : ''},
+      editDetails: {
+          'book' : {'book_name' : ''},
+          'qty' : '',
+          'cost_price':'',
+          'sales_price':'',
+          'pub_price':'',
+          'conv_rate':'',
+          'st_rate':'',
+          'total_price':'',
+        },
     };
   },
 
@@ -164,7 +334,6 @@ export default {
 
     consignmentByid(consignment) {
       // console.log(consignment.consign_ref)
-
       axios.get(`/getConsignId?id=${consignment.id}`).then(response => {
         this.consignmentDetails = response.data;
       });
@@ -172,7 +341,11 @@ export default {
 
     deleteSingleDetails(id) {
       axios.post(`/delete-consignment`, { id: id }).then(response => {
-        this.consignmentDetails = [];
+
+        Toast.fire({
+            icon: 'success',
+            title: 'Item Deleted Successfully'
+        })
       });
     },
 
@@ -181,8 +354,57 @@ export default {
         .post(`/update-consignment-details`, this.editDetails)
         .then(response => {
           console.log(response.data);
+          Toast.fire({
+            icon: 'success',
+            title: 'Item Updated Successfully'
+        })
         });
-    }
+    },
+
+    pub_price: function(event) {
+      this.editDetails.pub_price = event.target.value;
+    },
+    st_rate: function(event) {
+      this.editDetails.st_rate = event.target.value;
+    },
+    conv_rate: function(event) {
+      this.editDetails.conv_rate = event.target.value;
+    },
+    qty: function(event) {
+      this.editDetails.copies = event.target.value;
+    },
+
+    costBd() {
+      if (
+        parseFloat(this.editDetails.pub_price) > 0 &&
+        parseFloat(this.editDetails.conv_rate) > 0
+      ) {
+        this.editDetails.cost_price =
+          parseFloat(this.editDetails.conv_rate) *
+            parseFloat(this.editDetails.pub_price)
+        ;
+      }
+
+      if (
+        parseFloat(this.editDetails.pub_price) > 0 &&
+        parseFloat(this.editDetails.st_rate) > 0
+      ) {
+        this.editDetails.sales_price =
+          parseFloat(this.editDetails.st_rate) *
+            parseFloat(this.editDetails.pub_price);
+      }
+
+      if (
+        parseFloat(this.editDetails.cost_price) > 0 &&
+        parseInt(this.editDetails.qty) > 0
+      ) {
+        this.editDetails.total_price =
+          parseFloat(this.editDetails.cost_price) *
+            parseFloat(this.editDetails.qty)
+        ;
+      }
+    },
+
   },
 
   components: {

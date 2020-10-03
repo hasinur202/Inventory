@@ -14,7 +14,7 @@ class AddAvailableQuantityColumnToBooksTable extends Migration
     public function up()
     {
         Schema::table('books', function (Blueprint $table) {
-            $table->integer('available_quantity')->nullable();
+            $table->integer('available_quantity')->default(0);
         });
     }
 

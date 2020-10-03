@@ -14,6 +14,9 @@ class ConsignmentDetails extends Model
         'sales_price',
         'total_price',
         'qty',
+        'conv_rate',
+        'st_rate',
+        'currency',
     ];
 
 

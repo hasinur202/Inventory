@@ -151,7 +151,6 @@
                                 v-model="detailsFormData.pub_price"
                                 @keyup="costBd"
                                 type="text"
-                                name="pub_price"
                                 placeholder="Publishers Price"
                                 class="form-control"
                               />
@@ -165,7 +164,6 @@
                                 v-model="detailsFormData.conv_rate"
                                 @keyup="costBd"
                                 type="text"
-                                name="conv_rate"
                                 placeholder="Conv. Rate"
                                 class="form-control"
                               />
@@ -387,7 +385,7 @@ export default {
         sales_price: "",
         isbn: "",
         book_name: "",
-        currency: "TK",
+        currency: "",
         conv_rate: "0.65",
         st_rate: "0.8",
         my_ratem: "",
@@ -473,7 +471,7 @@ export default {
         parseFloat(this.detailsFormData.pub_price) > 0 &&
         parseFloat(this.detailsFormData.conv_rate) > 0
       ) {
-        this.detailsFormData.cost_price = 
+        this.detailsFormData.cost_price =
           parseFloat(this.detailsFormData.conv_rate) *
             parseFloat(this.detailsFormData.pub_price)
         ;
@@ -483,7 +481,7 @@ export default {
         parseFloat(this.detailsFormData.pub_price) > 0 &&
         parseFloat(this.detailsFormData.st_rate) > 0
       ) {
-        this.detailsFormData.sales_price = 
+        this.detailsFormData.sales_price =
           parseFloat(this.detailsFormData.st_rate) *
             parseFloat(this.detailsFormData.pub_price);
       }
@@ -492,7 +490,7 @@ export default {
         parseFloat(this.detailsFormData.pub_price) > 0 &&
         parseFloat(this.detailsFormData.my_rate) > 0
       ) {
-        this.detailsFormData.sales_price = 
+        this.detailsFormData.sales_price =
           parseFloat(this.detailsFormData.my_rate) *
             parseFloat(this.detailsFormData.pub_price)
         ;
@@ -502,7 +500,7 @@ export default {
         parseFloat(this.detailsFormData.cost_price) > 0 &&
         parseInt(this.detailsFormData.copies) > 0
       ) {
-        this.detailsFormData.total_price = 
+        this.detailsFormData.total_price =
           parseFloat(this.detailsFormData.cost_price) *
             parseFloat(this.detailsFormData.copies)
         ;
