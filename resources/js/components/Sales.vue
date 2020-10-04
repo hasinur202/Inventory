@@ -34,30 +34,96 @@
 
                                     <div class="card-body">
                                         <div class="row">
-                                            <div class="col-md-6">
+                                            <div class="col-md-4">
                                                 <div class="form-group">
-                                                    <input v-model="dataArray.customer_name" type="text" placeholder="Customer Name" class="form-control">
-                                                </div>
-                                                <div class="form-group">
-                                                    <input v-model="dataArray.email" type="text" placeholder="Email" class="form-control">
+                                                    <input v-model="dataArray.cus_name" type="text" placeholder="Customer Name" class="form-control">
                                                 </div>
                                                 <div class="form-group">
                                                     <input v-model="dataArray.phone" type="text" placeholder="Phone" class="form-control">
                                                 </div>
-                                            </div>
 
-                                            <!-- /.col -->
-                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <input v-model="dataArray.email" type="text" placeholder="Email" class="form-control">
+                                                </div>
                                                 <div class="form-group">
                                                     <textarea v-model="dataArray.address" type="text" name="summary" placeholder="Address" class="form-control"></textarea>
                                                 </div>
 
-                                                <!-- <div class="col-md-6" style="float:right; text-align:center;padding-right:0px">
-                                                    <div class="form-group">
-                                                        <button type="button" class="btn btn-danger" >Cancel</button>
-                                                        <button type="submit" class="btn btn-primary">Save</button>
+                                            </div>
+
+                                            <!-- /.col -->
+                                            <div class="card-header col-md-8">
+                                                <h5 class="invoice_title">Invoice Summary</h5>
+                                                <div class="col-md-6 mytable" style="float:left;">
+                                                    <div class="row">
+                                                        <div class="col-md-5" style="padding-left:0">
+                                                            <label>Total Quantity :</label>
+                                                        </div>
+                                                        <div class="col-md-7" style="padding-left:0">
+                                                            <input v-model="dataArray.total_qty" readonly>
+                                                        </div>
                                                     </div>
-                                                </div> -->
+                                                    <div class="row">
+                                                        <div class="col-md-5" style="padding-left:0">
+                                                            <label>Total Price :</label>
+                                                        </div>
+                                                        <div class="col-md-7" style="padding-left:0">
+                                                            <input v-model="dataArray.total_price" readonly>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-md-5" style="padding-left:0">
+                                                            <label>Total Discount :</label>
+                                                        </div>
+                                                        <div class="col-md-7" style="padding-left:0">
+                                                            <input v-model="dataArray.total_discount" readonly>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-md-5" style="padding-left:0">
+                                                            <label>Pay Mode :</label>
+                                                        </div>
+                                                        <div class="col-md-7" style="padding-left:0;">
+                                                                <select v-model="dataArray.pay_mode" id="type" style="width:97%;">
+                                                                    <option value="Cash">Cash</option>
+                                                                    <option value="Credit">Credit</option>
+                                                                    <option value="Card">Credit Card</option>
+                                                                </select>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-6 mytable" style="float:left;">
+                                                    <div class="row">
+                                                        <div class="col-md-5" style="padding-left:0">
+                                                            <label>Receivable :</label>
+                                                        </div>
+                                                        <div class="col-md-7" style="padding-left:0">
+                                                            <input v-model="dataArray.receivable" readonly>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-md-5" style="padding-left:0">
+                                                            <label>Net Receivable :</label>
+                                                        </div>
+                                                        <div class="col-md-7" style="padding-left:0">
+                                                            <input v-model="dataArray.net_receivable" readonly>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-md-5" style="padding-left:0">
+                                                            <label>Total Receivable :</label>
+                                                        </div>
+                                                        <div class="col-md-7" style="padding-left:0">
+                                                            <input v-model="dataArray.total_receivable" readonly>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-12" style="float:right;">
+                                                    <button @click.prevent="invoiceStore()" class="btn btn-info" style="float:right;">Save</button>
+                                                </div>
                                             </div>
                     <!-- /.col -->
                                     </div>
@@ -71,7 +137,7 @@
                                         <h3 class="card-title">Invoice Items</h3>
                                         <div class="card-tools">
                                             <button class="btn btn-success" data-toggle="modal" data-target="#addNew"><i
-                                                    class="fas fa-user-plus fa-fw"></i> Add</button>
+                                                    class="fas fa-user-plus fa-fw"></i> Add Item</button>
                                         </div>
                                     </div>
                                     <!-- /.card-header -->
@@ -85,36 +151,18 @@
                                                     <th>Unit Price</th>
                                                     <th>Sales Price</th>
                                                     <th>Discount</th>
-                                                    <th>Net Price</th>
                                                     <th>Modify</th>
                                                 </tr>
                                             </thead>
-                                            <tbody>
+                                            <tbody v-for="(item, index) in dataArray.details" :key="index">
 
                                                 <tr>
-                                                    <td>45454545515125</td>
-                                                    <td>Physics</td>
-                                                    <td>4</td>
-                                                    <td>400</td>
-                                                    <td>300</td>
-                                                    <td>200</td>
-                                                    <td>700</td>
-                                                    <td>
-                                                        <a href="#"><button class="btn btn-info btn-sm"><i
-                                                                    class="fa fa-edit"></i></button></a>
-                                                        <a href="#"><button class="btn btn-danger btn-sm"><i
-                                                                    class="fa fa-trash"></i></button></a>
-                                                    </td>
-                                                </tr>
-
-                                                <tr>
-                                                    <td>525454545515125</td>
-                                                    <td>Bangladesh Studies</td>
-                                                    <td>2</td>
-                                                    <td>200</td>
-                                                    <td>400</td>
-                                                    <td>300</td>
-                                                    <td>500</td>
+                                                    <td>{{ item.isbn }}</td>
+                                                    <td>{{ item.book_name }}</td>
+                                                    <td>{{ item.copies }}</td>
+                                                    <td>{{ item.unit_price }} Tk.</td>
+                                                    <td>{{ item.total_price }} Tk.</td>
+                                                    <td>{{ item.total_dis }} Tk.</td>
                                                     <td>
                                                         <a href="#"><button class="btn btn-info btn-sm"><i
                                                                     class="fa fa-edit"></i></button></a>
@@ -126,15 +174,7 @@
                                         </table>
                                     </div>
                                     <!-- /.card-body -->
-                                    <!-- /.card-body -->
-                                    <div class="card-body" style="border: 2px solid cadetblue; border-radius:6px">
-                                        <div class="col-md-6" style="float:left;">
-                                            <p style="float:right; margin-bottom:0;">Total Publishers Price: 18000 TK.</p>
-                                        </div>
-                                        <div class="col-md-6" style="float:right;">
-                                            <button class="btn btn-info" style="float:right;">Save</button>
-                                        </div>
-                                    </div>
+
                                 </div>
                                 <!-- /.card -->
                             </div>
@@ -161,7 +201,7 @@
                                             <div class="form-group" v-show="getSearchValue">
                                                 <ul class="ulstyle">
                                                 <li v-for="val in filterd" :key="val.id">
-                                                    <p @click.prevent="getVal(val)">{{ val.isbn }}</p>
+                                                    <p @click.prevent="getVal(val)">{{ val.book.isbn }}</p>
                                                 </li>
                                                 </ul>
                                             </div>
@@ -232,21 +272,26 @@
                                                 <div style="width:48%; float: right;">
                                                     <div class="form-group">
                                                         <label>Unit Price</label>
-                                                        <input readonly v-model="detailsFormData.unit_price" type="text" placeholder="Unit Price"
-                                                            class="form-control">
+                                                        <input readonly v-model="detailsFormData.unit_price" type="text" class="form-control">
                                                     </div>
                                                 </div>
 
                                                 <div class="form-group">
                                                     <label>Total Price</label>
-                                                    <input readonly v-model="detailsFormData.total_price" type="text" placeholder="Total Price"
-                                                        class="form-control">
+                                                    <input readonly v-model="detailsFormData.total_price" type="text" class="form-control">
                                                 </div>
-
-                                                <div class="form-group">
-                                                    <label>Discount</label>
-                                                    <input  v-model="detailsFormData.discount" type="text" placeholder="Discount in Amount"
-                                                        class="form-control">
+                                                <div style="width:48%; float: left;">
+                                                    <div class="form-group">
+                                                        <label>Discount</label>
+                                                        <input  v-model="detailsFormData.discount" @keyup="costBd" type="text" placeholder="Discount in TK"
+                                                            class="form-control">
+                                                    </div>
+                                                </div>
+                                                <div style="width:48%; float: right;">
+                                                    <div>
+                                                        <label>Total Discount (TK)</label>
+                                                        <input v-model="detailsFormData.total_dis" readonly type="text" class="form-control">
+                                                    </div>
                                                 </div>
 
                                             </div>
@@ -254,7 +299,7 @@
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-danger"
                                                 data-dismiss="modal">Close</button>
-                                            <button type="submit" class="btn btn-primary">Create</button>
+                                            <button @click="createInvoice" type="submit" class="btn btn-primary">Create</button>
                                         </div>
                                     </div>
                                 </div>
@@ -282,32 +327,36 @@ export default {
             errors: {},
             getSearchValue: false,
             getSearchSupp: false,
-            allConsign:[],
-            suppliers:[],
-            consignmentList:[],
+            allBook:[],
             detailsFormData: {
                 book_id: "",
                 consign_ref: "",
-                pub_price: "250",
+                pub_price: "",
                 balance: "",
                 copies: "1",
-                st_rate: "0.8",
-                unit_price: "",
+                st_rate: "",
+                unit_price: "0",
                 isbn: "",
                 book_name: "",
-                total_price: "",
+                total_price: "0",
                 discount:"",
+                discount_p:"",
+                total_dis:'0',
             },
             dataArray: {
-                customer_id: "",
+                cus_id: "",
+                cus_name:"",
+                email:"",
+                phone:"",
+                address:"",
                 invoice_ref: "",
-                total_price: 0,
-                total_discount:"",
-                pay_mode:"",
-                total_qty: "",
-                receivable:"",
-                net_receivable:"",
-                total_receivable:"",
+                total_price: "0",
+                total_discount:"0",
+                pay_mode:"Cash",
+                total_qty: "0",
+                receivable:"0",
+                net_receivable:"0",
+                total_receivable:"0",
                 details: [],
             }
         }
@@ -315,40 +364,88 @@ export default {
 
 
     created() {
-        axios.get("/getConsignSale").then(response => {
-        this.allConsign = response.data.data;
+        axios.get("/getDetailsForInvoice").then(response => {
+            this.allBook = response.data.data;
+            // console.log(response.data.data)
         });
     },
 
     computed:{
+        //isbn filtered from allbook
         filterd() {
-            return this.allConsign.filter(val =>
-                val.isbn.startsWith(this.detailsFormData.isbn)
-            );
+        return this.allBook.filter(val =>
+            val.book.isbn.startsWith(this.detailsFormData.isbn)
+        );
         },
     },
 
     methods:{
-        createConsignment() {
+        invoiceStore(){
+            axios.post("/storeInvoice", this.dataArray).then(() => {
+                console.log("success");
+                this.dataArray.details = [];
+                Toast.fire({
+                    icon: 'success',
+                    title: 'Invoice Saved Successfully'
+                })
+            });
+
+        },
+        createInvoice() {
             this.dataArray.details.push(this.detailsFormData);
             this.detailsFormData = {
             book_id: "",
             consign_ref: "",
             pub_price: "",
             balance: "",
-            copies: "",
-            st_rate: "",
-            unit_price: "",
+            copies: "1",
+            st_rate: "0.8",
+            unit_price: "0",
             isbn: "",
             book_name: "",
-            st_rate: "",
-            total_price: "",
+            total_price: "0",
             discount:"",
+            discount_p:"",
+            total_dis:"0",
         };
 
             this.dataArray.total_price = this.dataArray.details.reduce(function(acc, curr){
                 return parseFloat(acc) + parseFloat(curr.total_price)
-            }, 0)
+            }, 0);
+
+            this.dataArray.receivable = this.dataArray.total_price;
+            this.dataArray.total_receivable = this.dataArray.total_price;
+            this.dataArray.net_receivable = this.dataArray.total_price;
+
+            this.dataArray.total_qty = this.dataArray.details.reduce(function(acc, curr){
+                return parseFloat(acc) + parseFloat(curr.copies)
+            }, 0);
+
+            this.dataArray.total_discount = this.dataArray.details.reduce(function(acc, curr){
+                return parseFloat(acc) + parseFloat(curr.total_dis)
+            }, 0);
+        },
+
+        searchVal() {
+            if (this.detailsFormData.isbn == "") {
+                this.getSearchValue = false;
+            } else {
+                this.getSearchValue = true;
+            }
+            },
+            //get value isbn and bookname from booktable
+        getVal(val) {
+            this.detailsFormData.isbn = val.book.isbn;
+            this.allBook.forEach(el => {
+                if (this.detailsFormData.isbn == el.book.isbn) {
+                this.detailsFormData.book_id = el.id;
+                this.detailsFormData.book_name = el.book.book_name;
+                this.detailsFormData.balance = el.book.available_quantity;
+                this.detailsFormData.consign_ref = el.consignment.consign_ref;
+                this.detailsFormData.pub_price = el.pub_price;
+                this.getSearchValue = false;
+                }
+            });
         },
         //this method for generate random number
         myFunction: function(min, max) {
@@ -360,58 +457,58 @@ export default {
             }
         },
 
-        //search value for isbn
-        searchVal() {
-            if (this.detailsFormData.isbn == "") {
-                this.getSearchValue = false;
-            } else {
-                this.getSearchValue = true;
-            }
-        },
-
-        //get value isbn and bookname from booktable
-        getVal(val) {
-            this.detailsFormData.isbn = val.isbn;
-            this.allBook.forEach(el => {
-                if (this.detailsFormData.isbn == el.isbn) {
-                this.detailsFormData.book_id = el.id;
-                this.detailsFormData.book_name = el.book_name;
-                this.getSearchValue = false;
-                }
-            });
-        },
 
         pub_price: function (event) {
-            this.pub_price = event.target.value;
+            this.detailsFormData.pub_price = event.target.value;
         },
         st_rate: function (event) {
-            this.st_rate = event.target.value;
+            this.detailsFormData.st_rate = event.target.value;
         },
         discount_p: function (event) {
-            this.discount_p = event.target.value;
+            this.detailsFormData.discount_p = event.target.value;
+        },
+        discount: function (event) {
+            this.detailsFormData.discount = event.target.value;
         },
         copies: function (event) {
-            this.copies = event.target.value;
+            this.detailsFormData.copies = event.target.value;
         },
 
         costBd(){
             if(parseFloat(this.detailsFormData.pub_price) > 0 && parseFloat(this.detailsFormData.st_rate) > 0){
-                this.detailsFormData.unit_price = Math.floor(parseFloat(this.detailsFormData.pub_price) * parseFloat(this.detailsFormData.st_rate))
+                this.detailsFormData.unit_price = (parseFloat(this.detailsFormData.pub_price) * parseFloat(this.detailsFormData.st_rate))
             }
 
             if(parseFloat(this.detailsFormData.pub_price) > 0 && parseFloat(this.detailsFormData.st_rate) > 0 && parseInt(this.detailsFormData.copies) > 0){
-                this.detailsFormData.total_price = Math.floor(parseFloat(this.detailsFormData.st_rate) * parseFloat(this.detailsFormData.pub_price) * parseInt(this.detailsFormData.copies))
+                this.detailsFormData.total_price = (parseFloat(this.detailsFormData.st_rate) * parseFloat(this.detailsFormData.pub_price) * parseInt(this.detailsFormData.copies))
+                var total_dis1 = parseFloat(this.detailsFormData.pub_price) * parseInt(this.detailsFormData.copies);
+
+                this.detailsFormData.total_dis = total_dis1 - this.detailsFormData.total_price;
+
+                if(parseFloat(this.detailsFormData.discount) > 0){
+                        this.detailsFormData.total_dis = this.detailsFormData.total_dis + parseFloat(this.detailsFormData.discount);
+                         this.detailsFormData.total_price = parseFloat(this.detailsFormData.total_price) - parseFloat(this.detailsFormData.discount);
+                    }
             }
 
             if(parseFloat(this.detailsFormData.discount_p) > 0){
-                if(parseFloat(this.detailsFormData.pub_price) > 0 && parseFloat(this.detailsFormData.st_rate) > 0 && parseInt(this.detailsFormData.copies) > 0){
-                    var unit_price = Math.floor(parseFloat(this.detailsFormData.pub_price) * parseFloat(this.detailsFormData.st_rate));
-                    var b_unit_price = Math.floor((parseFloat(this.detailsFormData.pub_price) * parseFloat(this.detailsFormData.st_rate) * parseFloat(this.detailsFormData.discount_p))/100);
-                    var most_unit = unit_price - b_unit_price;
-                    this.detailsFormData.unit_price = most_unit
+                if(parseFloat(this.detailsFormData.pub_price) > 0 && parseInt(this.detailsFormData.copies) > 0){
+                    var uunit_price = parseFloat(this.detailsFormData.pub_price);
+                    var b_unit_price = ((parseFloat(this.detailsFormData.pub_price) * parseFloat(this.detailsFormData.discount_p))/100);
+                    var most_unit = uunit_price - b_unit_price;
+
+                    this.detailsFormData.total_dis = b_unit_price;
+                    this.detailsFormData.unit_price = most_unit;
                     this.detailsFormData.total_price = most_unit * parseInt(this.detailsFormData.copies);
+
+                    if(parseFloat(this.detailsFormData.discount) > 0){
+                        this.detailsFormData.total_dis = b_unit_price + parseFloat(this.detailsFormData.discount);
+
+                         this.detailsFormData.total_price = parseFloat(this.detailsFormData.total_price) - parseFloat(this.detailsFormData.discount);
+                    }
                 }
             }
+
 
         },
 
@@ -451,5 +548,34 @@ export default {
   width: 100%;
 }
 
+
+</style>
+<style scoped>
+.ulstyle {
+  list-style: none;
+  padding-left: 0px;
+  float: left;
+  width: 100%;
+}
+.ulstyle > li:hover {
+  background: #ddd;
+  color: blue;
+  border-radius: 5px;
+}
+.ulstyle > li > p {
+  padding: 5px;
+  cursor: pointer;
+  margin-bottom: 4px;
+  float: left;
+  width: 100%;
+}
+
+.invoice_title{
+    text-align: center;
+    font-weight: bold;
+    margin-bottom: 10px;
+    border-bottom: 2px solid #ddd;
+    padding-bottom: 5px;
+}
 
 </style>

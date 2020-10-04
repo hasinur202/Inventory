@@ -235,7 +235,6 @@
                 </div>
                   <!--- end col md-12 -->
 
-
                   <div class="card-body table-responsive p-0">
                     <table class="table table-hover">
                       <thead>
@@ -260,11 +259,6 @@
                           <td>{{ item.pub_price }} {{ dataArray.currency }}</td>
                           <td>{{ item.total_price }}</td>
                           <td>
-                            <a href="#">
-                              <button class="btn btn-info btn-sm">
-                                <i class="fa fa-edit"></i>
-                              </button>
-                            </a>
                             <a href="#">
                               <button class="btn btn-danger btn-sm">
                                 <i class="fa fa-trash"></i>
