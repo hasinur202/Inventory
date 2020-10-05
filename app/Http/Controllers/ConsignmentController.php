@@ -161,7 +161,7 @@ class ConsignmentController extends Controller
 
         $book->update(['available_quantity' => $reducedTotalQty + $request->qty]);
 
-        return response(['message' => 'Data Saved Successfully']);
+        return response(['message' => 'Data Updated Successfully']);
 
     }
 }

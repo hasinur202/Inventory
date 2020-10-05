@@ -70,6 +70,12 @@ Route::post('/delete-invoice', 'InvoiceController@deleteInvoice');
 //update consignment
 Route::post('/update-consignment-details', 'ConsignmentController@updateConsignment');
 
+//update supplier details
+Route::post('/update-supplier-details', 'SupplierController@updateSupplier');
+
+//Delete Supplier By Id
+Route::post('/deleteSuppById', 'SupplierController@updateSuppById');
+
 //update consignment
 Route::post('/update-invoice-details', 'InvoiceController@updateInvoiceItem');
 

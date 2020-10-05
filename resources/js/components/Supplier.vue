@@ -24,10 +24,9 @@
                         <tr>
                           <th>ID</th>
                           <th>Name</th>
-                          <th>Address</th>
                           <th>Phone</th>
-                          <th>Fax</th>
                           <th>Email</th>
+                          <th>Address</th>
                           <th>Action</th>
                         </tr>
                       </thead>
@@ -35,22 +34,20 @@
                         <tr v-for="supplier in supplierlist" :key="supplier.id">
                           <td>{{ supplier.id }}</td>
                           <td>{{ supplier.supplier }}</td>
-                          <td>{{ supplier.address }}</td>
                           <td>{{ supplier.phone }}</td>
-                          <td>{{ supplier.fax }}</td>
-                          <td>{{ supplier.mobile }}</td>
                           <td>{{ supplier.email }}</td>
+                          <td>{{ supplier.address }}</td>
                           <td>
-                            <a href="#">
-                              <button class="btn btn-info btn-sm">
+                              <button @click="editSupById(supplier)" 
+                              data-toggle="modal" data-target="#editNew"
+                               class="btn btn-info btn-sm">
                                 <i class="fa fa-edit"></i>
                               </button>
-                            </a>
-                            <a href="#">
-                              <button class="btn btn-danger btn-sm">
+
+                              <button @click="deleteSupplier(supplier)" class="btn btn-danger btn-sm">
                                 <i class="fa fa-trash"></i>
                               </button>
-                            </a>
+                            
                           </td>
                         </tr>
                       </tbody>
@@ -62,6 +59,74 @@
               </div>
             </div>
 
+<!-- Edit modal -->
+            <div
+              class="modal fade"
+              id="editNew"
+              tabindex="-1"
+              role="dialog"
+              aria-labelledby="addNewLabel"
+              aria-hidden="true"
+            >
+              <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="addNewLabel">Add New Supplier</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <form @submit.prevent="updateSupplier">
+                    <div class="modal-body">
+                      <div class="form-group">
+                        <input
+                          v-model="editSuppDetails.supplier"
+                          type="text"
+                          name="supplier" 
+                          class="form-control"
+                        />
+
+                      </div>
+                      <div class="form-group">
+                        <input
+                          v-model="editSuppDetails.phone"
+                          type="text" placeholder="Phone"
+                          name="phone"
+                          class="form-control"
+                        />
+
+                      </div>
+                      <div class="form-group">
+                        <input
+                          v-model="editSuppDetails.email"
+                          type="email" placeholder="Email"
+                          name="email"
+                          class="form-control"
+                        />
+
+                      </div>
+                      <div class="form-group">
+                        <input
+                          v-model="editSuppDetails.address"
+                          type="text" placeholder="Address"
+                          name="address"
+                          class="form-control"
+                        />
+
+                      </div>
+                    </div>
+
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                      <button type="submit" class="btn btn-primary">Update</button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+
+
+<!-- add new modal -->
             <div
               class="modal fade"
               id="addNew"
@@ -86,21 +151,10 @@
                           :class="{ 'is-invalid': form.errors.has('supplier') }"
                           type="text"
                           name="supplier"
-                          placeholder="Supplier Name"
+                          placeholder="Supplier Name **"
                           class="form-control"
                         />
                         <has-error :form="form" field="supplier"></has-error>
-                      </div>
-                      <div class="form-group">
-                        <input
-                          v-model="form.address"
-                          :class="{ 'is-invalid': form.errors.has('address') }"
-                          type="text"
-                          name="address"
-                          placeholder="Address"
-                          class="form-control"
-                        />
-                        <has-error :form="form" field="address"></has-error>
                       </div>
                       <div class="form-group">
                         <input
@@ -115,28 +169,6 @@
                       </div>
                       <div class="form-group">
                         <input
-                          v-model="form.fax"
-                          :class="{ 'is-invalid': form.errors.has('fax') }"
-                          type="text"
-                          name="fax"
-                          placeholder="Fax"
-                          class="form-control"
-                        />
-                        <has-error :form="form" field="fax"></has-error>
-                      </div>
-                      <div class="form-group">
-                        <input
-                          v-model="form.mobile"
-                          :class="{ 'is-invalid': form.errors.has('mobile') }"
-                          type="text"
-                          name="mobile"
-                          placeholder="Mobile"
-                          class="form-control"
-                        />
-                        <has-error :form="form" field="mobile"></has-error>
-                      </div>
-                      <div class="form-group">
-                        <input
                           v-model="form.email"
                           :class="{ 'is-invalid': form.errors.has('email') }"
                           type="email"
@@ -145,6 +177,17 @@
                           class="form-control"
                         />
                         <has-error :form="form" field="email"></has-error>
+                      </div>
+                      <div class="form-group">
+                        <input
+                          v-model="form.address"
+                          :class="{ 'is-invalid': form.errors.has('address') }"
+                          type="text"
+                          name="address"
+                          placeholder="Address"
+                          class="form-control"
+                        />
+                        <has-error :form="form" field="address"></has-error>
                       </div>
                     </div>
 
@@ -156,6 +199,9 @@
                 </div>
               </div>
             </div>
+
+
+
           </div>
         </div>
       </div>
@@ -175,6 +221,10 @@ export default {
   },
   data() {
     return {
+      editSuppDetails:{
+        'supplier':'', 'phone':'', 'email':'', 'address':'', 'id' :''
+
+      },
       supplierlist: "",
       form: new Form({
         supplier: "",
@@ -190,9 +240,7 @@ export default {
     createSupplier() {
       // Submit the form via a POST request
       this.form.post("/storeSupplier").then(() => {
-        axios.get("/getSupplier").then(response => {
-          this.supplierlist = response.data.data;
-        });
+        this.viewSupplier();
         this.form.reset();
         Toast.fire({
           icon: "success",
@@ -201,11 +249,47 @@ export default {
       });
     },
 
+    updateSupplier(){
+        axios
+        .post(`/update-supplier-details`, this.editSuppDetails)
+        .then(response => {
+          this.viewSupplier();
+          Toast.fire({
+          icon: "success",
+          title: "Supplier Updated Successfully"
+        });
+        });
+    },
+
+    deleteSupplier(supplier){
+        axios
+        .post(`/deleteSuppById/`,supplier)
+        .then(response => {
+          this.viewSupplier();
+          Toast.fire({
+          icon: "success",
+          title: "Supplier Deleted Successfully"
+        });
+        });
+    },
+
     viewSupplier() {
       axios.get("/getSupplier").then(response => {
         this.supplierlist = response.data.data;
       });
-    }
+    },
+
+    editSupById(supplier) {
+        for(let index in this.editSuppDetails){
+              if(supplier.hasOwnProperty(index)){
+                  this.editSuppDetails[index] = supplier[index];
+              }
+          }
+    },
+
+
+
+
   },
 
   mounted() {
