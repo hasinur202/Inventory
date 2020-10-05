@@ -19,13 +19,15 @@ class CreateInvoiceDetailsTable extends Migration
             $table->foreign('invoice_id')->references('id')->on('invoices');
             $table->unsignedBigInteger('book_id');
             $table->foreign('book_id')->references('id')->on('books');
+            $table->string('consign_ref');
             $table->float('pub_price');
             $table->integer('qty');
             $table->float('rate')->nullable();
             $table->float('unit_price');
+            $table->float('total_price');
             $table->float('discount_p')->nullable();
-            $table->float('discount');
-            $table->float('total_discount');
+            $table->float('discount')->default(0.00);
+            $table->float('total_dis');
             $table->timestamps();
         });
     }

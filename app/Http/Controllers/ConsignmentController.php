@@ -137,7 +137,11 @@ class ConsignmentController extends Controller
 
         $consignment = $consignmentDetails->consignment;
 
+        $book = $consignmentDetails->book;
+
         $reducedTotalPrice = $consignment->total_price - $consignmentDetails->total_price;
+
+        $reducedTotalQty = $book->available_quantity - $consignmentDetails->qty;
 
         // $costPrice = $consignmentDetails->cost_price;
 
@@ -154,6 +158,8 @@ class ConsignmentController extends Controller
         ]);
 
         $consignment->update(['total_price' => $reducedTotalPrice + $request->total_price]);
+
+        $book->update(['available_quantity' => $reducedTotalQty + $request->qty]);
 
         return response(['message' => 'Data Saved Successfully']);
 

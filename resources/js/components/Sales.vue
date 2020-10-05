@@ -17,6 +17,7 @@
                                                     type="checkbox"
                                                     class="form-check-input"
                                                     style="margin-top:7px;"
+                                                    v-model="dataArray.checkInv"
                                                 />
                                                 <input
                                                     v-model="dataArray.invoice_ref"
@@ -36,14 +37,14 @@
                                         <div class="row">
                                             <div class="col-md-4">
                                                 <div class="form-group">
-                                                    <input v-model="dataArray.cus_name" type="text" placeholder="Customer Name" class="form-control">
+                                                    <input v-model="dataArray.cus_name" name="cus_name" type="text" placeholder="Customer Name" class="form-control">
                                                 </div>
                                                 <div class="form-group">
-                                                    <input v-model="dataArray.phone" type="text" placeholder="Phone" class="form-control">
+                                                    <input v-model="dataArray.phone" name="phone" type="text" placeholder="Phone" class="form-control">
                                                 </div>
 
                                                 <div class="form-group">
-                                                    <input v-model="dataArray.email" type="text" placeholder="Email" class="form-control">
+                                                    <input v-model="dataArray.email" type="text" name="email" placeholder="Email" class="form-control">
                                                 </div>
                                                 <div class="form-group">
                                                     <textarea v-model="dataArray.address" type="text" name="summary" placeholder="Address" class="form-control"></textarea>
@@ -264,7 +265,7 @@
                                                 <div style="width:48%; float: left;">
                                                     <div class="form-group">
                                                         <label>Rate</label>
-                                                        <input  v-model="detailsFormData.st_rate" @keyup="costBd" type="text" placeholder="Rate"
+                                                        <input  v-model="detailsFormData.rate" @keyup="costBd" type="text" placeholder="Rate"
                                                             class="form-control">
                                                     </div>
                                                 </div>
@@ -299,7 +300,7 @@
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-danger"
                                                 data-dismiss="modal">Close</button>
-                                            <button @click="createInvoice" type="submit" class="btn btn-primary">Create</button>
+                                            <button type="button" @click="createInvoice" class="btn btn-primary">Create</button>
                                         </div>
                                     </div>
                                 </div>
@@ -334,7 +335,7 @@ export default {
                 pub_price: "",
                 balance: "",
                 copies: "1",
-                st_rate: "",
+                rate: "",
                 unit_price: "0",
                 isbn: "",
                 book_name: "",
@@ -344,7 +345,6 @@ export default {
                 total_dis:'0',
             },
             dataArray: {
-                cus_id: "",
                 cus_name:"",
                 email:"",
                 phone:"",
@@ -384,6 +384,7 @@ export default {
             axios.post("/storeInvoice", this.dataArray).then(() => {
                 console.log("success");
                 this.dataArray.details = [];
+                this.dataArray = [];
                 Toast.fire({
                     icon: 'success',
                     title: 'Invoice Saved Successfully'
@@ -392,22 +393,30 @@ export default {
 
         },
         createInvoice() {
-            this.dataArray.details.push(this.detailsFormData);
-            this.detailsFormData = {
-            book_id: "",
-            consign_ref: "",
-            pub_price: "",
-            balance: "",
-            copies: "1",
-            st_rate: "0.8",
-            unit_price: "0",
-            isbn: "",
-            book_name: "",
-            total_price: "0",
-            discount:"",
-            discount_p:"",
-            total_dis:"0",
-        };
+            if(this.detailsFormData.balance >= 1){
+                    this.dataArray.details.push(this.detailsFormData);
+                    this.detailsFormData = {
+                    book_id: "",
+                    consign_ref: "",
+                    pub_price: "",
+                    balance: "",
+                    copies: "1",
+                    rate: "0.8",
+                    unit_price: "0",
+                    isbn: "",
+                    book_name: "",
+                    total_price: "0",
+                    discount:"",
+                    discount_p:"",
+                    total_dis:"0",
+                };
+
+            }else{
+                Toast.fire({
+                    icon: 'danger',
+                    title: 'Stock Empty'
+                })
+            }
 
             this.dataArray.total_price = this.dataArray.details.reduce(function(acc, curr){
                 return parseFloat(acc) + parseFloat(curr.total_price)
@@ -438,7 +447,7 @@ export default {
             this.detailsFormData.isbn = val.book.isbn;
             this.allBook.forEach(el => {
                 if (this.detailsFormData.isbn == el.book.isbn) {
-                this.detailsFormData.book_id = el.id;
+                this.detailsFormData.book_id = el.book.id;
                 this.detailsFormData.book_name = el.book.book_name;
                 this.detailsFormData.balance = el.book.available_quantity;
                 this.detailsFormData.consign_ref = el.consignment.consign_ref;
@@ -461,8 +470,8 @@ export default {
         pub_price: function (event) {
             this.detailsFormData.pub_price = event.target.value;
         },
-        st_rate: function (event) {
-            this.detailsFormData.st_rate = event.target.value;
+        rate: function (event) {
+            this.detailsFormData.rate = event.target.value;
         },
         discount_p: function (event) {
             this.detailsFormData.discount_p = event.target.value;
@@ -475,12 +484,12 @@ export default {
         },
 
         costBd(){
-            if(parseFloat(this.detailsFormData.pub_price) > 0 && parseFloat(this.detailsFormData.st_rate) > 0){
-                this.detailsFormData.unit_price = (parseFloat(this.detailsFormData.pub_price) * parseFloat(this.detailsFormData.st_rate))
+            if(parseFloat(this.detailsFormData.pub_price) > 0 && parseFloat(this.detailsFormData.rate) > 0){
+                this.detailsFormData.unit_price = (parseFloat(this.detailsFormData.pub_price) * parseFloat(this.detailsFormData.rate))
             }
 
-            if(parseFloat(this.detailsFormData.pub_price) > 0 && parseFloat(this.detailsFormData.st_rate) > 0 && parseInt(this.detailsFormData.copies) > 0){
-                this.detailsFormData.total_price = (parseFloat(this.detailsFormData.st_rate) * parseFloat(this.detailsFormData.pub_price) * parseInt(this.detailsFormData.copies))
+            if(parseFloat(this.detailsFormData.pub_price) > 0 && parseFloat(this.detailsFormData.rate) > 0 && parseInt(this.detailsFormData.copies) > 0){
+                this.detailsFormData.total_price = (parseFloat(this.detailsFormData.rate) * parseFloat(this.detailsFormData.pub_price) * parseInt(this.detailsFormData.copies))
                 var total_dis1 = parseFloat(this.detailsFormData.pub_price) * parseInt(this.detailsFormData.copies);
 
                 this.detailsFormData.total_dis = total_dis1 - this.detailsFormData.total_price;

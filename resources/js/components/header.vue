@@ -94,18 +94,26 @@
             with font-awesome or any other icon font library-->
 
             <li class="nav-item">
-              <router-link to="/dashboard" class="nav-link">
-                <i class="nav-icon fas fa-tachometer-alt text-blue"></i>
-                <p>Dashboard</p>
-              </router-link>
-            </li>
-
-            <li class="nav-item">
               <router-link to="/sales" class="nav-link">
                 <i class="nav-icon fas fa-comments-dollar text-blue"></i>
                 <p>Sales</p>
               </router-link>
             </li>
+
+            <li class="nav-item">
+              <router-link to="/saleshistory" class="nav-link">
+                <i class="nav-icon fa fa-file text-orange"></i>
+                <p>Sales History</p>
+              </router-link>
+            </li>
+
+            <!-- <li class="nav-item">
+              <router-link to="/dashboard" class="nav-link">
+                <i class="nav-icon fas fa-tachometer-alt text-blue"></i>
+                <p>Dashboard</p>
+              </router-link>
+            </li> -->
+
 
             <li class="nav-item has-treeview">
               <a href="#" class="nav-link">
@@ -198,12 +206,6 @@
               </ul>
             </li>
 
-            <li class="nav-item">
-              <router-link to="/profile" class="nav-link">
-                <i class="nav-icon fas fa-user text-blue"></i>
-                <p>Profile</p>
-              </router-link>
-            </li>
           </ul>
         </nav>
         <!-- /.sidebar-menu -->

@@ -235,63 +235,6 @@
                 </div>
                 </div>
                   <!--- end col md-12 -->
-
-
-
-
-
-
-
-
-    <!-- <div
-      class="modal fade"
-      id="exampleModal"
-      tabindex="-1"
-      role="dialog"
-      aria-labelledby="exampleModalLabel"
-      aria-hidden="true"
-    >
-      <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            <form @submit.prevent="updateSingleDetails">
-              <div class="modal-body">
-                <div class="form-group">
-                  <label for>Quantity</label>
-                  <input class="form-control" type="number" v-model="editDetails.qty" />
-                </div>
-                <div class="form-group">
-                  <label for>Cost Price</label>
-                  <input class="form-control" type="text" v-model="editDetails.cost_price"/>
-                </div>
-                <div class="form-group">
-                  <label for>Sales Price</label>
-                  <input class="form-control" type="number" v-model="editDetails.sales_price" />
-                </div>
-                <div class="form-group">
-                  <label for>Publishers Price</label>
-                  <input class="form-control" type="number" v-model="editDetails.pub_price" />
-                </div>
-              </div>
-
-              <div class="modal-footer">
-                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-                <button type="submit" class="btn btn-primary">Create</button>
-              </div>
-            </form>
-          </div>
-        </div>
-      </div>
-    </div> -->
-
-
-
   </div>
 </template>
 

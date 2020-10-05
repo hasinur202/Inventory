@@ -133,6 +133,7 @@
 
         data() {
           return {
+              userlist:[],
             form: new Form({
                 name: '',
                 email: '',
@@ -145,7 +146,15 @@
         },
 
         mounted() {
-            console.log('Component mounted.')
+            this.viewUserDetails();
+        },
+
+        methods:{
+            viewUserDetails() {
+                axios.get("/getUserDetails").then(response => {
+                    this.userList = response.data.data;
+                });
+            },
         }
     }
 </script>

@@ -49,20 +49,34 @@ Route::get('/getAuthor', 'AuthorController@index');
 Route::get('/getSupplier', 'SupplierController@index');
 //get Consignment
 Route::get('/getConsignment', 'ConsignmentController@index');
+//get invoice list
+
+Route::get('/getInvoices', 'InvoiceController@index');
 
 //get details for invoice/sale
 Route::get('/getDetailsForInvoice', 'ConsignmentController@detailsForInvoice');
 
-
+//get Invoice details by id
+Route::get('/getInvoiceId', 'InvoiceController@getIdInvoice');
+//get consignment by id
 Route::get('/getConsignId', 'ConsignmentController@getIdConsign');
 
 //delete Consignment
 Route::post('/delete-consignment', 'ConsignmentController@deleteConsignment');
+
+//delete invoice
+Route::post('/delete-invoice', 'InvoiceController@deleteInvoice');
+
 //update consignment
 Route::post('/update-consignment-details', 'ConsignmentController@updateConsignment');
 
-Route::get('/getConsignSale', 'ConsignmentController@getSaleConsign');
+//update consignment
+Route::post('/update-invoice-details', 'InvoiceController@updateInvoiceItem');
 
+
+Route::get('/getConsignSale', 'ConsignmentController@getSaleConsign');
+//view stock details
+Route::get('/getStockDetails', 'BookController@stockDetails');
 
 
 //login/logout

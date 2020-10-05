@@ -379,7 +379,7 @@ export default {
         sales_price: "",
         isbn: "",
         book_name: "",
-        currency: "",
+        currency: "TK",
         conv_rate: "0.65",
         st_rate: "0.8",
         my_ratem: "",

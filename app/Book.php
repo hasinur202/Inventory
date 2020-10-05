@@ -12,4 +12,9 @@ class Book extends Model
     {
         return $this->hasMany('App\Consignment','book_id');
     }
+
+    public function get_invoice()
+    {
+        return $this->hasMany('App\Invoice','book_id');
+    }
 }

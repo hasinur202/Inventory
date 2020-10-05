@@ -1,12 +1,11 @@
 import login from "./components/login"
-import dashboard from "./components/Dashboard"
+import sales from "./components/Sales"
+import saleshistory from "./components/Sales-history"
 import book from "./components/Book"
 import booklist from "./components/Booklist"
 import consignment from "./components/Consignment"
 import viewconsignment from "./components/viewConsignment"
 import consignmentCreate from "./components/consignmentCreate"
-import profile from "./components/Profile"
-import sales from "./components/Sales"
 import supplier from "./components/Supplier"
 import users from "./components/Users"
 import salesState from "./components/SalesState"
@@ -20,9 +19,14 @@ export default [{
         name: 'login'
     },
     {
-        path: '/dashboard',
-        component: dashboard,
-        name: 'dashboard'
+        path: '/sales',
+        component: sales,
+        name: 'sales'
+    },
+    {
+        path: '/saleshistory',
+        component: saleshistory,
+        name: 'saleshistory'
     },
     {
         path: '/book',
@@ -48,16 +52,6 @@ export default [{
         path: '/viewconsignment',
         component: viewconsignment,
         name: 'viewconsignment'
-    },
-    {
-        path: '/profile',
-        component: profile,
-        name: 'profile'
-    },
-    {
-        path: '/sales',
-        component: sales,
-        name: 'sales'
     },
     {
         path: '/supplier',

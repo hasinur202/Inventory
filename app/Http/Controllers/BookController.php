@@ -73,4 +73,13 @@ class BookController extends Controller
         ],200);
     }
 
+    public function stockDetails(){
+        $data = Book::get();
+
+        return response()->json([
+            'data' => $data,
+            'message' => "success"
+        ], 200);
+    }
+
 }
