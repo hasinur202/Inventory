@@ -1,7 +1,7 @@
 <template>
   <div class="login-box">
     <div class="login-logo">
-      <a href="../../index2.html">
+      <a href="#">
         <b>Library</b>Management
       </a>
     </div>
@@ -63,7 +63,7 @@ export default {
               window.location.reload();
                 Toast.fire({
                     icon:"success",
-                    title:"login successfull."
+                    title:"Successfully Login."
                 })
             })
         }

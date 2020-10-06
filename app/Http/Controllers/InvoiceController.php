@@ -11,6 +11,12 @@ use Illuminate\Support\Facades\DB;
 class InvoiceController extends Controller
 {
 
+    // public function __construct()
+    // {
+    //     $this->middleware('auth');
+    // }
+    
+    
     public function invoiceStore(Request $request){
         // return $request->all();
         DB::beginTransaction();

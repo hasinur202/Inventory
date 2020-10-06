@@ -11,6 +11,7 @@ import users from "./components/Users"
 import salesState from "./components/SalesState"
 import salesSum from "./components/SalesSum"
 import stock from "./components/Stock"
+import databackup from "./components/Backup"
 
 
 export default [{
@@ -78,6 +79,10 @@ export default [{
         component: stock,
         name: 'stock'
     },
-
+    {
+        path: '/databackup',
+        component: databackup,
+        name: 'databackup'
+    },
 
 ]

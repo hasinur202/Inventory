@@ -1,7 +1,7 @@
 <template>
     <div>
         <headerComponent></headerComponent>
-        <div class="content-wrapper">
+        <div class="content-wrapper" :style="`background-image: url(img/background3.jpg)`">
             <div class="content">
                 <div class="container-fluid">
                     <div class="container">

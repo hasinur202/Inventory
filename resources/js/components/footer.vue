@@ -1,6 +1,6 @@
 <template>
-  <div class="main-footer">
-    <footer >
+  <div class="main-footer" >
+    <footer>
     <!-- To the right -->
     <div class="float-right d-none d-sm-inline">
       Anything you want

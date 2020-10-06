@@ -74,7 +74,7 @@ class BookController extends Controller
     }
 
     public function stockDetails(){
-        $data = Book::get();
+        $data = Book::where('available_quantity', '>', 0)->get();
         
         return response()->json([
             'data' => $data,

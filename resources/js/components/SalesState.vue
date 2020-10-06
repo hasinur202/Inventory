@@ -1,7 +1,7 @@
 <template>
     <div>
         <headerComponent></headerComponent>
-        <div class="content-wrapper">
+        <div class="content-wrapper mybg">
             <div class="content">
                 <div class="container-fluid">
                     <div class="container">

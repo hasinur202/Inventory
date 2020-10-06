@@ -40,6 +40,9 @@ Route::post('/storeConsignment', 'ConsignmentController@store');
 Route::post('/final-update', 'ConsignmentController@final_update');
 //store invoice
 Route::post('/storeInvoice', 'InvoiceController@invoiceStore');
+//store User
+Route::post('/storeUser', 'UserController@userStore');
+
 
 //getBook
 Route::get('getBook', 'BookController@index');
@@ -61,6 +64,10 @@ Route::get('/getInvoiceId', 'InvoiceController@getIdInvoice');
 //get consignment by id
 Route::get('/getConsignId', 'ConsignmentController@getIdConsign');
 
+//get consignment by id
+Route::get('/getUserDetails', 'UserController@index');
+
+
 //delete Consignment
 Route::post('/delete-consignment', 'ConsignmentController@deleteConsignment');
 
@@ -73,8 +80,15 @@ Route::post('/update-consignment-details', 'ConsignmentController@updateConsignm
 //update supplier details
 Route::post('/update-supplier-details', 'SupplierController@updateSupplier');
 
+//update supplier details
+Route::post('/update-user-details', 'UserController@updateUser');
+
 //Delete Supplier By Id
 Route::post('/deleteSuppById', 'SupplierController@updateSuppById');
+
+//Delete User By Id
+Route::post('/deleteUserById', 'UserController@deleteUserById');
+
 
 //update consignment
 Route::post('/update-invoice-details', 'InvoiceController@updateInvoiceItem');
@@ -86,5 +100,7 @@ Route::get('/getStockDetails', 'BookController@stockDetails');
 
 
 //login/logout
-Route::post('login', 'Auth\LoginController@login');
-Route::get('logout', 'Auth\LoginController@logout');
+Route::post('login', 'UserController@login');
+Route::get('logout', 'UserController@logout');
+
+Route::get('sales-summery-report', 'ReportController@summeryReport');
