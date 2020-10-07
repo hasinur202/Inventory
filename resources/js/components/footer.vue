@@ -1,6 +1,6 @@
 <template>
-  <div class="main-footer" >
-    <footer>
+  <div style="position:fixed; bottom:0; width:100%;">
+    <footer class="main-footer">
     <!-- To the right -->
     <div class="float-right d-none d-sm-inline">
       Anything you want
@@ -9,6 +9,8 @@
     <strong>Copyright &copy; 2020 <a href="https://adminlte.io">Idea Tech Solution</a>.</strong> All rights reserved.
   </footer>
   </div>
+
+
 </template>
 
 <script>

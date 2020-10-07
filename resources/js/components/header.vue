@@ -185,6 +185,30 @@
               <a href="#" class="nav-link">
                 <i class="nav-icon fas fa-cog text-green"></i>
                 <p>
+                  Inventory
+                  <i class="right fas fa-angle-left"></i>
+                </p>
+              </a>
+              <ul class="nav nav-treeview">
+                <li class="nav-item">
+                  <router-link to="/custInventory" class="nav-link">
+                    <i class="fas fa-users nav-icon"></i>
+                    <p>Customer</p>
+                  </router-link>
+                </li>
+                <li class="nav-item">
+                  <router-link to="/suppInventory" class="nav-link">
+                    <i class="fas fa-circle nav-icon"></i>
+                    <p>Supplier</p>
+                  </router-link>
+                </li>
+              </ul>
+            </li>
+
+            <li class="nav-item has-treeview">
+              <a href="#" class="nav-link">
+                <i class="nav-icon fas fa-cog text-green"></i>
+                <p>
                   Management
                   <i class="right fas fa-angle-left"></i>
                 </p>

@@ -1,7 +1,7 @@
 <template>
 <div>
     <headerComponent></headerComponent>
-    <div class="content-wrapper mybg">
+    <div class="content-wrapper">
       <div class="content">
         <div class="container-fluid">
 
@@ -266,8 +266,9 @@ import footerComponent from "./footer";
 
             ourImage(img) {
                 return "/images/" + img;
-                },
-                changePhoto(event) {
+            },
+            
+            changePhoto(event) {
                 let file = event.target.files[0];
                 let reader = new FileReader();
                 reader.onload = event => {

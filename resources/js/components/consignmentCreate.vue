@@ -1,27 +1,19 @@
 <template>
   <div>
     <headerComponent></headerComponent>
-    <div class="content-wrapper mybg">
+    <div class="content-wrapper">
       <div class="content">
         <div class="container-fluid">
           <div class="container">
             <div class="row mt-5">
               <div class="col-md-12">
                 <div class="card">
-                  <div class="card">
-                    <div class="card-header">
-                      <h3 class="card-title">New Consignment</h3>
-                      <div class="card-tools">
-                            <button class="btn btn-success" data-toggle="modal" data-target="#addNew"><i
-                                    class="fas fa-user-plus fa-fw"></i> Add Consignment</button>
-                      </div>
-                    </div>
-                  </div>
 
                   <div class="card-header">
                     <h3 class="card-title">Stock History</h3>
                     <div class="card-tools">
-                      <input type="text" name placeholder="Search Stock" class="form-control" />
+                      <button class="btn btn-success" data-toggle="modal" data-target="#addNew"><i
+                                    class="fas fa-user-plus fa-fw"></i> Add New Consignment</button>
                     </div>
                   </div>
 
@@ -220,6 +212,7 @@
                             />
                           </div>
                           <input hidden v-model="detailsFormData.total_price" readonly type="text" />
+                          <input hidden v-model="detailsFormData.total_pub_price" readonly type="text" />
                         </div>
                       </div>
                       <div class="modal-footer">
@@ -272,7 +265,8 @@
                   <!-- /.card-body -->
                   <div class="card-body" style="border: 2px solid cadetblue; border-radius:6px">
                     <div class="col-md-6" style="float:left;">
-                      <p style="float:right; margin-bottom:0;">Total Publishers Price: {{ total_consign_price }} TK.</p>
+                      <p style="float:right; margin-bottom:0;">Total Publishers Price: {{ dataArray.total_pub_price }} TK.</p><br>
+                      <p style="float:right; margin-bottom:0;">Total Cost Price: {{ dataArray.total_price }} TK.</p>
                     </div>
                     <div class="col-md-6" style="float:right;">
                       <button
@@ -322,14 +316,16 @@ export default {
         conv_rate: "",
         st_rate: "",
         my_ratem: "",
-        total_price: ""
+        total_price: "",
+        total_pub_price:"",
       },
       dataArray: {
         supplier_id: "",
         consign_ref: "",
         total_price: 0,
+        total_pub_price:"",
         details: [],
-        supplier: ""
+        supplier: "",
       }
     };
   },
@@ -383,12 +379,19 @@ export default {
         conv_rate: "0.65",
         st_rate: "0.8",
         my_ratem: "",
-        total_price: ""
+        total_price: "",
+        total_pub_price: ""
       };
 
       this.dataArray.total_price = this.dataArray.details.reduce(function(acc, curr){
         return parseFloat(acc) + parseFloat(curr.total_price)
-      }, 0)
+      }, 0);
+
+    this.dataArray.total_pub_price = this.dataArray.details.reduce(function(acc, curr){
+        return parseFloat(acc) + parseFloat(curr.total_pub_price)
+      }, 0);
+
+
     },
 
     viewConsignment() {
@@ -496,6 +499,16 @@ export default {
       ) {
         this.detailsFormData.total_price =
           parseFloat(this.detailsFormData.cost_price) *
+            parseFloat(this.detailsFormData.copies)
+        ;
+      }
+
+      if (
+        parseFloat(this.detailsFormData.pub_price) > 0 &&
+        parseInt(this.detailsFormData.copies) > 0
+      ) {
+        this.detailsFormData.total_pub_price =
+          parseFloat(this.detailsFormData.pub_price) *
             parseFloat(this.detailsFormData.copies)
         ;
       }

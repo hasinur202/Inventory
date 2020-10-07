@@ -1,7 +1,7 @@
 <template>
-  <div>
+  <div >
     <headerComponent></headerComponent>
-    <div class="content-wrapper mybg">
+    <div class="content-wrapper">
       <div class="content">
         <div class="container-fluid">
           <div class="container">
@@ -249,7 +249,6 @@ export default {
       consign_detailsAll: [],
       consignmentList: [],
       consignmentDetails: [],
-      qty: "",
       editDetails: {
           'book' : {'book_name' : ''},
           'qty' : '',

@@ -83,21 +83,40 @@ Route::post('/update-supplier-details', 'SupplierController@updateSupplier');
 //update supplier details
 Route::post('/update-user-details', 'UserController@updateUser');
 
+//update supplier Inventory details
+Route::post('/update-supinventory-details', 'InventoryController@updateSuppInventory');
+//update customer Inventory details
+Route::post('/update-cusinventory-details', 'InventoryController@updateCusInventory');
+
+
 //Delete Supplier By Id
 Route::post('/deleteSuppById', 'SupplierController@updateSuppById');
 
 //Delete User By Id
 Route::post('/deleteUserById', 'UserController@deleteUserById');
 
+//Delete supplier inventory By Id
+Route::post('/deleteIvenSuppById', 'InventoryController@deleteSupInventoryById');
+//Delete customer inventory By Id
+Route::post('/deleteIvenCusById', 'InventoryController@deleteCusInventoryById');
+//Create Supplier Inventory
+Route::post('/storeSuppInventory', 'InventoryController@storeIventorySup');
+//Create customer Inventory
+Route::post('/storeCusInventory', 'InventoryController@storeIventoryCus');
 
 //update consignment
 Route::post('/update-invoice-details', 'InvoiceController@updateInvoiceItem');
 
+//update book
+Route::post('/update-book-details', 'BookController@updateBook');
 
 Route::get('/getConsignSale', 'ConsignmentController@getSaleConsign');
 //view stock details
 Route::get('/getStockDetails', 'BookController@stockDetails');
-
+//view supplier inventory details
+Route::get('/getSupInventory', 'InventoryController@getInventorySupp');
+//view customer inventory details
+Route::get('/getCusInventory', 'InventoryController@getInventoryCus');
 
 //login/logout
 Route::post('login', 'UserController@login');

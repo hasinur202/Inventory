@@ -1,7 +1,7 @@
 <template>
   <div>
     <headerComponent></headerComponent>
-    <div class="content-wrapper mybg">
+    <div class="content-wrapper">
       <div class="content">
         <div class="container-fluid">
 
@@ -14,11 +14,11 @@
                     </div>
                 <!-- /.card-header -->
                     <div class="card-body">
-                        
+
                         <a target="_blank" style="margin-left:2rem;"
-                            class="btn btn-info btn-lg" 
+                            class="btn btn-info btn-lg"
                             href="http://localhost/phpmyadmin/db_export.php?db=db_ims&token=ae89c9c110df55bc34ee7913cd654492">
-                            <h2>Download</h2> 
+                            <h2>Download</h2>
                         </a>
 
 
@@ -54,7 +54,7 @@
 
         data() {
           return {
-          
+
           }
         },
 
@@ -63,7 +63,7 @@
         },
 
         methods:{
-           
+
         }
     }
 </script>

@@ -12,6 +12,8 @@ import salesState from "./components/SalesState"
 import salesSum from "./components/SalesSum"
 import stock from "./components/Stock"
 import databackup from "./components/Backup"
+import custInventory from "./components/Cust-inventory"
+import suppInventory from "./components/Sup-inventory"
 
 
 export default [{
@@ -84,5 +86,14 @@ export default [{
         component: databackup,
         name: 'databackup'
     },
-
+    {
+        path: '/suppInventory',
+        component: suppInventory,
+        name: 'suppInventory'
+    },
+    {
+        path: '/custInventory',
+        component: custInventory,
+        name: 'custInventory'
+    },
 ]

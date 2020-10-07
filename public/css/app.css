@@ -30120,7 +30120,7 @@ readers do not read off random characters that represent icons */
   color: #fff !important;
 }
 
-.mybg {
+body {
   background-image: url(/images/background3.jpg?23620b2d20ec9bf3d15502f3b2e6031b);
 }
 

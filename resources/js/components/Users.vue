@@ -1,7 +1,8 @@
 <template>
   <div>
     <headerComponent></headerComponent>
-    <div class="content-wrapper mybg">
+
+    <div class="content-wrapper">
       <div class="content">
         <div class="container-fluid">
 
@@ -40,7 +41,7 @@
                         <td v-else><p class="btn btn-info btn-sm">Inactive</p></td>
                         <td>
                             <button @click="editUserById(user)" data-toggle="modal" data-target="#editNew" class="btn btn-info btn-sm"><i class="fa fa-edit"></i></button>
-                            <button @click="deleteUser(user)" class="btn btn-danger btn-sm"><i class="fa fa-trash"></i></button>  
+                            <button @click="deleteUser(user)" class="btn btn-danger btn-sm"><i class="fa fa-trash"></i></button>
                         </td>
                         </tr>
 
@@ -182,8 +183,8 @@
         </div>
       </div>
     </div>
-    <footerComponent></footerComponent>
 
+    <footerComponent></footerComponent>
   </div>
 </template>
 

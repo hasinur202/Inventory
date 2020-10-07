@@ -1,7 +1,7 @@
 <template>
   <div>
     <headerComponent></headerComponent>
-    <div class="content-wrapper mybg">
+    <div class="content-wrapper">
       <div class="content">
         <div class="container-fluid">
         <div class="container">
@@ -23,7 +23,7 @@
                             <th>Subject/Category</th>
                             <th>Edition</th>
                             <th>Language</th>
-                            <td>Action</td>
+                            <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -36,8 +36,8 @@
                         <td>{{ books.edition }}</td>
                         <td>{{ books.edition }}</td>
                         <td>
-                            <a href="#"><button class="btn btn-info btn-sm"><i class="fa fa-edit"></i></button></a>
-                            <a href="#"><button class="btn btn-danger btn-sm"><i class="fa fa-trash"></i></button></a>
+                            <button @click="bookByid(books)" data-toggle="modal" data-target="#editBook" class="btn btn-info btn-sm"><i class="fa fa-edit"></i></button>
+                            <button class="btn btn-danger btn-sm"><i class="fa fa-trash"></i></button>
                             <button @click="bookByid(books)" data-toggle="modal" data-target="#viewBook" class="btn btn-primary btn-sm"><i class="fa fa-eye"></i></button>
                             <!-- <button data-toggle="modal" data-target="#viewBook" class="btn btn-primary btn-sm"><i class="fa fa-eye"></i></button> -->
                         </td>
@@ -54,6 +54,7 @@
         </div>
 
 
+<!-- this model for only view -->
         <div class="modal fade" id="viewBook" tabindex="-1" role="dialog" aria-labelledby="addNewLabel" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered  modal-lg" role="document">
                     <div class="modal-content">
@@ -183,11 +184,158 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary">Create</button>
                     </div>
                </div>
             </div>
         </div>
+
+
+<!-- this modal for edit book item -->
+        <div class="modal fade" id="editBook" tabindex="-1" role="dialog" aria-labelledby="addNewLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered  modal-lg" role="document">
+                    <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addNewLabel">Book Details</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <form @submit.prevent="updateBook">
+                    <div class="modal-body">
+
+                        <div class="row">
+                            <div class="col-md-3">
+
+                                <div class="form-group">
+                                    <label>Cover</label>
+                                <div class="input-group"  style="width:200px; height:180px;">
+                                    <div class="custom-file file-input-style">
+                                        <img class="img-style" :src="`/images/${singleBookDetails.cover}`" />
+                                        <input  @change="changePhoto($event)" type="file" name="cover" class="custom-file-input input-new-style" id="exampleInputFile">
+                                    </div>
+                                </div>
+                                </div>
+                            </div>
+
+                            <!-- /.col -->
+                            <div class="col-md-8 mytable">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <label>ISBN No.</label>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <input v-model="singleBookDetails.isbn">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <label>Author</label>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <input v-model="singleBookDetails.author">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <label>Subject/Category</label>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <input v-model="singleBookDetails.category" >
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <label>Publisher</label>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <input v-model="singleBookDetails.publisher" >
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <label>Publisher Year</label>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <input v-model="singleBookDetails.year" >
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <label>Publish Country</label>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <input v-model="singleBookDetails.country" readonly>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <label>Copyright</label>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <input v-model="singleBookDetails.copyright" >
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <label>Edition</label>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <input v-model="singleBookDetails.edition" >
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <label>Language</label>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <input v-model="singleBookDetails.language" >
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <label>Shelf Ref#</label>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <input v-model="singleBookDetails.ref" >
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <label>Status</label>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <input v-model="singleBookDetails.status" >
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <label>Summary</label>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <textarea v-model="singleBookDetails.summary" ></textarea>
+                                    </div>
+                                </div>
+
+                            </div>
+                    <!-- /.col -->
+                    </div>
+
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-info">Update</button>
+                    </div>
+                    </form>
+               </div>
+            </div>
+        </div>
+
+
+
+
+
+
 
         </div>
       </div>
@@ -224,6 +372,7 @@ export default {
                 language:'',
                 ref:'',
                 status:'',
+                id:'',
             }
         }
     },
@@ -242,7 +391,35 @@ export default {
                     this.singleBookDetails[index] = book[index];
                 }
             }
-        }
+        },
+
+        updateBook(){
+            axios
+                .post(`/update-book-details`, this.singleBookDetails)
+                .then(response => {
+                this.viewBook();
+                    Toast.fire({
+                        icon: "success",
+                        title: "Book Updated Successfully"
+                    });
+                });
+        },
+
+
+
+        ourImage(img) {
+                return "/images/" + img;
+            },
+
+        changePhoto(event) {
+            let file = event.target.files[0];
+            let reader = new FileReader();
+            reader.onload = event => {
+                this.singleBookDetails.cover = event.target.result;
+            };
+            reader.readAsDataURL(file);
+
+        },
 
 
 
@@ -287,4 +464,28 @@ export default {
     .row .col-md-4 label{
         margin-bottom: 0 !important;
     }
+
+.file-input-style{
+    border: dashed 1.5px blue;
+    background-image: repeating-linear-gradient(45deg, black, transparent 100px);
+    height: 180px !important;
+    max-width: 200px !important;
+    /* margin-left: 50px !important; */
+    margin:auto;
+}
+.input-new-style{
+    margin-left: -100%;
+    height: 180px !important;
+    border: dashed 1.5px blue;
+    background-image: repeating-linear-gradient(45deg, black, transparent 100px);
+    width: 200px !important;
+    cursor: pointer;
+}
+.img-style{
+    width: 200px !important;
+    height: 180px !important;
+}
+
+
+
 </style>

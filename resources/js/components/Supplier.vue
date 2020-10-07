@@ -38,7 +38,7 @@
                           <td>{{ supplier.email }}</td>
                           <td>{{ supplier.address }}</td>
                           <td>
-                              <button @click="editSupById(supplier)" 
+                              <button @click="editSupById(supplier)"
                               data-toggle="modal" data-target="#editNew"
                                class="btn btn-info btn-sm">
                                 <i class="fa fa-edit"></i>
@@ -47,7 +47,7 @@
                               <button @click="deleteSupplier(supplier)" class="btn btn-danger btn-sm">
                                 <i class="fa fa-trash"></i>
                               </button>
-                            
+
                           </td>
                         </tr>
                       </tbody>
@@ -82,7 +82,7 @@
                         <input
                           v-model="editSuppDetails.supplier"
                           type="text"
-                          name="supplier" 
+                          name="supplier"
                           class="form-control"
                         />
 
