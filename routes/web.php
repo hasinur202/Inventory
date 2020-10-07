@@ -123,3 +123,4 @@ Route::post('login', 'UserController@login');
 Route::get('logout', 'UserController@logout');
 
 Route::get('sales-summery-report', 'ReportController@summeryReport');
+Route::get('sales-statement-report', 'ReportController@statementReport');

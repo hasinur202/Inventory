@@ -17,8 +17,8 @@
 
                         <a target="_blank" style="margin-left:2rem;"
                             class="btn btn-info btn-lg"
-                            href="http://localhost/phpmyadmin/db_export.php?db=db_ims&token=ae89c9c110df55bc34ee7913cd654492">
-                            <h2>Download</h2>
+                            href="http://localhost/phpmyadmin/db_export.php?db=db_ims">
+                            <h3>Download</h3>
                         </a>
 
 

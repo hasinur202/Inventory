@@ -1,5 +1,5 @@
 <template>
-  <div style="position:fixed; bottom:0; width:100%;">
+  <div style="bottom:0px; width:100%;">
     <footer class="main-footer">
     <!-- To the right -->
     <div class="float-right d-none d-sm-inline">

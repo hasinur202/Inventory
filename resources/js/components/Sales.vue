@@ -383,8 +383,22 @@ export default {
         invoiceStore(){
             axios.post("/storeInvoice", this.dataArray).then(() => {
                 console.log("success");
-                this.dataArray.details = [];
-                this.dataArray = [];
+                // this.dataArray.details = [];
+                this.dataArray = {
+                cus_name:"",
+                email:"",
+                phone:"",
+                address:"",
+                invoice_ref: "",
+                total_price: "0",
+                total_discount:"0",
+                pay_mode:"Cash",
+                total_qty: "0",
+                receivable:"0",
+                net_receivable:"0",
+                total_receivable:"0",
+                details: [],
+            };
                 Toast.fire({
                     icon: 'success',
                     title: 'Invoice Saved Successfully'

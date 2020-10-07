@@ -4394,9 +4394,23 @@ __webpack_require__.r(__webpack_exports__);
       var _this3 = this;
 
       axios.post("/storeInvoice", this.dataArray).then(function () {
-        console.log("success");
-        _this3.dataArray.details = [];
-        _this3.dataArray = [];
+        console.log("success"); // this.dataArray.details = [];
+
+        _this3.dataArray = {
+          cus_name: "",
+          email: "",
+          phone: "",
+          address: "",
+          invoice_ref: "",
+          total_price: "0",
+          total_discount: "0",
+          pay_mode: "Cash",
+          total_qty: "0",
+          receivable: "0",
+          net_receivable: "0",
+          total_receivable: "0",
+          details: []
+        };
         Toast.fire({
           icon: 'success',
           title: 'Invoice Saved Successfully'
@@ -4669,18 +4683,44 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "Stock",
   data: function data() {
     return {
-      isHidden: true
+      isHidden: true,
+      errors: {},
+      formData: {
+        toDate: "",
+        fromDate: "",
+        fixedDate: ""
+      },
+      statementData: []
     };
   },
   created: function created() {},
   computed: {},
-  methods: {},
+  methods: {
+    showReport: function showReport() {
+      var _this = this;
+
+      this.errors = {};
+      axios.get("sales-statement-report?fromDate=".concat(this.formData.fromDate, "&toDate=").concat(this.formData.toDate, "&fixedDate=").concat(this.formData.fixedDate)).then(function (response) {
+        _this.isHidden = false;
+        _this.statementData = response.data.statementData;
+      })["catch"](function (err) {
+        if (err.response.status == 422) {
+          _this.errors = err.response.data.errors;
+          console.log("Error!");
+        }
+      });
+    }
+  },
   components: {
     headerComponent: _header__WEBPACK_IMPORTED_MODULE_0__["default"],
     footerComponent: _footer__WEBPACK_IMPORTED_MODULE_1__["default"]
@@ -4987,6 +5027,10 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -5000,7 +5044,10 @@ __webpack_require__.r(__webpack_exports__);
         fromDate: "",
         fixedDate: ""
       },
-      consignmentData: {}
+      consignmentData: {},
+      salesData: {},
+      supplierData: {},
+      customerData: {}
     };
   },
   created: function created() {},
@@ -5013,6 +5060,9 @@ __webpack_require__.r(__webpack_exports__);
       axios.get("sales-summery-report?fromDate=".concat(this.formData.fromDate, "&toDate=").concat(this.formData.toDate, "&fixedDate=").concat(this.formData.fixedDate)).then(function (response) {
         _this.isHidden = false;
         _this.consignmentData = response.data.purchachedData;
+        _this.salesData = response.data.salesData;
+        _this.supplierData = response.data.supplierData;
+        _this.customerData = response.data.customerData;
       })["catch"](function (err) {
         if (err.response.status == 422) {
           _this.errors = err.response.data.errors;
@@ -11974,7 +12024,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.ulstyle[data-v-6db0a08d] {\n  list-style: none;\n  padding-left: 0px;\n  float: left;\n  width: 100%;\n}\n.ulstyle > li[data-v-6db0a08d]:hover {\n  background: #ddd;\n  color: blue;\n  border-radius: 5px;\n}\n.ulstyle > li > p[data-v-6db0a08d] {\n  padding: 5px;\n  cursor: pointer;\n  margin-bottom: 4px;\n  float: left;\n  width: 100%;\n}\n.card-title[data-v-6db0a08d] {\n  float: left;\n}\n\n", ""]);
+exports.push([module.i, "\n.ulstyle[data-v-6db0a08d] {\r\n  list-style: none;\r\n  padding-left: 0px;\r\n  float: left;\r\n  width: 100%;\n}\n.ulstyle > li[data-v-6db0a08d]:hover {\r\n  background: #ddd;\r\n  color: blue;\r\n  border-radius: 5px;\n}\n.ulstyle > li > p[data-v-6db0a08d] {\r\n  padding: 5px;\r\n  cursor: pointer;\r\n  margin-bottom: 4px;\r\n  float: left;\r\n  width: 100%;\n}\n.card-title[data-v-6db0a08d] {\r\n  float: left;\n}\r\n\r\n", ""]);
 
 // exports
 
@@ -11993,7 +12043,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.ulstyle[data-v-6545489e] {\n  list-style: none;\n  padding-left: 0px;\n  float: left;\n  width: 100%;\n}\n.ulstyle > li[data-v-6545489e]:hover {\n  background: #ddd;\n  color: blue;\n  border-radius: 5px;\n}\n.ulstyle > li > p[data-v-6545489e] {\n  padding: 5px;\n  cursor: pointer;\n  margin-bottom: 4px;\n  float: left;\n  width: 100%;\n}\n\n\n", ""]);
+exports.push([module.i, "\n.ulstyle[data-v-6545489e] {\r\n  list-style: none;\r\n  padding-left: 0px;\r\n  float: left;\r\n  width: 100%;\n}\n.ulstyle > li[data-v-6545489e]:hover {\r\n  background: #ddd;\r\n  color: blue;\r\n  border-radius: 5px;\n}\n.ulstyle > li > p[data-v-6545489e] {\r\n  padding: 5px;\r\n  cursor: pointer;\r\n  margin-bottom: 4px;\r\n  float: left;\r\n  width: 100%;\n}\r\n\r\n\r\n", ""]);
 
 // exports
 
@@ -12012,7 +12062,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.ulstyle[data-v-6545489e] {\n  list-style: none;\n  padding-left: 0px;\n  float: left;\n  width: 100%;\n}\n.ulstyle > li[data-v-6545489e]:hover {\n  background: #ddd;\n  color: blue;\n  border-radius: 5px;\n}\n.ulstyle > li > p[data-v-6545489e] {\n  padding: 5px;\n  cursor: pointer;\n  margin-bottom: 4px;\n  float: left;\n  width: 100%;\n}\n.invoice_title[data-v-6545489e]{\n    text-align: center;\n    font-weight: bold;\n    margin-bottom: 10px;\n    border-bottom: 2px solid #ddd;\n    padding-bottom: 5px;\n}\n\n", ""]);
+exports.push([module.i, "\n.ulstyle[data-v-6545489e] {\r\n  list-style: none;\r\n  padding-left: 0px;\r\n  float: left;\r\n  width: 100%;\n}\n.ulstyle > li[data-v-6545489e]:hover {\r\n  background: #ddd;\r\n  color: blue;\r\n  border-radius: 5px;\n}\n.ulstyle > li > p[data-v-6545489e] {\r\n  padding: 5px;\r\n  cursor: pointer;\r\n  margin-bottom: 4px;\r\n  float: left;\r\n  width: 100%;\n}\n.invoice_title[data-v-6545489e]{\r\n    text-align: center;\r\n    font-weight: bold;\r\n    margin-bottom: 10px;\r\n    border-bottom: 2px solid #ddd;\r\n    padding-bottom: 5px;\n}\r\n\r\n", ""]);
 
 // exports
 
@@ -12031,7 +12081,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.ulstyle[data-v-249b947c] {\n  list-style: none;\n  padding-left: 0px;\n  float: left;\n  width: 100%;\n}\n.ulstyle > li[data-v-249b947c]:hover {\n  background: #ddd;\n  color: blue;\n  border-radius: 5px;\n}\n.ulstyle > li > p[data-v-249b947c] {\n  padding: 5px;\n  cursor: pointer;\n  margin-bottom: 4px;\n  float: left;\n  width: 100%;\n}\n.card-title[data-v-249b947c] {\n  float: left;\n}\n\n", ""]);
+exports.push([module.i, "\n.ulstyle[data-v-249b947c] {\r\n  list-style: none;\r\n  padding-left: 0px;\r\n  float: left;\r\n  width: 100%;\n}\n.ulstyle > li[data-v-249b947c]:hover {\r\n  background: #ddd;\r\n  color: blue;\r\n  border-radius: 5px;\n}\n.ulstyle > li > p[data-v-249b947c] {\r\n  padding: 5px;\r\n  cursor: pointer;\r\n  margin-bottom: 4px;\r\n  float: left;\r\n  width: 100%;\n}\n.card-title[data-v-249b947c] {\r\n  float: left;\n}\r\n\r\n", ""]);
 
 // exports
 
@@ -12050,7 +12100,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.ulstyle[data-v-8e43ef84] {\n  list-style: none;\n  padding-left: 0px;\n  float: left;\n  width: 100%;\n}\n.ulstyle > li[data-v-8e43ef84]:hover {\n  background: #ddd;\n  color: blue;\n  border-radius: 5px;\n}\n.ulstyle > li > p[data-v-8e43ef84] {\n  padding: 5px;\n  cursor: pointer;\n  margin-bottom: 4px;\n  float: left;\n  width: 100%;\n}\n.card-title[data-v-8e43ef84] {\n  float: left;\n}\n.supp[data-v-8e43ef84] {\n  width: 100%;\n  float: right;\n}\n", ""]);
+exports.push([module.i, "\n.ulstyle[data-v-8e43ef84] {\r\n  list-style: none;\r\n  padding-left: 0px;\r\n  float: left;\r\n  width: 100%;\n}\n.ulstyle > li[data-v-8e43ef84]:hover {\r\n  background: #ddd;\r\n  color: blue;\r\n  border-radius: 5px;\n}\n.ulstyle > li > p[data-v-8e43ef84] {\r\n  padding: 5px;\r\n  cursor: pointer;\r\n  margin-bottom: 4px;\r\n  float: left;\r\n  width: 100%;\n}\n.card-title[data-v-8e43ef84] {\r\n  float: left;\n}\n.supp[data-v-8e43ef84] {\r\n  width: 100%;\r\n  float: right;\n}\r\n", ""]);
 
 // exports
 
@@ -12069,7 +12119,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.head_menu{\n        border-radius: 10px;\n        border: 1px solid #fff;\n        background: #494E54;\n        color: #fff !important;\n        margin-left: 14px;\n}\n.head_menu:hover {\n          background: gray !important;\n          color: black !important;\n          border:1px solid #ddd;transition-delay: 0.2s;\n}\n.fixed_position{\n          left:0;\n          right:0; top: 0;\n          position: fixed;\n}\n", ""]);
+exports.push([module.i, "\n.head_menu{\r\n        border-radius: 10px;\r\n        border: 1px solid #fff;\r\n        background: #494E54;\r\n        color: #fff !important;\r\n        margin-left: 14px;\n}\n.head_menu:hover {\r\n          background: gray !important;\r\n          color: black !important;\r\n          border:1px solid #ddd;transition-delay: 0.2s;\n}\n.fixed_position{\r\n          left:0;\r\n          right:0; top: 0;\r\n          position: fixed;\n}\r\n", ""]);
 
 // exports
 
@@ -69985,10 +70035,10 @@ var staticRenderFns = [
                         attrs: {
                           target: "_blank",
                           href:
-                            "http://localhost/phpmyadmin/db_export.php?db=db_ims&token=ae89c9c110df55bc34ee7913cd654492"
+                            "http://localhost/phpmyadmin/db_export.php?db=db_ims"
                         }
                       },
-                      [_c("h2", [_vm._v("Download")])]
+                      [_c("h3", [_vm._v("Download")])]
                     )
                   ])
                 ])
@@ -70964,12 +71014,12 @@ var staticRenderFns = [
       "div",
       { staticClass: "card-footer", staticStyle: { display: "block" } },
       [
-        _vm._v("\n                    Visit "),
+        _vm._v("\r\n                    Visit "),
         _c("a", { attrs: { href: "https://select2.github.io/" } }, [
           _vm._v("Select2 documentation")
         ]),
         _vm._v(
-          " for more examples and information about\n                    the plugin.\n                "
+          " for more examples and information about\r\n                    the plugin.\r\n                "
         )
       ]
     )
@@ -76269,30 +76319,264 @@ var render = function() {
                           "button",
                           {
                             staticClass: "btn btn-success",
-                            on: {
-                              click: function($event) {
-                                _vm.isHidden = !_vm.isHidden
-                              }
-                            }
+                            on: { click: _vm.showReport }
                           },
                           [
                             _c("i", { staticClass: "fas fa-eye fa-fw" }),
                             _vm._v(
-                              " Show Report\n                                        "
+                              " Show Report\n                                    "
                             )
                           ]
                         )
                       ])
                     ]),
                     _vm._v(" "),
-                    _vm._m(0)
+                    _c("div", { staticClass: "card-body" }, [
+                      _c(
+                        "div",
+                        {
+                          staticClass: "col-md-6",
+                          staticStyle: { float: "left" }
+                        },
+                        [
+                          _c("div", { staticClass: "form-group" }, [
+                            _c("label", [_vm._v("Beginning Date")]),
+                            _vm._v(" "),
+                            _c("input", {
+                              directives: [
+                                {
+                                  name: "model",
+                                  rawName: "v-model",
+                                  value: _vm.formData.fromDate,
+                                  expression: "formData.fromDate"
+                                }
+                              ],
+                              staticClass: "form-control",
+                              class: _vm.errors.hasOwnProperty("fromDate")
+                                ? "is-invalid"
+                                : "",
+                              attrs: {
+                                type: "date",
+                                name: "bday",
+                                max: "3000-12-31",
+                                min: "1000-01-01"
+                              },
+                              domProps: { value: _vm.formData.fromDate },
+                              on: {
+                                input: function($event) {
+                                  if ($event.target.composing) {
+                                    return
+                                  }
+                                  _vm.$set(
+                                    _vm.formData,
+                                    "fromDate",
+                                    $event.target.value
+                                  )
+                                }
+                              }
+                            }),
+                            _vm._v(" "),
+                            _vm.errors.hasOwnProperty("fromDate")
+                              ? _c("span", { staticClass: "text-danger" }, [
+                                  _vm._v(_vm._s(_vm.errors.fromDate[0]))
+                                ])
+                              : _vm._e()
+                          ])
+                        ]
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "div",
+                        {
+                          staticClass: "col-md-6",
+                          staticStyle: { float: "right" }
+                        },
+                        [
+                          _c("div", { staticClass: "form-group" }, [
+                            _c("label", [_vm._v("Ending Date")]),
+                            _vm._v(" "),
+                            _c("input", {
+                              directives: [
+                                {
+                                  name: "model",
+                                  rawName: "v-model",
+                                  value: _vm.formData.toDate,
+                                  expression: "formData.toDate"
+                                }
+                              ],
+                              staticClass: "form-control",
+                              class: _vm.errors.hasOwnProperty("toDate")
+                                ? "is-invalid"
+                                : "",
+                              attrs: {
+                                type: "date",
+                                name: "bday",
+                                min: "1000-01-01",
+                                max: "3000-12-31"
+                              },
+                              domProps: { value: _vm.formData.toDate },
+                              on: {
+                                input: function($event) {
+                                  if ($event.target.composing) {
+                                    return
+                                  }
+                                  _vm.$set(
+                                    _vm.formData,
+                                    "toDate",
+                                    $event.target.value
+                                  )
+                                }
+                              }
+                            }),
+                            _vm._v(" "),
+                            _vm.errors.hasOwnProperty("toDate")
+                              ? _c("span", { staticClass: "text-danger" }, [
+                                  _vm._v(_vm._s(_vm.errors.toDate[0]))
+                                ])
+                              : _vm._e()
+                          ])
+                        ]
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "div",
+                        {
+                          staticClass: "col-md-6",
+                          staticStyle: { float: "left" }
+                        },
+                        [
+                          _c("div", { staticClass: "form-group" }, [
+                            _c("label", [_vm._v("Fixed Date")]),
+                            _vm._v(" "),
+                            _c("input", {
+                              directives: [
+                                {
+                                  name: "model",
+                                  rawName: "v-model",
+                                  value: _vm.formData.fixedDate,
+                                  expression: "formData.fixedDate"
+                                }
+                              ],
+                              staticClass: "form-control",
+                              class: _vm.errors.hasOwnProperty("fixedDate")
+                                ? "is-invalid"
+                                : "",
+                              attrs: {
+                                type: "date",
+                                name: "bday",
+                                max: "3000-12-31",
+                                min: "1000-01-01"
+                              },
+                              domProps: { value: _vm.formData.fixedDate },
+                              on: {
+                                input: function($event) {
+                                  if ($event.target.composing) {
+                                    return
+                                  }
+                                  _vm.$set(
+                                    _vm.formData,
+                                    "fixedDate",
+                                    $event.target.value
+                                  )
+                                }
+                              }
+                            }),
+                            _vm._v(" "),
+                            _vm.errors.hasOwnProperty("fixedDate")
+                              ? _c("span", { staticClass: "text-danger" }, [
+                                  _vm._v(_vm._s(_vm.errors.fixedDate[0]))
+                                ])
+                              : _vm._e()
+                          ])
+                        ]
+                      )
+                    ])
                   ]),
                   _vm._v(" "),
                   !_vm.isHidden
                     ? _c("div", { staticClass: "card" }, [
-                        _vm._m(1),
+                        _c(
+                          "div",
+                          {
+                            staticClass: "card-header",
+                            staticStyle: { "text-align": "center" }
+                          },
+                          [
+                            _c("h3", { staticClass: "card-title" }, [
+                              _vm._v("Prothoma Publications")
+                            ]),
+                            _vm._v(" "),
+                            _c("p", [
+                              _vm._v(
+                                "43-44 Aziz Co-op Super Market, Shahbag, Dhaka - 1000"
+                              )
+                            ]),
+                            _vm._v(" "),
+                            _vm.formData.fixedDate == ""
+                              ? _c("h4", [
+                                  _vm._v(
+                                    "Sales Statement: " +
+                                      _vm._s(_vm.formData.fromDate) +
+                                      " to " +
+                                      _vm._s(_vm.formData.toDate)
+                                  )
+                                ])
+                              : _c("h4", [
+                                  _vm._v(
+                                    "Sales Statement: " +
+                                      _vm._s(_vm.formData.fixedDate)
+                                  )
+                                ])
+                          ]
+                        ),
                         _vm._v(" "),
-                        _vm._m(2)
+                        _c(
+                          "div",
+                          { staticClass: "card-body table-responsive p-0" },
+                          [
+                            _c("table", { staticClass: "table table-hover" }, [
+                              _vm._m(0),
+                              _vm._v(" "),
+                              _c(
+                                "tbody",
+                                _vm._l(_vm.statementData, function(statement) {
+                                  return _c("tr", { key: statement.id }, [
+                                    _c("td", [_vm._v("1")]),
+                                    _vm._v(" "),
+                                    _c("td", [
+                                      _vm._v(_vm._s(statement.book.isbn))
+                                    ]),
+                                    _vm._v(" "),
+                                    _c("td", [
+                                      _vm._v(_vm._s(statement.book.book_name))
+                                    ]),
+                                    _vm._v(" "),
+                                    _c("td", [
+                                      _vm._v(_vm._s(statement.book.author))
+                                    ]),
+                                    _vm._v(" "),
+                                    _c("td", [
+                                      _vm._v(_vm._s(statement.unit_price))
+                                    ]),
+                                    _vm._v(" "),
+                                    _c("td", [_vm._v(_vm._s(statement.qty))]),
+                                    _vm._v(" "),
+                                    _c("td", [
+                                      _vm._v(
+                                        _vm._s(
+                                          statement.book.available_quantity
+                                        )
+                                      )
+                                    ]),
+                                    _vm._v(" "),
+                                    _c("td", [_vm._v("3")])
+                                  ])
+                                }),
+                                0
+                              )
+                            ])
+                          ]
+                        )
                       ])
                     : _vm._e()
                 ])
@@ -76312,169 +76596,21 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "card-body" }, [
-      _c("div", { staticClass: "col-md-6", staticStyle: { float: "left" } }, [
-        _c("div", { staticClass: "form-group" }, [
-          _c("label", [_vm._v("Beginning Date")]),
-          _vm._v(" "),
-          _c("input", {
-            staticClass: "form-control",
-            attrs: {
-              type: "date",
-              name: "bday",
-              max: "3000-12-31",
-              min: "1000-01-01"
-            }
-          })
-        ])
-      ]),
-      _vm._v(" "),
-      _c("div", { staticClass: "col-md-6", staticStyle: { float: "right" } }, [
-        _c("div", { staticClass: "form-group" }, [
-          _c("label", [_vm._v("Ending Date")]),
-          _vm._v(" "),
-          _c("input", {
-            staticClass: "form-control",
-            attrs: {
-              type: "date",
-              name: "bday",
-              min: "1000-01-01",
-              max: "3000-12-31"
-            }
-          })
-        ])
-      ])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c(
-      "div",
-      { staticClass: "card-header", staticStyle: { "text-align": "center" } },
-      [
-        _c("h3", { staticClass: "card-title" }, [
-          _vm._v("Prothoma Publications")
-        ]),
+    return _c("thead", [
+      _c("tr", [
+        _c("th", [_vm._v("SI No.")]),
         _vm._v(" "),
-        _c("p", [
-          _vm._v("43-44 Aziz Co-op Super Market, Shahbag, Dhaka - 1000")
-        ]),
+        _c("th", [_vm._v("ISBN")]),
         _vm._v(" "),
-        _c("h4", [_vm._v("Sales Statement: 17-05-2020 to 20-05-2020")])
-      ]
-    )
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "card-body table-responsive p-0" }, [
-      _c("table", { staticClass: "table table-hover" }, [
-        _c("thead", [
-          _c("tr", [
-            _c("th", [_vm._v("SI No.")]),
-            _vm._v(" "),
-            _c("th", [_vm._v("Book Name")]),
-            _vm._v(" "),
-            _c("th", [_vm._v("Author")]),
-            _vm._v(" "),
-            _c("th", [_vm._v("ISBN")]),
-            _vm._v(" "),
-            _c("th", [_vm._v("Quantity")])
-          ])
-        ]),
+        _c("th", [_vm._v("Book Name")]),
         _vm._v(" "),
-        _c("tbody", [
-          _c("tr", [
-            _c("td", [_vm._v("1")]),
-            _vm._v(" "),
-            _c("td", [_vm._v("ইমাম ও নিশান")]),
-            _vm._v(" "),
-            _c("td", [_vm._v("Gautam Bhadra")]),
-            _vm._v(" "),
-            _c("td", [_vm._v("521554545312558")]),
-            _vm._v(" "),
-            _c("td", [_vm._v("3")])
-          ]),
-          _vm._v(" "),
-          _c("tr", [
-            _c("td", [_vm._v("2")]),
-            _vm._v(" "),
-            _c("td", [_vm._v("Cloud IT Solution")]),
-            _vm._v(" "),
-            _c("td", [_vm._v("Gautam Bhadra")]),
-            _vm._v(" "),
-            _c("td", [_vm._v("5245454312558")]),
-            _vm._v(" "),
-            _c("td", [_vm._v("10")])
-          ]),
-          _vm._v(" "),
-          _c("tr", [
-            _c("td", [_vm._v("3")]),
-            _vm._v(" "),
-            _c("td", [_vm._v("Chemistry")]),
-            _vm._v(" "),
-            _c("td", [_vm._v("asfda Bhadra")]),
-            _vm._v(" "),
-            _c("td", [_vm._v("521554545312558")]),
-            _vm._v(" "),
-            _c("td", [_vm._v("5")])
-          ]),
-          _vm._v(" "),
-          _c("tr", [
-            _c("td", [_vm._v("4")]),
-            _vm._v(" "),
-            _c("td", [_vm._v("ইমাম ও নিশান")]),
-            _vm._v(" "),
-            _c("td", [_vm._v("Gautam Bhadra")]),
-            _vm._v(" "),
-            _c("td", [_vm._v("521554545312558")]),
-            _vm._v(" "),
-            _c("td", [_vm._v("3")])
-          ]),
-          _vm._v(" "),
-          _c("tr", [
-            _c("td", [_vm._v("5")]),
-            _vm._v(" "),
-            _c("td", [_vm._v("Mathematics")]),
-            _vm._v(" "),
-            _c("td", [_vm._v("Gautam Bhadra")]),
-            _vm._v(" "),
-            _c("td", [_vm._v("521554545312558")]),
-            _vm._v(" "),
-            _c("td", [_vm._v("3")])
-          ]),
-          _vm._v(" "),
-          _c("tr", [
-            _c("td", [_vm._v("6")]),
-            _vm._v(" "),
-            _c("td", [_vm._v("Physics")]),
-            _vm._v(" "),
-            _c("td", [_vm._v("Gautam Bhadra")]),
-            _vm._v(" "),
-            _c("td", [_vm._v("521554545312558")]),
-            _vm._v(" "),
-            _c("td", [_vm._v("3")])
-          ]),
-          _vm._v(" "),
-          _c("tr", [
-            _c("td", [_vm._v("7")]),
-            _vm._v(" "),
-            _c("td", [
-              _vm._v(
-                "ছবির চশমা\n                                                "
-              )
-            ]),
-            _vm._v(" "),
-            _c("td", [_vm._v("Autham daslkj ")]),
-            _vm._v(" "),
-            _c("td", [_vm._v("521554545312558")]),
-            _vm._v(" "),
-            _c("td", [_vm._v("15")])
-          ])
-        ])
+        _c("th", [_vm._v("Author")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Sales Price")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Quantity")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Available")])
       ])
     ])
   }
@@ -76778,7 +76914,7 @@ var render = function() {
                                           _vm._v(
                                             _vm._s(
                                               _vm.consignmentData.totalPrice
-                                            )
+                                            ) + " Tk."
                                           )
                                         ]
                                       )
@@ -76798,7 +76934,237 @@ var render = function() {
                                           _vm._v(
                                             _vm._s(
                                               _vm.consignmentData.totalPrice
-                                            )
+                                            ) + " Tk."
+                                          )
+                                        ]
+                                      )
+                                    ])
+                                  ]),
+                                  _vm._v(" "),
+                                  _vm._m(2)
+                                ])
+                              ])
+                            ])
+                          ]
+                        ),
+                        _vm._v(" "),
+                        _c(
+                          "div",
+                          {
+                            staticClass: "col-md-10",
+                            staticStyle: { margin: "auto" }
+                          },
+                          [
+                            _vm._m(3),
+                            _vm._v(" "),
+                            _c("div", { staticClass: "card-body p-0" }, [
+                              _c("table", { staticClass: "table" }, [
+                                _c("tbody", [
+                                  _vm._m(4),
+                                  _vm._v(" "),
+                                  _c("tr", [
+                                    _c("td", [_vm._v("1.")]),
+                                    _vm._v(" "),
+                                    _c("td", [_vm._v("Books Sold:")]),
+                                    _vm._v(" "),
+                                    _c("td", [
+                                      _c(
+                                        "span",
+                                        { staticClass: "badge bg-info" },
+                                        [_vm._v(_vm._s(_vm.salesData.totalQty))]
+                                      )
+                                    ])
+                                  ]),
+                                  _vm._v(" "),
+                                  _c("tr", [
+                                    _c("td", [_vm._v("2.")]),
+                                    _vm._v(" "),
+                                    _c("td", [_vm._v("Gross Sales")]),
+                                    _vm._v(" "),
+                                    _c("td", [
+                                      _c(
+                                        "span",
+                                        { staticClass: "badge bg-info" },
+                                        [
+                                          _vm._v(
+                                            _vm._s(_vm.salesData.totalPrice) +
+                                              " Tk."
+                                          )
+                                        ]
+                                      )
+                                    ])
+                                  ]),
+                                  _vm._v(" "),
+                                  _c("tr", [
+                                    _c("td", [_vm._v("3.")]),
+                                    _vm._v(" "),
+                                    _c("td", [_vm._v("Discount:")]),
+                                    _vm._v(" "),
+                                    _c("td", [
+                                      _c(
+                                        "span",
+                                        { staticClass: "badge bg-info" },
+                                        [
+                                          _vm._v(
+                                            _vm._s(
+                                              _vm.salesData.totalDiscount
+                                            ) + " Tk."
+                                          )
+                                        ]
+                                      )
+                                    ])
+                                  ]),
+                                  _vm._v(" "),
+                                  _c("tr", [
+                                    _c("td", [_vm._v("4.")]),
+                                    _vm._v(" "),
+                                    _c("td", [_vm._v("Net Sales:")]),
+                                    _vm._v(" "),
+                                    _c("td", [
+                                      _c(
+                                        "span",
+                                        { staticClass: "badge bg-info" },
+                                        [
+                                          _vm._v(
+                                            _vm._s(_vm.salesData.totalPrice) +
+                                              " Tk."
+                                          )
+                                        ]
+                                      )
+                                    ])
+                                  ]),
+                                  _vm._v(" "),
+                                  _vm._m(5)
+                                ])
+                              ])
+                            ])
+                          ]
+                        ),
+                        _vm._v(" "),
+                        _c(
+                          "div",
+                          {
+                            staticClass: "col-md-10",
+                            staticStyle: { margin: "auto" }
+                          },
+                          [
+                            _vm._m(6),
+                            _vm._v(" "),
+                            _c("div", { staticClass: "card-body p-0" }, [
+                              _c("table", { staticClass: "table" }, [
+                                _c("tbody", [
+                                  _vm._m(7),
+                                  _vm._v(" "),
+                                  _c("tr", [
+                                    _c("td", [_vm._v("1.")]),
+                                    _vm._v(" "),
+                                    _vm._m(8),
+                                    _vm._v(" "),
+                                    _c("td", [
+                                      _c(
+                                        "span",
+                                        { staticClass: "badge bg-success" },
+                                        [
+                                          _vm._v(
+                                            _vm._s(_vm.supplierData.totalDue) +
+                                              " Tk."
+                                          )
+                                        ]
+                                      )
+                                    ])
+                                  ]),
+                                  _vm._v(" "),
+                                  _c("tr", [
+                                    _c("td", [_vm._v("2.")]),
+                                    _vm._v(" "),
+                                    _vm._m(9),
+                                    _vm._v(" "),
+                                    _c("td", [
+                                      _c(
+                                        "span",
+                                        { staticClass: "badge bg-success" },
+                                        [
+                                          _vm._v(
+                                            _vm._s(_vm.supplierData.totalPaid) +
+                                              " Tk."
+                                          )
+                                        ]
+                                      )
+                                    ])
+                                  ]),
+                                  _vm._v(" "),
+                                  _c("tr", [
+                                    _c("td", [_vm._v("3.")]),
+                                    _vm._v(" "),
+                                    _vm._m(10),
+                                    _vm._v(" "),
+                                    _c("td", [
+                                      _c(
+                                        "span",
+                                        { staticClass: "badge bg-success" },
+                                        [
+                                          _vm._v(
+                                            _vm._s(
+                                              _vm.supplierData.currentDue
+                                            ) + " Tk."
+                                          )
+                                        ]
+                                      )
+                                    ])
+                                  ]),
+                                  _vm._v(" "),
+                                  _c("tr", [
+                                    _c("td", [_vm._v("4.")]),
+                                    _vm._v(" "),
+                                    _vm._m(11),
+                                    _vm._v(" "),
+                                    _c("td", [
+                                      _c(
+                                        "span",
+                                        { staticClass: "badge bg-success" },
+                                        [
+                                          _vm._v(
+                                            _vm._s(_vm.customerData.totalDue) +
+                                              " Tk."
+                                          )
+                                        ]
+                                      )
+                                    ])
+                                  ]),
+                                  _vm._v(" "),
+                                  _c("tr", [
+                                    _c("td", [_vm._v("5.")]),
+                                    _vm._v(" "),
+                                    _vm._m(12),
+                                    _vm._v(" "),
+                                    _c("td", [
+                                      _c(
+                                        "span",
+                                        { staticClass: "badge bg-success" },
+                                        [
+                                          _vm._v(
+                                            _vm._s(_vm.customerData.totalPaid) +
+                                              " Tk."
+                                          )
+                                        ]
+                                      )
+                                    ])
+                                  ]),
+                                  _vm._v(" "),
+                                  _c("tr", [
+                                    _c("td", [_vm._v("6.")]),
+                                    _vm._v(" "),
+                                    _vm._m(13),
+                                    _vm._v(" "),
+                                    _c("td", [
+                                      _c(
+                                        "span",
+                                        { staticClass: "badge bg-success" },
+                                        [
+                                          _vm._v(
+                                            _vm._s(
+                                              _vm.customerData.currentDue
+                                            ) + " Tk."
                                           )
                                         ]
                                       )
@@ -76808,11 +77174,7 @@ var render = function() {
                               ])
                             ])
                           ]
-                        ),
-                        _vm._v(" "),
-                        _vm._m(2),
-                        _vm._v(" "),
-                        _vm._m(3)
+                        )
                       ])
                     : _vm._e()
                 ])
@@ -76852,203 +77214,103 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c(
-      "div",
-      { staticClass: "col-md-10", staticStyle: { margin: "auto" } },
-      [
-        _c("div", { staticClass: "card-header" }, [
-          _c("h3", { staticClass: "card-title" }, [_vm._v("Sales:")])
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "card-body p-0" }, [
-          _c("table", { staticClass: "table" }, [
-            _c("tbody", [
-              _c("tr", [
-                _c("th", { staticStyle: { width: "10px" } }, [_vm._v("#")]),
-                _vm._v(" "),
-                _c("th", [_vm._v("Name")]),
-                _vm._v(" "),
-                _c("th", { staticStyle: { width: "40px" } }, [_vm._v("Amount")])
-              ]),
-              _vm._v(" "),
-              _c("tr", [
-                _c("td", [_vm._v("1.")]),
-                _vm._v(" "),
-                _c("td", [_vm._v("Books Sold:")]),
-                _vm._v(" "),
-                _c("td", [
-                  _c("span", { staticClass: "badge bg-info" }, [_vm._v("0")])
-                ])
-              ]),
-              _vm._v(" "),
-              _c("tr", [
-                _c("td", [_vm._v("2.")]),
-                _vm._v(" "),
-                _c("td", [_vm._v("Gross Sales")]),
-                _vm._v(" "),
-                _c("td", [
-                  _c("span", { staticClass: "badge bg-info" }, [_vm._v("0.00")])
-                ])
-              ]),
-              _vm._v(" "),
-              _c("tr", [
-                _c("td", [_vm._v("3.")]),
-                _vm._v(" "),
-                _c("td", [_vm._v("Discount:")]),
-                _vm._v(" "),
-                _c("td", [
-                  _c("span", { staticClass: "badge bg-info" }, [_vm._v("0.00")])
-                ])
-              ]),
-              _vm._v(" "),
-              _c("tr", [
-                _c("td", [_vm._v("4.")]),
-                _vm._v(" "),
-                _c("td", [_vm._v("Net Sales:")]),
-                _vm._v(" "),
-                _c("td", [
-                  _c("span", { staticClass: "badge bg-info" }, [_vm._v("0.00")])
-                ])
-              ]),
-              _vm._v(" "),
-              _c("tr", [
-                _c("td", [_vm._v("5.")]),
-                _vm._v(" "),
-                _c("td", [_vm._v("Credit to Customer:")]),
-                _vm._v(" "),
-                _c("td", [
-                  _c("span", { staticClass: "badge bg-info" }, [_vm._v("0.00")])
-                ])
-              ])
-            ])
-          ])
-        ])
-      ]
-    )
+    return _c("tr", [
+      _c("td", [_vm._v("4.")]),
+      _vm._v(" "),
+      _c("td", [_vm._v("Credit To Supplier:")]),
+      _vm._v(" "),
+      _c("td", [
+        _c("span", { staticClass: "badge bg-primary" }, [_vm._v("0.00 Tk.")])
+      ])
+    ])
   },
   function() {
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c(
-      "div",
-      { staticClass: "col-md-10", staticStyle: { margin: "auto" } },
-      [
-        _c("div", { staticClass: "card-header" }, [
-          _c("h3", { staticClass: "card-title" }, [_vm._v("Overview:")])
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "card-body p-0" }, [
-          _c("table", { staticClass: "table" }, [
-            _c("tbody", [
-              _c("tr", [
-                _c("th", { staticStyle: { width: "10px" } }, [_vm._v("#")]),
-                _vm._v(" "),
-                _c("th", [_vm._v("Name")]),
-                _vm._v(" "),
-                _c("th", { staticStyle: { width: "40px" } }, [_vm._v("Amount")])
-              ]),
-              _vm._v(" "),
-              _c("tr", [
-                _c("td", [_vm._v("1.")]),
-                _vm._v(" "),
-                _c("td", [_c("strong", [_vm._v("Outstanding Received")])]),
-                _vm._v(" "),
-                _c("td", [
-                  _c("span", { staticClass: "badge bg-success" }, [
-                    _vm._v("0.00")
-                  ])
-                ])
-              ]),
-              _vm._v(" "),
-              _c("tr", [
-                _c("td", [_vm._v("2.")]),
-                _vm._v(" "),
-                _c("td", [_c("strong", [_vm._v("Outstanding Paid")])]),
-                _vm._v(" "),
-                _c("td", [
-                  _c("span", { staticClass: "badge bg-success" }, [
-                    _vm._v("0.00")
-                  ])
-                ])
-              ]),
-              _vm._v(" "),
-              _c("tr", [
-                _c("td", [_vm._v("3.")]),
-                _vm._v(" "),
-                _c("td", [_c("strong", [_vm._v("Other Received")])]),
-                _vm._v(" "),
-                _c("td", [
-                  _c("span", { staticClass: "badge bg-success" }, [
-                    _vm._v("0.00")
-                  ])
-                ])
-              ]),
-              _vm._v(" "),
-              _c("tr", [
-                _c("td", [_vm._v("4.")]),
-                _vm._v(" "),
-                _c("td", [_c("strong", [_vm._v("Other Paid")])]),
-                _vm._v(" "),
-                _c("td", [
-                  _c("span", { staticClass: "badge bg-success" }, [
-                    _vm._v("0.00")
-                  ])
-                ])
-              ]),
-              _vm._v(" "),
-              _c("tr", [
-                _c("td", [_vm._v("5.")]),
-                _vm._v(" "),
-                _c("td", [_c("strong", [_vm._v("Sales Return Cash")])]),
-                _vm._v(" "),
-                _c("td", [
-                  _c("span", { staticClass: "badge bg-success" }, [
-                    _vm._v("0.00")
-                  ])
-                ])
-              ]),
-              _vm._v(" "),
-              _c("tr", [
-                _c("td", [_vm._v("6.")]),
-                _vm._v(" "),
-                _c("td", [_c("strong", [_vm._v("Total Cash Received")])]),
-                _vm._v(" "),
-                _c("td", [
-                  _c("span", { staticClass: "badge bg-success" }, [
-                    _vm._v("0.00")
-                  ])
-                ])
-              ]),
-              _vm._v(" "),
-              _c("tr", [
-                _c("td", [_vm._v("7.")]),
-                _vm._v(" "),
-                _c("td", [_c("strong", [_vm._v("Total Cash Paid")])]),
-                _vm._v(" "),
-                _c("td", [
-                  _c("span", { staticClass: "badge bg-success" }, [
-                    _vm._v("0.00")
-                  ])
-                ])
-              ]),
-              _vm._v(" "),
-              _c("tr", [
-                _c("td", [_vm._v("8.")]),
-                _vm._v(" "),
-                _c("td", [_c("strong", [_vm._v("Net Cash Received")])]),
-                _vm._v(" "),
-                _c("td", [
-                  _c("span", { staticClass: "badge bg-success" }, [
-                    _vm._v("0.00")
-                  ])
-                ])
-              ])
-            ])
-          ])
-        ])
-      ]
-    )
+    return _c("div", { staticClass: "card-header" }, [
+      _c("h3", { staticClass: "card-title" }, [_vm._v("Sales:")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("tr", [
+      _c("th", { staticStyle: { width: "10px" } }, [_vm._v("#")]),
+      _vm._v(" "),
+      _c("th", [_vm._v("Name")]),
+      _vm._v(" "),
+      _c("th", { staticStyle: { width: "40px" } }, [_vm._v("Amount")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("tr", [
+      _c("td", [_vm._v("5.")]),
+      _vm._v(" "),
+      _c("td", [_vm._v("Credit to Customer:")]),
+      _vm._v(" "),
+      _c("td", [_c("span", { staticClass: "badge bg-info" }, [_vm._v("0.00")])])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "card-header" }, [
+      _c("h3", { staticClass: "card-title" }, [_vm._v("Overview:")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("tr", [
+      _c("th", { staticStyle: { width: "10px" } }, [_vm._v("#")]),
+      _vm._v(" "),
+      _c("th", [_vm._v("Name")]),
+      _vm._v(" "),
+      _c("th", { staticStyle: { width: "40px" } }, [_vm._v("Amount")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("td", [_c("strong", [_vm._v("Due for Suppliers")])])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("td", [_c("strong", [_vm._v("Paid to Suppliers")])])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("td", [_c("strong", [_vm._v("Current Due for Suppliers")])])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("td", [_c("strong", [_vm._v("Due from Customers")])])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("td", [_c("strong", [_vm._v("Received from Customers")])])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("td", [_c("strong", [_vm._v("Current Due from Customers")])])
   }
 ]
 render._withStripped = true
@@ -80853,26 +81115,22 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c(
-      "div",
-      { staticStyle: { position: "fixed", bottom: "0", width: "100%" } },
-      [
-        _c("footer", { staticClass: "main-footer" }, [
-          _c("div", { staticClass: "float-right d-none d-sm-inline" }, [
-            _vm._v("\n    Anything you want\n  ")
+    return _c("div", { staticStyle: { bottom: "0px", width: "100%" } }, [
+      _c("footer", { staticClass: "main-footer" }, [
+        _c("div", { staticClass: "float-right d-none d-sm-inline" }, [
+          _vm._v("\n    Anything you want\n  ")
+        ]),
+        _vm._v(" "),
+        _c("strong", [
+          _vm._v("Copyright © 2020 "),
+          _c("a", { attrs: { href: "https://adminlte.io" } }, [
+            _vm._v("Idea Tech Solution")
           ]),
-          _vm._v(" "),
-          _c("strong", [
-            _vm._v("Copyright © 2020 "),
-            _c("a", { attrs: { href: "https://adminlte.io" } }, [
-              _vm._v("Idea Tech Solution")
-            ]),
-            _vm._v(".")
-          ]),
-          _vm._v(" All rights reserved.\n")
-        ])
-      ]
-    )
+          _vm._v(".")
+        ]),
+        _vm._v(" All rights reserved.\n")
+      ])
+    ])
   }
 ]
 render._withStripped = true
@@ -99426,8 +99684,8 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! D:\Hasinur\Inventory\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! D:\Hasinur\Inventory\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! D:\Office Project\Inventory\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! D:\Office Project\Inventory\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })

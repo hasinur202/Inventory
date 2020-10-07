@@ -107,21 +107,21 @@
                             <td>2.</td>
                             <td>Total Purchased Value</td>
                             <td>
-                              <span class="badge bg-primary">{{consignmentData.totalPrice}}</span>
+                              <span class="badge bg-primary">{{consignmentData.totalPrice}} Tk.</span>
                             </td>
                           </tr>
                           <tr>
                             <td>3.</td>
                             <td>Paid To Supplier:</td>
                             <td>
-                              <span class="badge bg-primary">{{consignmentData.totalPrice}}</span>
+                              <span class="badge bg-primary">{{consignmentData.totalPrice}} Tk.</span>
                             </td>
                           </tr>
-                          <!-- <tr>
+                          <tr>
                                         <td>4.</td>
                                         <td>Credit To Supplier:</td>
-                                        <td><span class="badge bg-primary">0.00</span></td>
-                          </tr>-->
+                                        <td><span class="badge bg-primary">0.00 Tk.</span></td>
+                          </tr>
                         </tbody>
                       </table>
                     </div>
@@ -145,28 +145,28 @@
                             <td>1.</td>
                             <td>Books Sold:</td>
                             <td>
-                              <span class="badge bg-info">0</span>
+                              <span class="badge bg-info">{{ salesData.totalQty }}</span>
                             </td>
                           </tr>
                           <tr>
                             <td>2.</td>
                             <td>Gross Sales</td>
                             <td>
-                              <span class="badge bg-info">0.00</span>
+                              <span class="badge bg-info">{{ salesData.totalPrice }} Tk.</span>
                             </td>
                           </tr>
                           <tr>
                             <td>3.</td>
                             <td>Discount:</td>
                             <td>
-                              <span class="badge bg-info">0.00</span>
+                              <span class="badge bg-info">{{ salesData.totalDiscount }} Tk.</span>
                             </td>
                           </tr>
                           <tr>
                             <td>4.</td>
                             <td>Net Sales:</td>
                             <td>
-                              <span class="badge bg-info">0.00</span>
+                              <span class="badge bg-info">{{ salesData.totalPrice }} Tk.</span>
                             </td>
                           </tr>
                           <tr>
@@ -190,33 +190,72 @@
                     <div class="card-body p-0">
                       <table class="table">
                         <tbody>
+                          
                           <tr>
                             <th style="width: 10px">#</th>
                             <th>Name</th>
                             <th style="width: 40px">Amount</th>
                           </tr>
+                          
                           <tr>
                             <td>1.</td>
                             <td>
-                              <strong>Outstanding Received</strong>
+                              <strong>Due for Suppliers</strong>
                             </td>
                             <td>
-                              <span class="badge bg-success">0.00</span>
+                              <span class="badge bg-success">{{ supplierData.totalDue }} Tk.</span>
                             </td>
                           </tr>
                           <tr>
                             <td>2.</td>
                             <td>
-                              <strong>Outstanding Paid</strong>
+                              <strong>Paid to Suppliers</strong>
                             </td>
                             <td>
-                              <span class="badge bg-success">0.00</span>
+                              <span class="badge bg-success">{{ supplierData.totalPaid }} Tk.</span>
                             </td>
                           </tr>
                           <tr>
                             <td>3.</td>
                             <td>
-                              <strong>Other Received</strong>
+                              <strong>Current Due for Suppliers</strong>
+                            </td>
+                            <td>
+                              <span class="badge bg-success">{{ supplierData.currentDue }} Tk.</span>
+                            </td>
+                          </tr>
+
+                          <tr>
+                            <td>4.</td>
+                            <td>
+                              <strong>Due from Customers</strong>
+                            </td>
+                            <td>
+                              <span class="badge bg-success">{{ customerData.totalDue }} Tk.</span>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>5.</td>
+                            <td>
+                              <strong>Received from Customers</strong>
+                            </td>
+                            <td>
+                              <span class="badge bg-success">{{ customerData.totalPaid }} Tk.</span>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>6.</td>
+                            <td>
+                              <strong>Current Due from Customers</strong>
+                            </td>
+                            <td>
+                              <span class="badge bg-success">{{ customerData.currentDue }} Tk.</span>
+                            </td>
+                          </tr>
+                          <!-- <tr>
+                            <td>3.</td>
+                            <td>
+                              <strong>Total Paid</strong>
                             </td>
                             <td>
                               <span class="badge bg-success">0.00</span>
@@ -225,48 +264,13 @@
                           <tr>
                             <td>4.</td>
                             <td>
-                              <strong>Other Paid</strong>
+                              <strong>Total Received</strong>
                             </td>
                             <td>
                               <span class="badge bg-success">0.00</span>
                             </td>
-                          </tr>
-                          <tr>
-                            <td>5.</td>
-                            <td>
-                              <strong>Sales Return Cash</strong>
-                            </td>
-                            <td>
-                              <span class="badge bg-success">0.00</span>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td>6.</td>
-                            <td>
-                              <strong>Total Cash Received</strong>
-                            </td>
-                            <td>
-                              <span class="badge bg-success">0.00</span>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td>7.</td>
-                            <td>
-                              <strong>Total Cash Paid</strong>
-                            </td>
-                            <td>
-                              <span class="badge bg-success">0.00</span>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td>8.</td>
-                            <td>
-                              <strong>Net Cash Received</strong>
-                            </td>
-                            <td>
-                              <span class="badge bg-success">0.00</span>
-                            </td>
-                          </tr>
+                          </tr> -->
+
                         </tbody>
                       </table>
                     </div>
@@ -299,7 +303,10 @@ export default {
         fromDate: "",
         fixedDate: ""
       },
-      consignmentData: {}
+      consignmentData: {},
+      salesData: {},
+      supplierData: {},
+      customerData:{},
     };
   },
   created() {},
@@ -316,6 +323,9 @@ export default {
         .then(response => {
           this.isHidden = false;
           this.consignmentData = response.data.purchachedData;
+          this.salesData = response.data.salesData;
+          this.supplierData = response.data.supplierData;
+          this.customerData = response.data.customerData;
         })
         .catch(err => {
           if (err.response.status == 422) {

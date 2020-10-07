@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\CustInventory;
 use App\SuppIventory;
-use App\CustIventory;
 
 use Illuminate\Http\Request;
 
