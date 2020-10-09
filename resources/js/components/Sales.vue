@@ -198,12 +198,12 @@
                                                 class="text-danger"
                                                 v-if="errors.hasOwnProperty('isbn')"
                                                 >{{errors.isbn[0]}}</span>
-                                            </div>
-                                            <div class="form-group" v-show="getSearchValue">
-                                                <ul class="ulstyle">
-                                                <li v-for="val in filterd" :key="val.id">
-                                                    <p @click.prevent="getVal(val)">{{ val.book.isbn }}</p>
-                                                </li>
+
+                        
+                                                <ul v-show="getSearchValue" class="ulstyle">
+                                                    <li v-for="val in filterd" :key="val.id">
+                                                        <p @click.prevent="getVal(val)">{{ val.book.isbn }}</p>
+                                                    </li>
                                                 </ul>
                                             </div>
                                         </div>
@@ -578,7 +578,11 @@ export default {
   list-style: none;
   padding-left: 0px;
   float: left;
-  width: 100%;
+  position: absolute;
+    background: aliceblue;
+    width: 50%;
+    z-index: 999;
+
 }
 .ulstyle > li:hover {
   background: #ddd;
@@ -590,7 +594,8 @@ export default {
   cursor: pointer;
   margin-bottom: 4px;
   float: left;
-  width: 100%;
+  margin-bottom: 0px;
+border-bottom: 1px solid #DCA;
 }
 
 .invoice_title{

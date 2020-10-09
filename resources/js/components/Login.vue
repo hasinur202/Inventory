@@ -57,10 +57,9 @@ export default {
         login(){
             this.form.post('/login')
             .then((response)=>{
+                localStorage.setItem("inventory", response.data.access_token);
                 this.$router.push('/sales');
                 window.location.reload();
-              this.$router.push('/sales');
-              window.location.reload();
                 Toast.fire({
                     icon:"success",
                     title:"Successfully Login."

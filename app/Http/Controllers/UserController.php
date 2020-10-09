@@ -7,9 +7,15 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Carbon\Carbon;
 
 class UserController extends Controller
 {
+    
+    // public function __construct() {
+    //     $this->middleware('auth:api');
+    // }
+    
     public function login(Request $request){
         $this->validate($request,[
             'email'      => 'required',
@@ -20,10 +26,35 @@ class UserController extends Controller
             'email'=> $request->email,
             'password'=> $request->password,
             ])) {
-                return response()->json([
-                    'message'=>"success",
-    
-                ],200);
+               
+                $user = $request->user();
+
+                $tokenData = $user->createToken('Personal access token');
+
+                $token = $tokenData->token;
+
+                if($request->remember_me){
+                    $token->expires_at = Carbon::now()->addWeeks(1);
+                }
+
+                if($token->save()){
+                    return response()->json([
+
+                        'user'=>$user,
+                        'access_token'=>$tokenData->accessToken,
+                        'token_type'=>'Bearer',
+                        'expires_at'=>Carbon::parse($tokenData->token->expires_at)->toDateTimeString(),
+                        'status_code'=> 200
+                    ],200);
+                }else{
+                    return response()->json([
+
+                        'message'=>'Wrong token',
+                        'status_code'=>500
+                    ],500);
+                }
+
+
         }
         else{
             return response()->json([
@@ -104,20 +135,6 @@ class UserController extends Controller
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     // Another Way to Store Data
     // protected function validator(Request $request)
     // {
@@ -142,4 +159,14 @@ class UserController extends Controller
     //         'user'=> $user
     //     ],200);
     // }
+
+
+
+
+
+
+
+
+
+///pas_hash = $2y$10$6qKajYiHYI/u8V8n.ELPN.FIXlKMzqmhSIAkwnypAO2InPEg9kC1K
 }

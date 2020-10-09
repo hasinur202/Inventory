@@ -72,7 +72,7 @@ class ReportController extends Controller
             }
         }
         
-            $statementData = InvoiceDetails::query();
+            $statementData = InvoiceDetails::with('book');
 
             if($request->filled('fixedDate')){
                 $statementData->whereDate('created_at', $request->get('fixedDate'));
@@ -82,7 +82,7 @@ class ReportController extends Controller
             }
 
         return [
-            'statementData'    =>  $statementData,
+            'statementData'    =>  $statementData->get(),
 
         ];
 

@@ -33,7 +33,6 @@ class BookController extends Controller
 
     public function store(Request $request){
         $this->validate($request, [
-            'isbn'      => 'required',
             'author'    => 'required',
             'book_name' => 'required',
             'category'  => 'required',
@@ -52,7 +51,11 @@ class BookController extends Controller
             $book->cover        = $name;
         }
 
-        $book->isbn         = $request->isbn;
+        if(!$request->isbn){
+            $book->isbn = $request->checkisbn;
+        }else{
+            $book->isbn = $request->isbn;
+        }
         $book->book_name    = $request->book_name;
         $book->author       = $request->author;
         $book->copyright    = $request->copyright;

@@ -95,7 +95,6 @@
                                                     <th>Author</th>
                                                     <th>Sales Price</th>
                                                     <th>Quantity</th>
-                                                    <th>Available</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -107,8 +106,6 @@
                                                     <td>{{ statement.book.author }}</td>
                                                     <td>{{ statement.unit_price }}</td>
                                                     <td>{{ statement.qty }}</td>
-                                                    <td>{{ statement.book.available_quantity }}</td>
-                                                    <td>3</td>
                                                 </tr>
                                                 
                                             </tbody>

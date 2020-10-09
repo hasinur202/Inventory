@@ -13,7 +13,7 @@
                     <h3 class="card-title">Stock History</h3>
                     <div class="card-tools">
                       <button class="btn btn-success" data-toggle="modal" data-target="#addNew"><i
-                                    class="fas fa-user-plus fa-fw"></i> Add New Consignment</button>
+                          class="fas fa-user-plus fa-fw"></i> Add New Consignment</button>
                     </div>
                   </div>
 
@@ -67,13 +67,13 @@
                               class="text-danger"
                               v-if="errors.hasOwnProperty('isbn')"
                             >{{errors.isbn[0]}}</span>
-                          </div>
-                          <div class="form-group" v-show="getSearchValue">
-                            <ul class="ulstyle">
+
+                            <ul v-show="getSearchValue" class="ulstyle">
                               <li v-for="val in filterd" :key="val.id">
-                                <p @click.prevent="getVal(val)">{{ val.isbn }}</p>
+                                <p v-show="load?getVal(val):''">{{ val.isbn }}</p>
                               </li>
                             </ul>
+
                           </div>
                         </div>
 
@@ -89,9 +89,7 @@
                               placeholder="Select Supplier"
                               class="form-control supp"
                             />
-                          </div>
-                          <div class="form-group" v-show="getSearchSupp">
-                            <ul class="ulstyle">
+                            <ul v-show="getSearchSupp" class="ulstyle" style="margin-top:40px;">
                               <li v-for="val in filterdSupp" :key="val.id">
                                 <p @click.prevent="getSupp(val)">{{ val.supplier }}</p>
                               </li>
@@ -297,6 +295,7 @@ export default {
 
   data() {
     return {
+      load:false,
       errors: {},
       total_consign_price: "",
       getSearchValue: false,
@@ -412,8 +411,10 @@ export default {
     //search value for isbn
     searchVal() {
       if (this.detailsFormData.isbn == "") {
+        this.load = false;
         this.getSearchValue = false;
       } else {
+        this.load = true;
         this.getSearchValue = true;
       }
     },
@@ -541,7 +542,10 @@ export default {
   list-style: none;
   padding-left: 0px;
   float: left;
-  width: 100%;
+  width: 95%;
+  position: absolute;
+  background: aliceblue;
+  z-index: 999;
 }
 .ulstyle > li:hover {
   background: #ddd;
@@ -554,6 +558,8 @@ export default {
   margin-bottom: 4px;
   float: left;
   width: 100%;
+  margin-bottom: 0px;
+    border-bottom: 1px solid #DCA;
 }
 
 .card-title {

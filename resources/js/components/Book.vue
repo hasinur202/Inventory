@@ -19,36 +19,36 @@
                     <div class="row">
                         <div class="col-md-12">
                             <label for="exampleInputIsbn" class="isbn">ISBN Auto</label>
-                            <input @click="myFunction(1000000000000, 9000000000000)" v-model="form.isbnCheck" type="checkbox" class="form-check-input">
-                            <label class="form-check-label"> Auto Generate</label>
+                            <input @click="myFunction(1000, 9000)" v-model="form.isbnCheck" type="checkbox" class="form-check-input">
+                            <label class="form-check-label"> Generate: </label> 
+                            <input v-model="form.checkisbn" placeholder="ISBN" style="width:31%; border-style:none;">
                         </div>
 
                     <div class="col-md-6">
                         <div class="form-group">
                             <input v-model="form.isbn" :class="{ 'is-invalid': form.errors.has('isbn') }"
-                            type="text" name="isbn" placeholder="ISBN No." class="form-control">
+                            type="text" name="isbn" placeholder="ISBN No." class="form-control" minlength="13" maxlength="13" >
                             <has-error :form="form" field="isbn"></has-error>
                         </div>
 
-                        <!-- <div class="form-group">
-                            <input v-model="form.author" :class="{ 'is-invalid': form.errors.has('author') }"
-                            type="text" name="author" placeholder="Book Author" class="form-control">
-                            <has-error :form="form" field="author"></has-error>
-                        </div> -->
-
                         <div class="form-group">
                             <input @keyup="searchVal()" v-model="form.author" :class="{ 'is-invalid': form.errors.has('author') }"
-                            type="text" placeholder="Book Author" class="form-control">
+                            type="text" placeholder="Book Author" class="form-control select2 select2-hidden-accessible" tabindex="-1" aria-hidden="true">
                             <has-error :form="form" field="author"></has-error>
-                        </div>
-                        <div v-show="getSesrchValue">
-                            <ul class="ulstyle">
+                            
+                      
+                            <ul v-show="getSesrchValue" class="ulstyle">
                                 <li v-for="val in filterd" :key="val.id">
                                     <p @click.prevent="getVal(val)">{{ val.author }}</p>
 
                                 </li>
                             </ul>
+                      
+                          
                         </div>
+
+                         
+
 
                         <div class="form-group">
                             <input v-model="form.copyright" :class="{ 'is-invalid': form.errors.has('copyright') }"
@@ -201,6 +201,7 @@ import footerComponent from "./footer";
                 randomNumber:'',
                 form: new Form({
                     isbn:'',
+                    checkisbn:'',
                     author:'',
                     copyright:'',
                     year:'',
@@ -235,16 +236,23 @@ import footerComponent from "./footer";
 
         methods:{
             createBook(){
-                // Submit the form via a POST request
-                this.form.post('/storeBook')
-                .then(() => {
-                    this.form.reset();
-                    Toast.fire({
-                    icon: 'success',
-                    title: 'Book Stored Successfully'
-                })
-            })
-
+                    // Submit the form via a POST request
+                    if(this.form.isbn != "" || this.form.checkisbn != ""){
+                        this.form.post('/storeBook')
+                        .then(() => {
+                            this.form.reset();
+                            Toast.fire({
+                                icon: 'success',
+                                title: 'Book Stored Successfully'
+                            })
+                        })
+                        
+                    }else{
+                        Toast.fire({
+                                icon: 'danger',
+                                title: 'ISBN field required'
+                            })
+                    }
             },
 
             getVal(val){
@@ -309,10 +317,10 @@ import footerComponent from "./footer";
             // }, 300),
 
             myFunction: function (min, max) {
-                if(this.form.isbn == ''){
-                    this.form.isbn = Math.floor(Math.random() * (max - min)) + min;
+                if(this.form.checkisbn == ''){
+                    this.form.checkisbn = Math.floor(Math.random() * (max - min)) + min;
                 }else{
-                    this.form.isbn =""
+                    this.form.checkisbn =""
                 }
             },
 
@@ -325,7 +333,7 @@ import footerComponent from "./footer";
 </script>
 
 
-<style>
+<style scoped>
     .isbn{
         display: inline-flex;
         margin-right: 30px;
@@ -362,6 +370,10 @@ import footerComponent from "./footer";
 .ulstyle{
     list-style: none;
     padding-left: 0px;
+    position: absolute;
+    background: aliceblue;
+    width: 94%;
+    z-index: 999;
 }
 .ulstyle > li:hover {
     background:#ddd;
@@ -371,8 +383,9 @@ import footerComponent from "./footer";
 
 .ulstyle > li > p{
     padding: 5px;
-    cursor:pointer;
-    margin-bottom:4px;
+    cursor: pointer;
+    margin-bottom: 0px;
+    border-bottom: 1px solid #DCA;
 }
 
 </style>

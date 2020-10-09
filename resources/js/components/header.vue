@@ -378,6 +378,7 @@ export default {
       logout(){
         axios.get('/logout')
         .then(()=>{
+          localStorage.removeItem('inventory');
           this.$router.push('/');
           Toast.fire({
             icon: 'success',
