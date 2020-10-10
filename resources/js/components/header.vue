@@ -28,7 +28,7 @@
         </li>
 
         <li class="nav-item d-none d-sm-inline-block">
-          <a href="#" class="nav-link head_menu">
+          <a data-toggle="modal" data-target="#addQuick" href="#" class="nav-link head_menu">
             <i class="fas fa-eye"></i> Quick Book Info
           </a>
         </li>
@@ -358,6 +358,85 @@
       </div>
     </div>
 
+
+    <!-- Quick Book View -->
+    <div
+      class="modal fade"
+      id="addQuick"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="addNewLabel"
+      aria-hidden="true"
+     >
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="addNewLabel">Quick Book Info</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+            <div class="modal-body">
+              <div class="form-group">
+                    <input
+                        @keyup.prevent="searchVal()"
+                        v-model="detailsFormData.isbn"
+                        :class="errors.hasOwnProperty('isbn') ? 'is-invalid' : ''"
+                        type="text"
+                        placeholder="Search Book By ISBN"
+                        class="form-control"
+                    />
+                    <span
+                        class="text-danger"
+                        v-if="errors.hasOwnProperty('isbn')"
+                    >{{errors.isbn[0]}}</span>
+
+                    <ul v-show="getSearchValue" class="ulstyle">
+                        <li v-for="val in filterd" :key="val.id">
+                        <p v-show="load?getVal(val):''">{{ val.isbn }}</p>
+                        </li>
+                    </ul>
+             </div>
+
+             <table>
+                 <tr>
+                     <th>Book Name</th>
+                     <td>:</td>
+                     <td>{{ detailsFormData.book_name }}</td>
+                 </tr>
+                 <tr>
+                     <th>Author</th>
+                     <td>:</td>
+                     <td>{{ detailsFormData.author }}</td>
+                 </tr>
+                 <tr>
+                     <th>Available Quantity</th>
+                     <td>:</td>
+                     <td>{{ detailsFormData.available_quantity }}</td>
+                 </tr>
+
+             </table>
+
+            <!-- <label>Book Name </label> <p>{{ detailsFormData.book_name }}</p>
+            <label>Author </label> <p>{{ detailsFormData.author }}</p>
+            <label>Available Quantity </label> <p>{{ detailsFormData.available_quantity }}</p> -->
+
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+      </div>
+    </div>
+
+
+
+
+
+
+
+
+
   </div>
 </template>
 
@@ -366,13 +445,39 @@ export default {
     name:'app',
     data(){
         return{
+            getSearchValue: false,
+            load:false,
+            errors: {},
+            allBook:[],
             form: new Form({
                 author:'',
                 publisher:'',
                 category:'',
-            })
+            }),
+
+            detailsFormData: {
+                isbn: "",
+                book_name:"",
+                available_quantity:"",
+                author:"",
+            },
         }
     },
+
+    created() {
+        axios.get("/getBook").then(response => {
+        this.allBook = response.data.data;
+        });
+    },
+
+    computed: {
+    //isbn filtered from allbook
+    filterd() {
+      return this.allBook.filter(val =>
+        val.isbn.startsWith(this.detailsFormData.isbn)
+      );
+    },
+  },
 
     methods:{
       logout(){
@@ -424,7 +529,30 @@ export default {
         })
       })
 
+      },
+
+      searchVal() {
+      if (this.detailsFormData.isbn == "") {
+        this.load = false;
+        this.getSearchValue = false;
+      } else {
+        this.load = true;
+        this.getSearchValue = true;
       }
+    },
+    //get value isbn and bookname from booktable
+    getVal(val) {
+      this.detailsFormData.isbn = val.isbn;
+      this.allBook.forEach(el => {
+        if (this.detailsFormData.isbn == el.isbn) {
+          this.detailsFormData.book_id = el.id;
+          this.detailsFormData.book_name = el.book_name;
+          this.detailsFormData.available_quantity = el.available_quantity;
+          this.detailsFormData.author = el.author;
+          this.getSearchValue = false;
+        }
+      });
+    },
 
 
 

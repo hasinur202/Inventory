@@ -251,7 +251,7 @@
                           <td>{{ item.total_price }}</td>
                           <td>
                             <a href="#">
-                              <button class="btn btn-danger btn-sm">
+                              <button @click="deleteItem(index)" class="btn btn-danger btn-sm">
                                 <i class="fa fa-trash"></i>
                               </button>
                             </a>
@@ -354,6 +354,10 @@ export default {
   },
 
   methods: {
+    deleteItem(index) {
+        this.dataArray.details.splice(index,1);
+        },
+
     finalUpdate() {
       axios.post("/storeConsignment", this.dataArray).then(() => {
         console.log("success");

@@ -12,6 +12,16 @@ class CategoryController extends Controller
         // $this->middleware('auth');
     }
 
+    public function index(Request $request)
+    {
+
+        $data = Category::all();
+        return response()->json([
+            'data'=>$data,
+            'message'=>"success"
+        ],200);
+    }
+
     public function store(Request $request){
         $this->validate($request, [
             'category' => 'required',
@@ -24,4 +34,6 @@ class CategoryController extends Controller
             'category'=>$category
         ],200);
     }
+
+
 }

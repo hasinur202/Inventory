@@ -48,6 +48,10 @@ Route::post('/storeUser', 'UserController@userStore');
 Route::get('getBook', 'BookController@index');
 //Get Author details
 Route::get('/getAuthor', 'AuthorController@index');
+//Get Author details
+Route::get('/getPublisher', 'PublisherController@index');
+//Get Author details
+Route::get('/getCategory', 'CategoryController@index');
 //get supplier
 Route::get('/getSupplier', 'SupplierController@index');
 //get Consignment

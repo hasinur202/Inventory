@@ -5,8 +5,8 @@
             <div class="content">
                 <div class="container-fluid">
                     <div class="container">
-                        <div class="row mt-5">
 
+                        <div class="row mt-5" id="printMe">
                             <div class="col-md-8" style="float:left;">
                                 <div class="card">
                                     <div class="card-header" style="text-align:center;">
@@ -58,12 +58,12 @@
                                             <thead>
                                                 <tr>
                                                     <th>Total Price</th>
-                                                    <td>00000</td>
+                                                    <td>{{ totalAvailablePrice }} Tk.</td>
                                                 </tr>
 
                                                 <tr>
                                                     <th>Total Quantity</th>
-                                                    <td>00000</td>
+                                                    <td>{{ totalq }} Tk.</td>
                                                 </tr>
 
                                             </thead>
@@ -77,6 +77,9 @@
 
                         </div>
 
+                        <div class="card-header">
+                            <button class="btn btn-success" @click="download" style="float:right;">Download PDF</button>
+                        </div>
                     </div>
 
                 </div>
@@ -95,6 +98,8 @@
         data(){
             return{
                 stocktList: [],
+                totalq:'',
+                totalAvailablePrice:'',
 
             }
         },
@@ -111,7 +116,14 @@
             viewStockDetails() {
                 axios.get("/getStockDetails").then(response => {
                     this.stocktList = response.data.data;
+                    this.totalq = response.data.totalQty;
+                    this.totalAvailablePrice = response.data.totalAvailable;
+                    // console.log(response.data.totalQty)
                 });
+            },
+
+            download(){
+                this.$htmlToPaper('printMe');
             },
 
         },

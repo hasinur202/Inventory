@@ -16,7 +16,7 @@ class AuthorController extends Controller
 
     public function index(Request $request)
     {
-        
+
         $data = Author::all();
         return response()->json([
             'data'=>$data,

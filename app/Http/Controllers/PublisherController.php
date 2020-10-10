@@ -12,6 +12,16 @@ class PublisherController extends Controller
         // $this->middleware('auth');
     }
 
+    public function index(Request $request)
+    {
+
+        $data = Publisher::all();
+        return response()->json([
+            'data'=>$data,
+            'message'=>"success"
+        ],200);
+    }
+
     public function store(Request $request){
         $this->validate($request, [
             'publisher' => 'required',

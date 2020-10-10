@@ -75,43 +75,55 @@
                                     </div>
                                 </div>
 
-                                <div v-if="!isHidden" class="card">
-                                    <div class="card-header" style="text-align:center;">
-                                        <h3 class="card-title">Prothoma Publications</h3>
-                                        <p>43-44 Aziz Co-op Super Market, Shahbag, Dhaka - 1000</p>
-                                        <h4 v-if="formData.fixedDate == ''">Sales Statement: {{ formData.fromDate }} to {{ formData.toDate }}</h4>
-                                        <h4 v-else>Sales Statement: {{ formData.fixedDate }}</h4>
+                                <div v-if="!isHidden" class="card" >
+                                    <!-- <div class="card-tools" style="background: #4AA0E6">
+                                            <button class="btn btn-success" @click="download" style="float:right;">Download PDF</button>
+                                    </div> -->
+                                    <div id="printMe">
+                                        <div class="card-header" style="text-align:center;">
+                                            <h3 class="card-title">Prothoma Publications</h3>
+                                            <p>43-44 Aziz Co-op Super Market, Shahbag, Dhaka - 1000</p>
+                                            <h4 v-if="formData.fixedDate == ''">Sales Statement: {{ formData.fromDate }} to {{ formData.toDate }}</h4>
+                                            <h4 v-else>Sales Statement: {{ formData.fixedDate }}</h4>
 
+                                        </div>
+
+                                        <!-- /.card-header -->
+                                        <div class="card-body table-responsive p-0">
+                                            <table class="table table-hover">
+                                                <thead>
+                                                    <tr>
+                                                        <th>SI No.</th>
+                                                        <th>ISBN</th>
+                                                        <th>Book Name</th>
+                                                        <th>Author</th>
+                                                        <th>Sales Price</th>
+                                                        <th>Quantity</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+
+                                                    <tr v-for="statement in statementData" :key="statement.id">
+                                                        <td>1</td>
+                                                        <td>{{ statement.book.isbn }}</td>
+                                                        <td>{{ statement.book.book_name }}</td>
+                                                        <td>{{ statement.book.author }}</td>
+                                                        <td>{{ statement.unit_price }}</td>
+                                                        <td>{{ statement.qty }}</td>
+                                                    </tr>
+
+                                                </tbody>
+                                            </table>
+                                        </div>
                                     </div>
 
-                                    <!-- /.card-header -->
-                                    <div class="card-body table-responsive p-0">
-                                        <table class="table table-hover">
-                                            <thead>
-                                                <tr>
-                                                    <th>SI No.</th>
-                                                    <th>ISBN</th>
-                                                    <th>Book Name</th>
-                                                    <th>Author</th>
-                                                    <th>Sales Price</th>
-                                                    <th>Quantity</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-
-                                                <tr v-for="statement in statementData" :key="statement.id">
-                                                    <td>1</td>
-                                                    <td>{{ statement.book.isbn }}</td>
-                                                    <td>{{ statement.book.book_name }}</td>
-                                                    <td>{{ statement.book.author }}</td>
-                                                    <td>{{ statement.unit_price }}</td>
-                                                    <td>{{ statement.qty }}</td>
-                                                </tr>
-                                                
-                                            </tbody>
-                                        </table>
+                                    <div class="card-header">
+                                        <button class="btn btn-success" @click="download" style="float:right;">Download PDF</button>
                                     </div>
                                     <!-- /.card-body -->
+                                    <!-- <div class="col-md-6 card" style="margin:auto">
+
+                                    </div> -->
                                 </div>
                                 <!-- /.card -->
                             </div>
@@ -126,13 +138,17 @@
     </div>
 </template>
 
+
+
 <script>
+
     import headerComponent from "./header";
     import footerComponent from "./footer";
     export default {
         name: "Stock",
         data() {
             return {
+                output:null,
                 isHidden: true,
                 errors: {},
                 formData: {
@@ -141,7 +157,7 @@
                     fixedDate: ""
                 },
                 statementData:[],
-                
+
             };
         },
         created() {},
@@ -166,7 +182,21 @@
                     console.log("Error!");
                 }
                 });
+            },
+
+            download(){
+                this.$htmlToPaper('printMe');
             }
+
+
+
+
+
+
+
+
+
+
         },
 
         components: {

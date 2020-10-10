@@ -165,10 +165,9 @@
                                                     <td>{{ item.total_price }} Tk.</td>
                                                     <td>{{ item.total_dis }} Tk.</td>
                                                     <td>
-                                                        <a href="#"><button class="btn btn-info btn-sm"><i
-                                                                    class="fa fa-edit"></i></button></a>
-                                                        <a href="#"><button class="btn btn-danger btn-sm"><i
-                                                                    class="fa fa-trash"></i></button></a>
+
+                                                        <button @click="deleteItem(index)" class="btn btn-danger btn-sm"><i
+                                                                    class="fa fa-trash"></i></button>
                                                     </td>
                                                 </tr>
                                             </tbody>
@@ -199,7 +198,7 @@
                                                 v-if="errors.hasOwnProperty('isbn')"
                                                 >{{errors.isbn[0]}}</span>
 
-                        
+
                                                 <ul v-show="getSearchValue" class="ulstyle">
                                                     <li v-for="val in filterd" :key="val.id">
                                                         <p @click.prevent="getVal(val)">{{ val.book.isbn }}</p>
@@ -380,6 +379,9 @@ export default {
     },
 
     methods:{
+        deleteItem(index) {
+            this.dataArray.details.splice(index,1);
+        },
         invoiceStore(){
             axios.post("/storeInvoice", this.dataArray).then(() => {
                 console.log("success");

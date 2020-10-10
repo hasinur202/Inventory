@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 use App\Book;
+use App\Consignment;
+use App\Invoice;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Image;
@@ -14,6 +16,8 @@ class BookController extends Controller
 
     public function index(){
         $data = Book::all();
+
+        // $bookid = $data->id->latest()->first();
         return response()->json([
             'data'=>$data,
             'message'=>'success'
@@ -117,17 +121,24 @@ class BookController extends Controller
 
 
 
-
-
-
-
-
-
     public function stockDetails(){
         $data = Book::where('available_quantity', '>', 0)->get();
 
+        $sum = $data->sum('available_quantity');
+
+        $consignment = Consignment::get();
+        $consignTotal = $consignment->sum('total_price');
+
+        $invoice = Invoice::get();
+        $invoiceTotal = $invoice->sum('total_price');
+
+        $availableTotal = $consignTotal - $invoiceTotal;
+
+
         return response()->json([
             'data' => $data,
+            'totalQty'    =>  $sum,
+            'totalAvailable'    =>  $availableTotal,
             'message' => "success"
         ], 200);
 

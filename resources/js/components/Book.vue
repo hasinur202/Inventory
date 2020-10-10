@@ -20,7 +20,7 @@
                         <div class="col-md-12">
                             <label for="exampleInputIsbn" class="isbn">ISBN Auto</label>
                             <input @click="myFunction(1000, 9000)" v-model="form.isbnCheck" type="checkbox" class="form-check-input">
-                            <label class="form-check-label"> Generate: </label> 
+                            <label class="form-check-label"> Generate: </label>
                             <input v-model="form.checkisbn" placeholder="ISBN" style="width:31%; border-style:none;">
                         </div>
 
@@ -35,20 +35,14 @@
                             <input @keyup="searchVal()" v-model="form.author" :class="{ 'is-invalid': form.errors.has('author') }"
                             type="text" placeholder="Book Author" class="form-control select2 select2-hidden-accessible" tabindex="-1" aria-hidden="true">
                             <has-error :form="form" field="author"></has-error>
-                            
-                      
+
                             <ul v-show="getSesrchValue" class="ulstyle">
                                 <li v-for="val in filterd" :key="val.id">
                                     <p @click.prevent="getVal(val)">{{ val.author }}</p>
 
                                 </li>
                             </ul>
-                      
-                          
                         </div>
-
-                         
-
 
                         <div class="form-group">
                             <input v-model="form.copyright" :class="{ 'is-invalid': form.errors.has('copyright') }"
@@ -91,14 +85,26 @@
                         </div>
 
                         <div class="form-group">
-                            <input v-model="form.category" :class="{ 'is-invalid': form.errors.has('category') }"
-                            type="text" name="category" placeholder="Subject/Category" class="form-control">
+                            <input @keyup="searchCat()" v-model="form.category" :class="{ 'is-invalid': form.errors.has('category') }"
+                            type="text" placeholder="Subject/Category" class="form-control">
                             <has-error :form="form" field="category"></has-error>
+                            <ul v-show="getSesrchCat" class="ulstyle">
+                                <li v-for="val in filterdCat" :key="val.id">
+                                    <p @click.prevent="getCat(val)">{{ val.category }}</p>
+
+                                </li>
+                            </ul>
                         </div>
                         <div class="form-group">
-                            <input v-model="form.publisher" :class="{ 'is-invalid': form.errors.has('publisher') }"
-                            type="text" name="publisher" placeholder="Publisher" class="form-control">
+                            <input @keyup="searchPub()" v-model="form.publisher" :class="{ 'is-invalid': form.errors.has('publisher') }"
+                            type="text" placeholder="Publisher" class="form-control">
                             <has-error :form="form" field="publisher"></has-error>
+                            <ul v-show="getSesrchPub" class="ulstyle">
+                                <li v-for="val in filterdPub" :key="val.id">
+                                    <p @click.prevent="getPub(val)">{{ val.publisher }}</p>
+
+                                </li>
+                            </ul>
                         </div>
 
                     <div class="col-md-6" style="float:left; padding-left:0px">
@@ -197,7 +203,11 @@ import footerComponent from "./footer";
         data(){
             return{
                 getSesrchValue: false,
+                getSesrchPub: false,
+                getSesrchCat: false,
                 authors:[],
+                publishers:[],
+                categories:[],
                 randomNumber:'',
                 form: new Form({
                     isbn:'',
@@ -224,14 +234,32 @@ import footerComponent from "./footer";
             axios.get('/getAuthor')
             .then((response)=>{
                 this.authors = response.data.data;
+            });
+            axios.get('/getPublisher')
+            .then((response)=>{
+                this.publishers = response.data.data;
+            });
+            axios.get('/getCategory')
+            .then((response)=>{
+                this.categories = response.data.data;
             })
+
         },
         computed:{
 
             filterd(){
                 return this.authors.filter(val =>
                 val.author.toLowerCase().startsWith(this.form.author.toLowerCase()))
+            },
+            filterdPub(){
+                return this.publishers.filter(val =>
+                val.publisher.toLowerCase().startsWith(this.form.publisher.toLowerCase()))
+            },
+            filterdCat(){
+                return this.categories.filter(val =>
+                val.category.toLowerCase().startsWith(this.form.category.toLowerCase()))
             }
+
         },
 
         methods:{
@@ -246,7 +274,7 @@ import footerComponent from "./footer";
                                 title: 'Book Stored Successfully'
                             })
                         })
-                        
+
                     }else{
                         Toast.fire({
                                 icon: 'danger',
@@ -255,6 +283,7 @@ import footerComponent from "./footer";
                     }
             },
 
+        //authors search
             getVal(val){
                 this.form.author = val.author;
                 this.getSesrchValue = false;
@@ -272,10 +301,46 @@ import footerComponent from "./footer";
                 }
             },
 
+            //publishers search
+            getPub(val){
+                this.form.publisher = val.publisher;
+                this.getSesrchPub = false;
+            },
+            searchPub(){
+
+                if (this.form.publisher == '') {
+                    this.getSesrchPub = false;
+                }else{
+                    axios.get('/getPublisher')
+                    .then((response)=>{
+                        this.publishers = response.data.data;
+                    });
+                    this.getSesrchPub = true;
+                }
+            },
+
+            //categories search
+            getCat(val){
+                this.form.category = val.category;
+                this.getSesrchCat = false;
+            },
+            searchCat(){
+
+                if (this.form.category == '') {
+                    this.getSesrchCat = false;
+                }else{
+                    axios.get('/getCategory')
+                    .then((response)=>{
+                        this.categories = response.data.data;
+                    });
+                    this.getSesrchCat = true;
+                }
+            },
+
             ourImage(img) {
                 return "/images/" + img;
             },
-            
+
             changePhoto(event) {
                 let file = event.target.files[0];
                 let reader = new FileReader();
@@ -302,19 +367,6 @@ import footerComponent from "./footer";
 
                 }
             },
-            // searchData: _.debounce(()=>{
-            //     if (this.form.author !== "") {
-            //         axios.get("/getAuthor?q=" + this.form.author)
-            //         .then((response) => {
-            //         this.searchValue = response.data.data;
-            //         this.getSesrchValue = true;
-            //         //   console.log(response.data.users);
-            //         });
-            //     } else {
-            //         this.getSesrchValue = false;
-            //         this.form.author = "";
-            //     }
-            // }, 300),
 
             myFunction: function (min, max) {
                 if(this.form.checkisbn == ''){
@@ -372,7 +424,7 @@ import footerComponent from "./footer";
     padding-left: 0px;
     position: absolute;
     background: aliceblue;
-    width: 94%;
+    width: 50%;
     z-index: 999;
 }
 .ulstyle > li:hover {

@@ -2,6 +2,26 @@ require('./bootstrap');
 
 window.Vue = require('vue');
 
+//for print
+import VueHtmlToPaper from 'vue-html-to-paper';
+const options = {
+    name: '_blank',
+    specs: [
+        'fullscreen=yes',
+        'titlebar=yes',
+        'scrollbars=yes'
+    ],
+    styles: [
+        'https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css',
+        'https://unpkg.com/kidlat-css/css/kidlat.css'
+    ]
+}
+
+Vue.use(VueHtmlToPaper, options);
+//end print
+
+
+
 //laravel passport
 Vue.component(
     'passport-clients',
@@ -17,7 +37,6 @@ Vue.component(
     'passport-personal-access-tokens',
     require('./components/passport/PersonalAccessTokens.vue').default
 );
-
 
 //passport end
 
@@ -98,3 +117,4 @@ new Vue({
     render: h => h('app'),
     router
 }).$mount('#app');
+

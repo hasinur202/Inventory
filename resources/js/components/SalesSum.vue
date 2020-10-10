@@ -76,58 +76,61 @@
                 </div>
 
                 <div v-if="!isHidden" class="card">
-                  <div class="card-header" style="text-align:center;">
-                    <h3 class="card-title">Prothoma Publications</h3>
-                    <p>43-44 Aziz Co-op Super Market, Shahbag, Dhaka - 1000</p>
-                    <h4 v-if="formData.fixedDate == ''">Sales Summary: {{ formData.fromDate }} to {{ formData.toDate }}</h4>
-                    <h4 v-else>Sales Summary: {{ formData.fixedDate }}</h4>
-                  </div>
+                    <!-- <div class="card-tools" style="background: #4AA0E6">
+                            <button class="btn btn-success" @click="download" style="float:right;">Download PDF</button>
+                    </div> -->
+                    <div id="printMe">
+                        <div class="card-header" style="text-align:center;">
+                            <h3 class="card-title">Prothoma Publications</h3>
+                            <p>43-44 Aziz Co-op Super Market, Shahbag, Dhaka - 1000</p>
+                            <h4 v-if="formData.fixedDate == ''">Sales Summary: {{ formData.fromDate }} to {{ formData.toDate }}</h4>
+                            <h4 v-else>Sales Summary: {{ formData.fixedDate }}</h4>
+                        </div>
 
-                  <div class="col-md-10" style="margin:auto">
-                    <div class="card-header">
-                      <h3 class="card-title">Consignment:</h3>
-                    </div>
-                    <!-- /.card-header -->
-                    <div class="card-body p-0">
-                      <table class="table">
-                        <tbody>
-                          <tr>
-                            <th style="width: 10px">#</th>
-                            <th>Name</th>
-                            <th style="width: 40px">Amount</th>
-                          </tr>
-                          <tr>
-                            <td>1.</td>
-                            <td>Books Purchased</td>
-                            <td>
-                              <span class="badge bg-primary">{{consignmentData.totalPurchased}}</span>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td>2.</td>
-                            <td>Total Purchased Value</td>
-                            <td>
-                              <span class="badge bg-primary">{{consignmentData.totalPrice}} Tk.</span>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td>3.</td>
-                            <td>Paid To Supplier:</td>
-                            <td>
-                              <span class="badge bg-primary">{{consignmentData.totalPrice}} Tk.</span>
-                            </td>
-                          </tr>
-                          <tr>
-                                        <td>4.</td>
-                                        <td>Credit To Supplier:</td>
-                                        <td><span class="badge bg-primary">0.00 Tk.</span></td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div>
-                    <!-- /.card-body -->
-                  </div>
-
+                        <div class="col-md-10" style="margin:auto">
+                            <div class="card-header">
+                            <h3 class="card-title">Consignment:</h3>
+                            </div>
+                            <!-- /.card-header -->
+                            <div class="card-body p-0">
+                            <table class="table">
+                                <tbody>
+                                <tr>
+                                    <th style="width: 10px">#</th>
+                                    <th>Name</th>
+                                    <th style="width: 40px">Amount</th>
+                                </tr>
+                                <tr>
+                                    <td>1.</td>
+                                    <td>Books Purchased</td>
+                                    <td>
+                                    <span class="badge bg-primary">{{consignmentData.totalPurchased}}</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>2.</td>
+                                    <td>Total Purchased Value</td>
+                                    <td>
+                                    <span class="badge bg-primary">{{consignmentData.totalPrice}} Tk.</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>3.</td>
+                                    <td>Paid To Supplier:</td>
+                                    <td>
+                                    <span class="badge bg-primary">{{consignmentData.totalPrice}} Tk.</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>4.</td>
+                                    <td>Credit To Supplier:</td>
+                                    <td><span class="badge bg-primary">0.00 Tk.</span></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                            </div>
+                            <!-- /.card-body -->
+                        </div>
                   <div class="col-md-10" style="margin:auto">
                     <div class="card-header">
                       <h3 class="card-title">Sales:</h3>
@@ -190,13 +193,13 @@
                     <div class="card-body p-0">
                       <table class="table">
                         <tbody>
-                          
+
                           <tr>
                             <th style="width: 10px">#</th>
                             <th>Name</th>
                             <th style="width: 40px">Amount</th>
                           </tr>
-                          
+
                           <tr>
                             <td>1.</td>
                             <td>
@@ -276,8 +279,14 @@
                     </div>
                     <!-- /.card-body -->
                   </div>
+
+                </div>
+
+                <div class="card-header">
+                    <button class="btn btn-info" @click="download" style="float:right;">Download PDF</button>
                 </div>
                 <!-- /.card -->
+              </div>
               </div>
             </div>
           </div>
@@ -333,7 +342,13 @@ export default {
             console.log("Error!");
           }
         });
-    }
+    },
+
+    download(){
+        this.$htmlToPaper('printMe');
+    },
+
+
   },
 
   components: {
