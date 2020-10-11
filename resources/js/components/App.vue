@@ -1,7 +1,7 @@
 <template>
   <div>
-    
      <router-view></router-view>
+
   </div>
 </template>
 
@@ -19,13 +19,6 @@ export default {
     },
 
     methods:{
-      logout(){
-        axios.get('/logout')
-        .then(()=>{
-          this.$router.push('/login');
-
-        })
-      },
       createAuthor(){
         // Submit the form via a POST request
         this.form.post('/storeAuthor')

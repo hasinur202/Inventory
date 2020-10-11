@@ -1,8 +1,8 @@
 <template>
   <div class="login-box">
     <div class="login-logo">
-      <a href="#">
-        <b>Library</b>Management
+      <a href="#" style="font-size:30px; color: lightblue">
+        সন্ধিপাঠ লাইব্রেরি ব্যবস্থাপনা
       </a>
     </div>
     <div class="card">

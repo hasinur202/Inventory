@@ -1,7 +1,7 @@
 <template>
   <div>
     <headerComponent></headerComponent>
-    <div class="content-wrapper">
+    <div class="content-wrapper" style="overflow:hidden; min-height:511px !important;">
       <div class="content">
         <div class="container-fluid">
 

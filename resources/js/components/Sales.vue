@@ -1,7 +1,7 @@
 <template>
     <div>
         <headerComponent></headerComponent>
-        <div class="content-wrapper">
+        <div class="content-wrapper" style="overflow:hidden; min-height:511px !important;">
             <div class="content">
                 <div class="container-fluid">
                     <div class="container">
@@ -376,6 +376,8 @@ export default {
             val.book.isbn.startsWith(this.detailsFormData.isbn)
         );
         },
+
+        
     },
 
     methods:{
@@ -607,5 +609,8 @@ border-bottom: 1px solid #DCA;
     border-bottom: 2px solid #ddd;
     padding-bottom: 5px;
 }
+
+</style>
+<style scoped>
 
 </style>
