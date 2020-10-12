@@ -21,7 +21,17 @@ class InvoiceController extends Controller
         // return $request->all();
         DB::beginTransaction();
         try{
-            $invoice = Invoice::create($request->only(['invoice_ref', 'total_price', 'total_discount', 'pay_mode', 'cus_name']));
+            $fastInvoice = Invoice::latest()->first();
+
+            if($fastInvoice->invoice_serial == null){
+                $lastInvoice = 1;
+                
+            }else{
+                $lastInvoice = $fastInvoice->invoice_serial + 1;
+            }
+
+
+            $invoice = Invoice::create($request->only(['invoice_ref', 'total_price', 'total_discount', 'pay_mode', 'cus_name','invoice_serial' => $lastInvoice]));
             foreach($request->details as $key => $item){
                 // dd($item);
                $invoi = InvoiceDetails::create(array_merge($item, ['qty' => $item['copies'], 'invoice_id' => $invoice->id]));
@@ -30,10 +40,10 @@ class InvoiceController extends Controller
                $book->update(['available_quantity' => $book->available_quantity - $invoi->qty]);
             }
             DB::commit();
-            return response(['message' => 'Invoice Created!']);
+            return response(['invoice' => $invoice]);
         }catch(Exception $e){
             DB::rollBack();
-            return response(['message' => 'Opps! some Error!'], 500);
+            return response(['invoice' => $invoice], 500);
         }
     }
 
@@ -113,6 +123,13 @@ class InvoiceController extends Controller
 
         return response(['message' => 'Data Saved Successfully']);
 
+    }
+
+
+    public function getLastInvoiceSerial()
+    {
+        $lastInvoice = Invoice::whereDate('created_at', date('Y-m-d'))->orderBy('id', 'desc')->first();
+        return  $lastInvoice ? $lastInvoice->invoice_serial ? $lastInvoice->invoice_serial + 1 : 1 : 1; 
     }
 
 

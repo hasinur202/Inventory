@@ -13,18 +13,11 @@
                                         <h3 class="card-title">Customer Information</h3>
                                             <div class="card-tools">
                                                 <input
-                                                    @click="myFunction(1000, 9000)"
-                                                    type="checkbox"
-                                                    class="form-check-input"
-                                                    style="margin-top:7px;"
-                                                    v-model="dataArray.checkInv"
-                                                />
-                                                <input
                                                     v-model="dataArray.invoice_ref"
                                                     type="text"
                                                     placeholder="Invoice. Ref#"
                                                     class="form-control"
-                                                    style="width: 25.5rem;"
+                                                    style="width: 25.5rem;" readonly
                                                 />
                                                 <span
                                                     class="text-danger"
@@ -169,7 +162,7 @@
 
                                                         <button @click="deleteItem(index)" class="btn btn-danger btn-sm"><i
                                                                     class="fa fa-trash"></i></button>
-                                                        <button @click="editItem(item)" class="btn btn-danger btn-sm"><i
+                                                        <button data-toggle="modal" data-target="#itemEdit" @click="editItem(item,index)" class="btn btn-primary btn-sm"><i
                                                                     class="fa fa-edit"></i></button>
                                                     </td>
                                                 </tr>
@@ -183,6 +176,8 @@
                             </div>
                         </div>
 
+
+<!-- Add New -->
                         <div class="modal fade" id="addNew" tabindex="-1" role="dialog" aria-labelledby="addNewLabel"
                             aria-hidden="true">
                             <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
@@ -310,6 +305,125 @@
                             </div>
                         </div>
 
+
+<!-- Edit Item -->
+                        <div class="modal fade" id="itemEdit" tabindex="-1" role="dialog" aria-labelledby="addNewLabel"
+                            aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header" style="padding-bottom:5px !important;">
+                                        <h5 class="modal-title" id="addNewLabel">Add Invoice</h5>
+
+                                        <div style="margin-left:6rem;">
+                                            <div class="form-group" style="float:left; margin-bottom:0 !important;">
+                                                <input
+                                                v-model="editingData.isbn"
+                                                type="text" placeholder="Search ISBN" class="form-control" style="width: 25.5rem;">
+                                            </div>
+                                        </div>
+
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+
+
+                                    <div class="modal-body">
+                                        <div class="col-md-12">
+                                            <div>
+                                                <div class="form-group">
+                                                    <input  v-model="editingData.consign_ref" readonly type="text" placeholder="Select Batch by ISBN "
+                                                        class="form-control">
+                                                </div>
+                                            </div>
+
+                                            <div>
+                                                <div class="form-group">
+                                                    <input  v-model="editingData.book_name" readonly type="text" placeholder="Select Book by ISBN "
+                                                        class="form-control">
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-6" style="padding-left:0px !important; float:left">
+                                                <div class="form-group">
+                                                    <label>Publishers Price</label>
+                                                    <input v-model="editingData.pub_price" readonly type="text" placeholder="Publishers Price"
+                                                        class="form-control">
+                                                </div>
+
+                                                <div style="width:48%; float: left;">
+                                                    <div class="form-group">
+                                                        <label>Balance</label>
+                                                        <input  v-model="editingData.balance" readonly type="text" placeholder="Available in Stock"
+                                                            class="form-control">
+                                                    </div>
+                                                </div>
+
+                                                <div style="width:48%; float: right;">
+                                                    <div class="form-group">
+                                                        <label>Copies</label>
+                                                        <input v-model="editingData.copies" @keyup="costBd" type="number" placeholder="Rate"
+                                                            class="form-control">
+                                                    </div>
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label>Discount [%]</label>
+                                                    <input  v-model="editingData.discount_p" @keyup="costBd" type="text" placeholder="Discount in %"
+                                                        class="form-control">
+                                                </div>
+                                            </div>
+
+
+                                            <div class="col-md-6" style="padding-right:0px !important; float:left;">
+                                                <div style="width:48%; float: left;">
+                                                    <div class="form-group">
+                                                        <label>Rate</label>
+                                                        <input  v-model="editingData.rate" @keyup="costBd" type="text" placeholder="Rate"
+                                                            class="form-control">
+                                                    </div>
+                                                </div>
+
+                                                <div style="width:48%; float: right;">
+                                                    <div class="form-group">
+                                                        <label>Unit Price</label>
+                                                        <input readonly v-model="editingData.unit_price" type="text" class="form-control">
+                                                    </div>
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label>Total Price</label>
+                                                    <input readonly v-model="editingData.total_price" type="text" class="form-control">
+                                                </div>
+                                                <div style="width:48%; float: left;">
+                                                    <div class="form-group">
+                                                        <label>Discount</label>
+                                                        <input  v-model="editingData.discount" @keyup="costBd" type="text" placeholder="Discount in TK"
+                                                            class="form-control">
+                                                    </div>
+                                                </div>
+                                                <div style="width:48%; float: right;">
+                                                    <div>
+                                                        <label>Total Discount (TK)</label>
+                                                        <input v-model="editingData.total_dis" readonly type="text" class="form-control">
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-danger"
+                                                data-dismiss="modal">Close</button>
+                                            <button type="button" @click="createEditInvoice" class="btn btn-primary">Create</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--- end col md-12 -->
+                            </div>
+                        </div>
+
+
+
                     </div>
 
                 </div>
@@ -322,6 +436,7 @@
 <script>
 import headerComponent from "./header";
 import footerComponent from "./footer";
+import moment from 'moment'
 export default {
   name: "Sales",
 
@@ -330,6 +445,7 @@ export default {
             // editmode: true,
             // item:{},
             errors: {},
+            editingIndex:0,
             getSearchValue: false,
             getSearchSupp: false,
             allBook:[],
@@ -362,7 +478,22 @@ export default {
                 net_receivable:"0",
                 total_receivable:"0",
                 details: [],
-            }
+            },
+            editingData : {
+                book_id: "",
+                consign_ref: "",
+                pub_price: "",
+                balance: "",
+                copies: "1",
+                rate: "",
+                unit_price: "0",
+                isbn: "",
+                book_name: "",
+                total_price: "0",
+                discount:"",
+                discount_p:"",
+                total_dis:'0',
+            },
         }
     },
 
@@ -386,19 +517,62 @@ export default {
     },
 
     methods:{
-        deleteItem(index) {
-            this.dataArray.details.splice(index,1);
+        createEditInvoice(){
+            if(this.editingData.balance >= 1){
+                this.dataArray.details[this.editingIndex]= this.editingData;
+            }else{
+                Toast.fire({
+                    icon: 'danger',
+                    title: 'Stock Empty'
+                })
+            }
+
+            this.dataArray.total_price = this.dataArray.details.reduce(function(acc, curr){
+                return parseFloat(acc) + parseFloat(curr.total_price)
+            }, 0);
+
+            this.dataArray.receivable = this.dataArray.total_price;
+            this.dataArray.total_receivable = this.dataArray.total_price;
+            this.dataArray.net_receivable = this.dataArray.total_price;
+
+            this.dataArray.total_qty = this.dataArray.details.reduce(function(acc, curr){
+                return parseFloat(acc) + parseFloat(curr.copies)
+            }, 0);
+
+            this.dataArray.total_discount = this.dataArray.details.reduce(function(acc, curr){
+                return parseFloat(acc) + parseFloat(curr.total_dis)
+            }, 0);
         },
 
-        // editItem(item) {
-        //     this.editmode = true;
-        //     // this.detailsFormData.reset();
-        //     this.detailsFormData.clear();
-        //     $("#addNew").modal("show");
-        //     this.detailsFormData.fill(item);
 
-        //     this.dataArray.detailsFormData=item.ticket_invoice_items;
-        // },
+
+        deleteItem(index) {
+            this.dataArray.details.splice(index,1);
+
+            this.dataArray.total_price = this.dataArray.details.reduce(function(acc, curr){
+                return parseFloat(curr.total_price) - parseFloat(acc)
+            }, 0);
+
+            this.dataArray.receivable = this.dataArray.total_price;
+            this.dataArray.total_receivable = this.dataArray.total_price;
+            this.dataArray.net_receivable = this.dataArray.total_price;
+
+            this.dataArray.total_qty = this.dataArray.details.reduce(function(acc, curr){
+                return parseFloat(curr.copies) - parseFloat(acc)
+            }, 0);
+
+            this.dataArray.total_discount = this.dataArray.details.reduce(function(acc, curr){
+                return parseFloat(curr.total_dis) - parseFloat(acc)
+            }, 0);
+
+
+        },
+
+        editItem(item, index) {
+            this.editingIndex = index;
+            this.editingData = item;
+
+        },
 
         invoiceStore(){
             if(this.dataArray.cus_name == ""){
@@ -516,14 +690,14 @@ export default {
             });
         },
         //this method for generate random number
-        myFunction: function(min, max) {
-            if (this.dataArray.invoice_ref == "") {
-                this.dataArray.invoice_ref =
-                Math.floor(Math.random() * (max - min)) + min;
-            } else {
-                this.dataArray.invoice_ref = "";
-            }
-        },
+        // myFunction: function(min, max) {
+        //     if (this.dataArray.invoice_ref == "") {
+        //         this.dataArray.invoice_ref =
+        //         Math.floor(Math.random() * (max - min)) + min;
+        //     } else {
+        //         this.dataArray.invoice_ref = "";
+        //     }
+        // },
 
 
         pub_price: function (event) {
@@ -565,7 +739,7 @@ export default {
                     var b_unit_price = ((parseFloat(this.detailsFormData.pub_price) * parseFloat(this.detailsFormData.discount_p))/100);
                     var most_unit = uunit_price - b_unit_price;
 
-                    this.detailsFormData.total_dis = b_unit_price;
+                    this.detailsFormData.total_dis = b_unit_price * parseInt(this.detailsFormData.copies);
                     this.detailsFormData.unit_price = most_unit;
                     this.detailsFormData.total_price = most_unit * parseInt(this.detailsFormData.copies);
 
@@ -577,10 +751,60 @@ export default {
                 }
             }
 
+            //editing Item
+            if(parseFloat(this.editingData.pub_price) > 0 && parseFloat(this.editingData.rate) > 0){
+                this.editingData.unit_price = (parseFloat(this.editingData.pub_price) * parseFloat(this.editingData.rate))
+            }
+
+            if(parseFloat(this.editingData.pub_price) > 0 && parseFloat(this.editingData.rate) > 0 && parseInt(this.editingData.copies) > 0){
+                this.editingData.total_price = (parseFloat(this.editingData.rate) * parseFloat(this.editingData.pub_price) * parseInt(this.editingData.copies))
+                var total_dis1 = parseFloat(this.editingData.pub_price) * parseInt(this.editingData.copies);
+
+                this.editingData.total_dis = total_dis1 - this.editingData.total_price;
+
+                if(parseFloat(this.editingData.discount) > 0){
+                        this.editingData.total_dis = this.editingData.total_dis + parseFloat(this.editingData.discount);
+                         this.editingData.total_price = parseFloat(this.editingData.total_price) - parseFloat(this.editingData.discount);
+                    }
+            }
+
+            if(parseFloat(this.editingData.discount_p) > 0){
+                if(parseFloat(this.editingData.pub_price) > 0 && parseInt(this.editingData.copies) > 0){
+                    var uunit_price = parseFloat(this.editingData.pub_price);
+                    var b_unit_price = ((parseFloat(this.editingData.pub_price) * parseFloat(this.editingData.discount_p))/100);
+                    var most_unit = uunit_price - b_unit_price;
+
+                    this.editingData.total_dis = b_unit_price * parseInt(this.editingData.copies);;
+                    this.editingData.unit_price = most_unit;
+                    this.editingData.total_price = most_unit * parseInt(this.editingData.copies);
+
+                    if(parseFloat(this.editingData.discount) > 0){
+                        this.editingData.total_dis = b_unit_price + parseFloat(this.editingData.discount);
+
+                         this.editingData.total_price = parseFloat(this.editingData.total_price) - parseFloat(this.editingData.discount);
+                    }
+                }
+            }
+
 
         },
 
-
+        getInvoiceRef(){
+          axios.get(`get-last-invoice-serial`)
+          .then(response => {
+              this.dataArray.invoice_ref = this.formatInvoiceRef(response.data)
+          })
+        },
+        formatInvoiceRef(serial){
+            let invoiceRef = `${moment().format('DD/MM/YY')}/${this.padString(serial)}`
+            return invoiceRef
+        },
+        padString(serial){
+            var str = "" + serial
+            var pad = "000"
+            var ans = pad.substring(0, pad.length - str.length) + str
+            return ans
+        }
 
     },
 
@@ -591,7 +815,9 @@ export default {
 
   mounted() {
       console.log('Component mounted.')
-  }
+        this.getInvoiceRef();
+  },
+  
 };
 </script>
 

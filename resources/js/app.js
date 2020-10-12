@@ -21,28 +21,6 @@ Vue.use(VueHtmlToPaper, options);
 //end print
 
 
-
-//laravel passport
-Vue.component(
-    'passport-clients',
-    require('./components/passport/Clients.vue').default
-);
-
-Vue.component(
-    'passport-authorized-clients',
-    require('./components/passport/AuthorizedClients.vue').default
-);
-
-Vue.component(
-    'passport-personal-access-tokens',
-    require('./components/passport/PersonalAccessTokens.vue').default
-);
-
-//passport end
-
-
-
-
 import moment from 'moment'
 // Vue.filter('postTime', (vlaue) => {
 //     return moment(value).fromNow();
