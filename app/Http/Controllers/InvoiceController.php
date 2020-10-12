@@ -15,8 +15,8 @@ class InvoiceController extends Controller
     // {
     //     $this->middleware('auth');
     // }
-    
-    
+
+
     public function invoiceStore(Request $request){
         // return $request->all();
         DB::beginTransaction();

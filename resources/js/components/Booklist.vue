@@ -1,51 +1,54 @@
 <template>
   <div>
     <headerComponent></headerComponent>
-    <div class="content-wrapper" style="overflow:hidden; min-height:511px !important;">
+    <div class="content-wrapper height-wrap">
       <div class="content">
         <div class="container-fluid">
         <div class="container">
             <div class="row">
                 <div class="col-12">
                     <div class="card">
-                <div class="card-header">
-                <h3 class="card-title">Book History</h3>
-                </div>
-                <!-- /.card-header -->
-                <div class="card-body">
-                <table id="example2" class="table table-bordered table-hover">
-                    <thead>
-                        <tr>
-                            <th>ISBN No.</th>
-                            <th>Book Name</th>
-                            <th>Author</th>
-                            <th>Copyright</th>
-                            <th>Subject/Category</th>
-                            <th>Edition</th>
-                            <th>Language</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    <tr v-for="books in booklist" :key="books.id">
-                        <td>{{ books.isbn }}</td>
-                        <td>{{ books.book_name }}</td>
-                        <td>{{ books.author }}</td>
-                        <td>{{ books.copyright }}</td>
-                        <td>{{ books.category }}</td>
-                        <td>{{ books.edition }}</td>
-                        <td>{{ books.edition }}</td>
-                        <td>
-                            <button @click="bookByid(books)" data-toggle="modal" data-target="#editBook" class="btn btn-info btn-sm"><i class="fa fa-edit"></i></button>
-                            <button class="btn btn-danger btn-sm"><i class="fa fa-trash"></i></button>
-                            <button @click="bookByid(books)" data-toggle="modal" data-target="#viewBook" class="btn btn-primary btn-sm"><i class="fa fa-eye"></i></button>
-                            <!-- <button data-toggle="modal" data-target="#viewBook" class="btn btn-primary btn-sm"><i class="fa fa-eye"></i></button> -->
-                        </td>
-                    </tr>
+                        <div class="card-header">
+                            <h3 class="card-title">All Book</h3>
+                            <div class="card-tools">
+                                <input class="form-control" v-model="searchQuery" placeholder="Search" type="text" style="padding:15px !important;">
+                            </div>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body">
+                        <table id="example2" class="table table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th>ISBN No.</th>
+                                    <th>Book Name</th>
+                                    <th>Author</th>
+                                    <th>Copyright</th>
+                                    <th>Subject/Category</th>
+                                    <th>Edition</th>
+                                    <th>Language</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            <tr v-for="books, key in temp">
+                                <td>{{ books.isbn }}</td>
+                                <td>{{ books.book_name }}</td>
+                                <td>{{ books.author }}</td>
+                                <td>{{ books.copyright }}</td>
+                                <td>{{ books.category }}</td>
+                                <td>{{ books.edition }}</td>
+                                <td>{{ books.edition }}</td>
+                                <td>
+                                    <button @click="bookByid(books)" data-toggle="modal" data-target="#editBook" class="btn btn-info btn-sm"><i class="fa fa-edit"></i></button>
+                                    <button class="btn btn-danger btn-sm"><i class="fa fa-trash"></i></button>
+                                    <button @click="bookByid(books)" data-toggle="modal" data-target="#viewBook" class="btn btn-primary btn-sm"><i class="fa fa-eye"></i></button>
+                                    <!-- <button data-toggle="modal" data-target="#viewBook" class="btn btn-primary btn-sm"><i class="fa fa-eye"></i></button> -->
+                                </td>
+                            </tr>
 
-                    </tbody>
-                </table>
-                </div>
+                            </tbody>
+                        </table>
+                        </div>
                 <!-- /.card-body -->
             </div>
             <!-- /.card -->
@@ -333,10 +336,6 @@
 
 
 
-
-
-
-
         </div>
       </div>
     </div>
@@ -356,6 +355,8 @@ export default {
     data(){
         return{
             booklist: "",
+            searchQuery:'',
+            temp:[],
             // booklistId: "",
             singleBookDetails : {
                 isbn:'',
@@ -377,11 +378,27 @@ export default {
         }
     },
 
+    watch:{
+            searchQuery(){
+                if(this.searchQuery.length > 0){
+                    this.temp = this.booklist.filter((books) => {
+                        return Object.keys(books).some((key)=>{
+                            let string = String(books[key])
+                            return string.toLowerCase().indexOf(this.searchQuery.toLowerCase())>-1
+                        })
+                    });
+                }else{
+                    this.temp = this.booklist
+                }
+            }
+        },
+
     methods:{
         viewBook(){
             axios.get('/getBook')
             .then((response)=>{
                 this.booklist = response.data.data;
+                this.temp = response.data.data;
             })
         },
 

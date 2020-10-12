@@ -1,7 +1,7 @@
 <template>
   <div>
     <headerComponent></headerComponent>
-    <div class="content-wrapper" style="overflow:hidden; min-height:511px !important;">
+    <div class="content-wrapper height-wrap">
       <div class="content">
         <div class="container-fluid">
           <div class="container">
@@ -162,7 +162,7 @@
                                 />
                                 <has-error :form="form" field="new_due"></has-error>
                             </div>
-
+                              <input v-model="form.consign_ref" type="text" hidden/>
                         </div>
                       </div>
                       <div class="modal-footer">
@@ -332,6 +332,7 @@ export default {
             total_paid: "",
             new_due: "",
             pay: "",
+            consign_ref:"",
         }),
 
       editInventory: {
@@ -420,8 +421,9 @@ export default {
 
 
     getSupp(val) {
-      this.form.supplier = val.supplier;
-      this.form.supplier_id = val.id;
+      this.form.supplier = val.supplier.supplier;
+      this.form.consign_ref = val.consign_ref;
+      this.form.supplier_id = val.supplier.id;
       this.getSearchSupp = false;
     },
 
@@ -430,7 +432,7 @@ export default {
       if (this.form.supplier == "") {
         this.getSearchSupp = false;
       } else {
-        axios.get("/getSupplier").then(response => {
+        axios.get("/getConsignment").then(response => {
           this.suppliers = response.data.data;
         });
         this.getSearchSupp = true;
@@ -444,7 +446,7 @@ export default {
       filterdSupp() {
       //supllier filtered
       return this.suppliers.filter(val =>
-        val.supplier
+        val.supplier.supplier
           .toLowerCase()
           .startsWith(this.form.supplier.toLowerCase())
       );

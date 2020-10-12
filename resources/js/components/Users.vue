@@ -2,7 +2,7 @@
   <div>
     <headerComponent></headerComponent>
 
-    <div class="content-wrapper" style="overflow:hidden; min-height:511px !important;">
+    <div class="content-wrapper height-wrap">
       <div class="content">
         <div class="container-fluid">
 

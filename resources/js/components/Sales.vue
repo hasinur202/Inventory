@@ -1,7 +1,7 @@
 <template>
     <div>
         <headerComponent></headerComponent>
-        <div class="content-wrapper" style="overflow:hidden; min-height:511px !important;">
+        <div class="content-wrapper height-wrap">
             <div class="content">
                 <div class="container-fluid">
                     <div class="container">
@@ -37,7 +37,7 @@
                                         <div class="row">
                                             <div class="col-md-4">
                                                 <div class="form-group">
-                                                    <input v-model="dataArray.cus_name" name="cus_name" type="text" placeholder="Customer Name" class="form-control">
+                                                    <input v-model="dataArray.cus_name" name="cus_name" required type="text" placeholder="Customer Name *" class="form-control">
                                                 </div>
                                                 <div class="form-group">
                                                     <input v-model="dataArray.phone" name="phone" type="text" placeholder="Phone" class="form-control">
@@ -124,6 +124,7 @@
 
                                                 <div class="col-md-12" style="float:right;">
                                                     <button @click.prevent="invoiceStore()" class="btn btn-info" style="float:right;">Save</button>
+                                                    <button @click.prevent="cleanInvoice()" class="btn btn-danger" style="float:right; margin-right:10px;">Cancel</button>
                                                 </div>
                                             </div>
                     <!-- /.col -->
@@ -168,6 +169,8 @@
 
                                                         <button @click="deleteItem(index)" class="btn btn-danger btn-sm"><i
                                                                     class="fa fa-trash"></i></button>
+                                                        <button @click="editItem(item)" class="btn btn-danger btn-sm"><i
+                                                                    class="fa fa-edit"></i></button>
                                                     </td>
                                                 </tr>
                                             </tbody>
@@ -324,6 +327,8 @@ export default {
 
   data(){
         return{
+            // editmode: true,
+            // item:{},
             errors: {},
             getSearchValue: false,
             getSearchSupp: false,
@@ -377,18 +382,60 @@ export default {
         );
         },
 
-        
+
     },
 
     methods:{
         deleteItem(index) {
             this.dataArray.details.splice(index,1);
         },
+
+        // editItem(item) {
+        //     this.editmode = true;
+        //     // this.detailsFormData.reset();
+        //     this.detailsFormData.clear();
+        //     $("#addNew").modal("show");
+        //     this.detailsFormData.fill(item);
+
+        //     this.dataArray.detailsFormData=item.ticket_invoice_items;
+        // },
+
         invoiceStore(){
-            axios.post("/storeInvoice", this.dataArray).then(() => {
-                console.log("success");
-                // this.dataArray.details = [];
-                this.dataArray = {
+            if(this.dataArray.cus_name == ""){
+                Toast.fire({
+                    icon: 'danger',
+                    title: 'Customer name must not be empty!'
+                })
+            }else{
+                axios.post("/storeInvoice", this.dataArray).then(() => {
+                    console.log("success");
+                    // this.dataArray.details = [];
+                    this.dataArray = {
+                    cus_name:"",
+                    email:"",
+                    phone:"",
+                    address:"",
+                    invoice_ref: "",
+                    total_price: "0",
+                    total_discount:"0",
+                    pay_mode:"Cash",
+                    total_qty: "0",
+                    receivable:"0",
+                    net_receivable:"0",
+                    total_receivable:"0",
+                    details: [],
+                };
+                    Toast.fire({
+                        icon: 'success',
+                        title: 'Invoice Saved Successfully'
+                    })
+                });
+            }
+
+        },
+
+        cleanInvoice(){
+            this.dataArray = {
                 cus_name:"",
                 email:"",
                 phone:"",
@@ -403,12 +450,6 @@ export default {
                 total_receivable:"0",
                 details: [],
             };
-                Toast.fire({
-                    icon: 'success',
-                    title: 'Invoice Saved Successfully'
-                })
-            });
-
         },
         createInvoice() {
             if(this.detailsFormData.balance >= 1){

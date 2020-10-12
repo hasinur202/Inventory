@@ -1,7 +1,7 @@
 <template>
 <div>
     <headerComponent></headerComponent>
-    <div class="content-wrapper" style="overflow:hidden; min-height:511px !important;">
+    <div class="content-wrapper height-wrap">
       <div class="content">
         <div class="container-fluid">
 
@@ -33,7 +33,7 @@
 
                         <div class="form-group">
                             <input @keyup="searchVal()" v-model="form.author" :class="{ 'is-invalid': form.errors.has('author') }"
-                            type="text" placeholder="Book Author" class="form-control select2 select2-hidden-accessible" tabindex="-1" aria-hidden="true">
+                            type="text" placeholder="Book Author *" class="form-control select2 select2-hidden-accessible" tabindex="-1" aria-hidden="true">
                             <has-error :form="form" field="author"></has-error>
 
                             <ul v-show="getSesrchValue" class="ulstyle">
@@ -80,13 +80,13 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <input v-model="form.book_name" :class="{ 'is-invalid': form.errors.has('book_name') }"
-                            type="text" name="book_name" placeholder="Book Title" class="form-control">
+                            type="text" name="book_name" placeholder="Book Title *" class="form-control">
                             <has-error :form="form" field="book_name"></has-error>
                         </div>
 
                         <div class="form-group">
                             <input @keyup="searchCat()" v-model="form.category" :class="{ 'is-invalid': form.errors.has('category') }"
-                            type="text" placeholder="Subject/Category" class="form-control">
+                            type="text" placeholder="Subject/Category *" class="form-control">
                             <has-error :form="form" field="category"></has-error>
                             <ul v-show="getSesrchCat" class="ulstyle">
                                 <li v-for="val in filterdCat" :key="val.id">
@@ -97,7 +97,7 @@
                         </div>
                         <div class="form-group">
                             <input @keyup="searchPub()" v-model="form.publisher" :class="{ 'is-invalid': form.errors.has('publisher') }"
-                            type="text" placeholder="Publisher" class="form-control">
+                            type="text" placeholder="Publisher *" class="form-control">
                             <has-error :form="form" field="publisher"></has-error>
                             <ul v-show="getSesrchPub" class="ulstyle">
                                 <li v-for="val in filterdPub" :key="val.id">

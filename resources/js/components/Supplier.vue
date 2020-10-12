@@ -1,7 +1,7 @@
 <template>
   <div>
     <headerComponent></headerComponent>
-    <div class="content-wrapper" style="overflow:hidden; min-height:511px !important;">
+    <div class="content-wrapper height-wrap">
       <div class="content">
         <div class="container-fluid">
           <div class="container">
@@ -9,7 +9,8 @@
               <div class="col-md-12">
                 <div class="card">
                   <div class="card-header">
-                    <h3 class="card-title">Supplier History</h3>
+                    <h3 class="card-title" style="margin-right:6rem; float:left;">Supplier History</h3>
+                        <input class="form-control" v-model="searchQuery" placeholder="Search" type="text" style="width:25%;">
                     <div class="card-tools">
                       <button class="btn btn-success" data-toggle="modal" data-target="#addNew">
                         Add New
@@ -31,7 +32,7 @@
                         </tr>
                       </thead>
                       <tbody>
-                        <tr v-for="supplier in supplierlist" :key="supplier.id">
+                        <tr v-for="supplier, key in temp">
                           <td>{{ supplier.id }}</td>
                           <td>{{ supplier.supplier }}</td>
                           <td>{{ supplier.phone }}</td>
@@ -221,21 +222,37 @@ export default {
   },
   data() {
     return {
-      editSuppDetails:{
-        'supplier':'', 'phone':'', 'email':'', 'address':'', 'id' :''
-
-      },
-      supplierlist: "",
-      form: new Form({
-        supplier: "",
-        address: "",
-        phone: "",
-        fax: "",
-        mobile: "",
-        email: ""
-      })
+        searchQuery:'',
+        temp:[],
+        editSuppDetails:{
+          'supplier':'', 'phone':'', 'email':'', 'address':'', 'id' :''
+          },
+        supplierlist: "",
+        form: new Form({
+            supplier: "",
+            address: "",
+            phone: "",
+            fax: "",
+            mobile: "",
+            email: ""
+        })
     };
   },
+
+  watch:{
+    searchQuery(){
+        if(this.searchQuery.length > 0){
+            this.temp = this.supplierlist.filter((supplier) => {
+                return Object.keys(supplier).some((key)=>{
+                    let string = String(supplier[key])
+                    return string.toLowerCase().indexOf(this.searchQuery.toLowerCase())>-1
+                })
+            });
+        }else{
+            this.temp = this.supplierlist
+        }
+    }
+},
   methods: {
     createSupplier() {
       // Submit the form via a POST request
@@ -276,6 +293,7 @@ export default {
     viewSupplier() {
       axios.get("/getSupplier").then(response => {
         this.supplierlist = response.data.data;
+        this.temp = response.data.data;
       });
     },
 

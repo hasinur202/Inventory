@@ -1,7 +1,7 @@
 <template>
     <div>
         <headerComponent></headerComponent>
-        <div class="content-wrapper" style="overflow:hidden; min-height:511px !important;">
+        <div class="content-wrapper height-wrap">
             <div class="content">
                 <div class="container-fluid">
                     <div class="container">
@@ -11,9 +11,8 @@
                                 <div class="card">
                                     <div class="card-header">
                                         <h3 class="card-title">Invoice History</h3>
-
                                         <div class="card-tools">
-                                            <input class="form-control" placeholder="Search" type="text">
+                                            <input class="form-control" v-model="searchQuery" placeholder="Search" type="text">
                                         </div>
                                     </div>
                                     <!-- /.card-header -->
@@ -29,7 +28,7 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <tr v-for="invoice in invoiceList" :key="invoice.id">
+                                                <tr v-for="invoice, key in temp">
                                                     <td>Invoice/2020/{{ invoice.invoice_ref }}</td>
                                                     <td>{{ invoice.created_at | formatDate }}</td>
                                                     <td>{{ invoice.cus_name }}</td>
@@ -224,6 +223,8 @@
             return {
                 invoiceList: [],
                 invoiceDetails: [],
+                searchQuery:'',
+                temp:[],
                 editDetails: {
                     'book': {
                         'book_name': '', 'isbn':'', 'available_quantity':'',
@@ -240,7 +241,23 @@
             };
         },
 
+        watch:{
+            searchQuery(){
+                if(this.searchQuery.length > 0){
+                    this.temp = this.invoiceList.filter((invoice) => {
+                        return Object.keys(invoice).some((key)=>{
+                            let string = String(invoice[key])
+                            return string.toLowerCase().indexOf(this.searchQuery.toLowerCase())>-1
+                        })
+                    });
+                }else{
+                    this.temp = this.invoiceList
+                }
+            }
+        },
+
         methods: {
+
             showEditModal(item) {
                 this.editDetails = item;
                 console.log(item);
@@ -250,6 +267,7 @@
             viewInvoice() {
                 axios.get("/getInvoices").then(response => {
                     this.invoiceList = response.data.data;
+                    this.temp = response.data.data;
                 });
             },
 

@@ -21,7 +21,8 @@ class InventoryController extends Controller
         $inventory->total_due    = $request->total_due;
         $inventory->total_paid    = $request->total_paid;
         $inventory->new_due     = $request->new_due;
-        $inventory->pay     = $request->pay;
+        $inventory->pay         = $request->pay;
+        $inventory->consign_ref     = $request->consign_ref;
 
         $inventory->save();
         return response()->json([

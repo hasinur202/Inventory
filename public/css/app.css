@@ -30124,3 +30124,8 @@ body {
   background-image: url(/images/background1.jpg?cf1f7ab59a662c3c63ce4dc05afde4a8);
 }
 
+.height-wrap {
+  overflow: hidden;
+  min-height: 525px !important;
+}
+

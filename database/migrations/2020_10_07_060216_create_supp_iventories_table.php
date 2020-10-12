@@ -16,6 +16,7 @@ class CreateSuppIventoriesTable extends Migration
         Schema::create('supp_iventories', function (Blueprint $table) {
             $table->id();
             $table->string('supplier');
+            $table->string('consign_ref');
             $table->float('total_due');
             $table->float('total_paid')->default(0.00);
             $table->float('pay')->default(0.00);

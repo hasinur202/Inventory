@@ -1,11 +1,19 @@
 <template>
   <div >
     <headerComponent></headerComponent>
-    <div class="content-wrapper" style="overflow:hidden; min-height:511px !important;">
+    <div class="content-wrapper height-wrap">
       <div class="content">
         <div class="container-fluid">
           <div class="container">
-            <div class="row mt-5">
+            <div class="row">
+                <div class="col-md-12">
+                    <router-link to="/newConsignment" class="nav-link" style="float: right; margin-right: 21rem;">
+                        <button class="btn btn-success">
+                          New Consignment
+                          <i class="fas fa-user-plus fa-fw"></i>
+                        </button>
+                      </router-link>
+                </div>
 
               <div class="col-md-8" style="float:left;">
                 <div class="card">
@@ -13,12 +21,14 @@
                     <h3 class="card-title">Consignment History</h3>
 
                     <div class="card-tools">
-                      <router-link to="/newConsignment" class="nav-link">
+                    <input class="form-control" v-model="searchQuery" placeholder="Search Consign Ref#" type="text">
+
+                      <!-- <router-link to="/newConsignment" class="nav-link">
                         <button class="btn btn-success">
                           New Consignment
                           <i class="fas fa-user-plus fa-fw"></i>
                         </button>
-                      </router-link>
+                      </router-link> -->
                     </div>
                   </div>
                   <!-- /.card-header -->
@@ -34,7 +44,7 @@
                         </tr>
                       </thead>
                       <tbody>
-                        <tr v-for="consignment in consignmentList" :key="consignment.id">
+                        <tr v-for="consignment, key in temp">
                           <td>Consignment/2020/{{ consignment.consign_ref }}</td>
                           <td>{{ consignment.created_at | formatDate }}</td>
                           <td>{{ consignment.get_supplier.supplier }}</td>
@@ -246,6 +256,8 @@ export default {
   name: "Consignment",
   data() {
     return {
+        searchQuery:'',
+        temp:[],
       consign_detailsAll: [],
       consignmentList: [],
       consignmentDetails: [],
@@ -262,6 +274,21 @@ export default {
     };
   },
 
+  watch:{
+        searchQuery(){
+            if(this.searchQuery.length > 0){
+                this.temp = this.consignmentList.filter((consignment) => {
+                    return Object.keys(consignment).some((key)=>{
+                        let string = String(consignment[key])
+                        return string.toLowerCase().indexOf(this.searchQuery.toLowerCase())>-1
+                    })
+                });
+            }else{
+                this.temp = this.consignmentList
+            }
+        }
+    },
+
   methods: {
     showEditModal(item) {
       this.editDetails = item;
@@ -271,6 +298,7 @@ export default {
     viewConsignment() {
       axios.get("/getConsignment").then(response => {
         this.consignmentList = response.data.data;
+        this.temp = response.data.data;
       });
     },
 
