@@ -29,15 +29,8 @@
                       <div style="margin-left:6rem; margin-top:5px;">
                         <div class="form-group" style="float:left; margin-bottom:0 !important;">
                           <input
-                            @click="myFunction(1000, 9000)"
-                            type="checkbox"
-                            class="form-check-input"
-                            style="margin-top:7px;"
-                          />
-
-                          <input
                             v-model="dataArray.consign_ref"
-                            type="text"
+                            type="text" readonly
                             placeholder="Consign. Ref#"
                             class="form-control"
                             style="width: 25.5rem;"
@@ -226,6 +219,193 @@
                 </div>
                   <!--- end col md-12 -->
 
+
+
+
+<!--- Edit Consignment Item -->
+                <div class="modal fade" id="itemEdit" tabindex="-1" role="dialog" aria-labelledby="addNewLabel"
+                            aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                  <!-- /.card-header -->
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="addNewLabel">Add Consignment</h5>
+
+                      <div style="margin-left:6rem; margin-top:5px;">
+                        <div class="form-group" style="float:left; margin-bottom:0 !important;">
+                          <input
+                            v-model="dataArray.consign_ref"
+                            type="text" readonly
+                            placeholder="Consign. Ref#"
+                            class="form-control"
+                            style="width: 25.5rem;"
+                          />
+                        </div>
+                      </div>
+
+                    </div>
+
+                    <div class="modal-body">
+                      <div class="col-md-12">
+                        <div class="col-md-6" style="padding-left:0px !important; float:left">
+                          <div class="form-group">
+                            <input
+                              v-model="editingData.isbn"
+                              :class="errors.hasOwnProperty('isbn') ? 'is-invalid' : ''"
+                              type="text"
+                              placeholder="Search ISBN" readonly
+                              class="form-control"
+                            />
+
+                          </div>
+                        </div>
+
+                        <div
+                          class="col-md-6"
+                          style="padding-left:0px !important; width:48%; float:right;"
+                        >
+                          <div class="form-group">
+                            <input
+                              v-model="dataArray.supplier"
+                              type="text"
+                              placeholder="Select Supplier" readonly
+                              class="form-control supp"
+                            />
+                          </div>
+                        </div>
+
+                        <div>
+                          <div class="form-group">
+                            <input
+                              v-model="editingData.book_name"
+                              readonly
+                              type="text"
+                              placeholder="Select Book by ISBN "
+                              class="form-control"
+                            />
+                          </div>
+                        </div>
+
+                        <div class="col-md-6" style="padding-left:0px !important; float:left">
+                          <div class="form-group">
+                            <label>Copies</label>
+                            <input
+                              v-model="editingData.copies"
+                              @keyup="costBd"
+                              type="number"
+                              name="copies"
+                              placeholder="Copies"
+                              class="form-control"
+                            />
+                          </div>
+
+                          <div class="form-group">
+                            <label>Publishers Price [In Original Currency]</label>
+                            <div style="width:38%; float:left;">
+                              <select
+                                v-model="editingData.currency"
+                                id="type"
+                                name="currency"
+                                style="padding: 6px; padding-right: 60px;"
+                              >
+                                <option value="TK">TK</option>
+                                <option value="INR">INR</option>
+                                <option value="USD">USD</option>
+                              </select>
+                            </div>
+                            <div style="width:60%; float: right;">
+                              <input
+                                v-model="editingData.pub_price"
+                                @keyup="costBd"
+                                type="text"
+                                placeholder="Publishers Price"
+                                class="form-control"
+                              />
+                            </div>
+                          </div>
+
+                          <div style="width:48%; float: left; padding-top:16px;">
+                            <div class="form-group">
+                              <label>Conv. Rate</label>
+                              <input
+                                v-model="editingData.conv_rate"
+                                @keyup="costBd"
+                                type="text"
+                                placeholder="Conv. Rate"
+                                class="form-control"
+                              />
+                            </div>
+                          </div>
+
+                          <div style="width:48%; float: right; padding-top:16px">
+                            <div class="form-group">
+                              <label>Rate</label>
+                              <input
+                                v-model="editingData.st_rate"
+                                @keyup="costBd"
+                                type="text"
+                                name="st_rate"
+                                placeholder="Rate"
+                                class="form-control"
+                              />
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="col-md-6" style="padding-right:0px !important; float:left;">
+                          <div class="form-group">
+                            <label>Cost Price in BD</label>
+                            <input
+                              v-model="editingData.cost_price"
+                              readonly
+                              type="text"
+                              placeholder="Cost in BD"
+                              class="form-control"
+                            />
+                          </div>
+
+                          <div class="form-group">
+                            <label>Rate</label>
+                            <input
+                              v-model="editingData.my_rate"
+                              @keyup="costBd"
+                              type="text"
+                              name="my_rate"
+                              placeholder="Rate"
+                              class="form-control"
+                            />
+                          </div>
+
+                          <div class="form-group">
+                            <label>Sales Price in BD</label>
+                            <input
+                              v-model="editingData.sales_price"
+                              readonly
+                              type="text"
+                              placeholder="Sales in BD"
+                              class="form-control"
+                            />
+                          </div>
+                          <input hidden v-model="editingData.total_price" readonly type="text" />
+                          <input hidden v-model="editingData.total_pub_price" readonly type="text" />
+                        </div>
+                      </div>
+                      <div class="modal-footer">
+                        <button
+                          type="button"
+                          @click="createEditConsignment"
+                          class="btn btn-primary"
+                        >Update</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                </div>
+                  <!--- end col md-12 -->
+
+
+
+
                   <div class="card-body table-responsive p-0">
                     <table class="table table-hover">
                       <thead>
@@ -254,6 +434,8 @@
                               <button @click="deleteItem(index)" class="btn btn-danger btn-sm">
                                 <i class="fa fa-trash"></i>
                               </button>
+                                <button data-toggle="modal" data-target="#itemEdit" @click="editItem(item,index)" class="btn btn-primary btn-sm"><i
+                                                                    class="fa fa-edit"></i></button>
                             </a>
                           </td>
                         </tr>
@@ -290,6 +472,7 @@
 <script>
 import headerComponent from "./header";
 import footerComponent from "./footer";
+import moment from 'moment'
 export default {
   name: "NewConsignment",
 
@@ -297,6 +480,7 @@ export default {
     return {
       load:false,
       errors: {},
+      editingIndex:0,
       total_consign_price: "",
       getSearchValue: false,
       getSearchSupp: false,
@@ -325,6 +509,21 @@ export default {
         total_pub_price:"",
         details: [],
         supplier: "",
+      },
+      editingData :{
+        book_id: "",
+        copies: "",
+        pub_price: "",
+        cost_price: "",
+        sales_price: "",
+        isbn: "",
+        book_name: "",
+        currency: "TK",
+        conv_rate: "",
+        st_rate: "",
+        my_ratem: "",
+        total_price: "",
+        total_pub_price:"",
       }
     };
   },
@@ -356,17 +555,62 @@ export default {
   methods: {
     deleteItem(index) {
         this.dataArray.details.splice(index,1);
-        },
+
+        this.dataArray.total_price = this.dataArray.details.reduce(function(acc, curr){
+            return parseFloat(curr.total_price) - parseFloat(acc)
+        }, 0);
+
+        this.dataArray.total_pub_price = this.dataArray.details.reduce(function(acc, curr){
+            return parseFloat(curr.total_pub_price) - parseFloat(acc)
+        }, 0);
+    },
+
+    editItem(item, index) {
+        this.editingIndex = index;
+        this.editingData = item;
+    },
+
+    createEditConsignment(){
+        this.dataArray.details[this.editingIndex]= this.editingData;
+
+        this.dataArray.total_price = this.dataArray.details.reduce(function(acc, curr){
+            return parseFloat(acc) + parseFloat(curr.total_price)
+        }, 0);
+
+        this.dataArray.total_pub_price = this.dataArray.details.reduce(function(acc, curr){
+            return parseFloat(acc) + parseFloat(curr.total_pub_price)
+        }, 0);
+    },
 
     finalUpdate() {
-      axios.post("/storeConsignment", this.dataArray).then(() => {
-        console.log("success");
-        this.dataArray.details = [];
-        Toast.fire({
-            icon: 'success',
-            title: 'Consignments Saved Successfully'
-        })
-      });
+        if(this.dataArray.supplier == ""){
+                Toast.fire({
+                    icon: 'danger',
+                    title: 'Supplier name must not be empty!'
+                })
+        }else{
+            axios.post("/storeConsignment", this.dataArray).then(() => {
+                console.log("success");
+                this.dataArray.details = [];
+                this.getConsignRef();
+                this.dataArray= {
+                    supplier_id: "",
+                    consign_ref: "",
+                    total_price: 0,
+                    total_pub_price:"",
+                    details: [],
+                    supplier: "",
+                }
+
+                Toast.fire({
+                    icon: 'success',
+                    title: 'Consignments Saved Successfully'
+                })
+            });
+
+        }
+
+
     },
     createConsignment() {
       this.dataArray.details.push(this.detailsFormData);
@@ -404,14 +648,14 @@ export default {
     },
 
     //this method for generate random number
-    myFunction: function(min, max) {
-      if (this.dataArray.consign_ref == "") {
-        this.dataArray.consign_ref =
-          Math.floor(Math.random() * (max - min)) + min;
-      } else {
-        this.dataArray.consign_ref = "";
-      }
-    },
+    // myFunction: function(min, max) {
+    //   if (this.dataArray.consign_ref == "") {
+    //     this.dataArray.consign_ref =
+    //       Math.floor(Math.random() * (max - min)) + min;
+    //   } else {
+    //     this.dataArray.consign_ref = "";
+    //   }
+    // },
     //search value for isbn
     searchVal() {
       if (this.detailsFormData.isbn == "") {
@@ -469,54 +713,53 @@ export default {
     },
 
     costBd() {
-      if (
-        parseFloat(this.detailsFormData.pub_price) > 0 &&
-        parseFloat(this.detailsFormData.conv_rate) > 0
-      ) {
-        this.detailsFormData.cost_price =
-          parseFloat(this.detailsFormData.conv_rate) *
-            parseFloat(this.detailsFormData.pub_price)
-        ;
+
+      if (parseFloat(this.detailsFormData.pub_price) > 0 && parseFloat(this.detailsFormData.conv_rate) > 0) {
+        this.detailsFormData.cost_price = parseFloat(this.detailsFormData.conv_rate) * parseFloat(this.detailsFormData.pub_price);
+      }
+      if (parseFloat(this.detailsFormData.pub_price) > 0 && parseFloat(this.detailsFormData.st_rate) > 0) {
+        this.detailsFormData.sales_price = parseFloat(this.detailsFormData.st_rate) * parseFloat(this.detailsFormData.pub_price);
       }
 
-      if (
-        parseFloat(this.detailsFormData.pub_price) > 0 &&
-        parseFloat(this.detailsFormData.st_rate) > 0
-      ) {
-        this.detailsFormData.sales_price =
-          parseFloat(this.detailsFormData.st_rate) *
-            parseFloat(this.detailsFormData.pub_price);
+      if (parseFloat(this.detailsFormData.pub_price) > 0 && parseFloat(this.detailsFormData.my_rate) > 0) {
+        this.detailsFormData.sales_price = parseFloat(this.detailsFormData.my_rate) * parseFloat(this.detailsFormData.pub_price);
       }
 
-      if (
-        parseFloat(this.detailsFormData.pub_price) > 0 &&
-        parseFloat(this.detailsFormData.my_rate) > 0
-      ) {
-        this.detailsFormData.sales_price =
-          parseFloat(this.detailsFormData.my_rate) *
-            parseFloat(this.detailsFormData.pub_price)
-        ;
+      if (parseFloat(this.detailsFormData.cost_price) > 0 && parseInt(this.detailsFormData.copies) > 0) {
+        this.detailsFormData.total_price = parseFloat(this.detailsFormData.cost_price) * parseFloat(this.detailsFormData.copies);
       }
 
-      if (
-        parseFloat(this.detailsFormData.cost_price) > 0 &&
-        parseInt(this.detailsFormData.copies) > 0
-      ) {
-        this.detailsFormData.total_price =
-          parseFloat(this.detailsFormData.cost_price) *
-            parseFloat(this.detailsFormData.copies)
-        ;
+      if (parseFloat(this.detailsFormData.pub_price) > 0 && parseInt(this.detailsFormData.copies) > 0) {
+        this.detailsFormData.total_pub_price = parseFloat(this.detailsFormData.pub_price) * parseFloat(this.detailsFormData.copies);
       }
 
-      if (
-        parseFloat(this.detailsFormData.pub_price) > 0 &&
-        parseInt(this.detailsFormData.copies) > 0
-      ) {
-        this.detailsFormData.total_pub_price =
-          parseFloat(this.detailsFormData.pub_price) *
-            parseFloat(this.detailsFormData.copies)
-        ;
+    //Edit Item
+
+    if (parseFloat(this.editingData.pub_price) > 0 && parseFloat(this.editingData.conv_rate) > 0) {
+        this.editingData.cost_price = parseFloat(this.editingData.conv_rate) * parseFloat(this.editingData.pub_price);
       }
+      if (parseFloat(this.editingData.pub_price) > 0 && parseFloat(this.editingData.st_rate) > 0) {
+        this.editingData.sales_price = parseFloat(this.editingData.st_rate) * parseFloat(this.editingData.pub_price);
+      }
+
+      if (parseFloat(this.editingData.pub_price) > 0 && parseFloat(this.editingData.my_rate) > 0) {
+        this.editingData.sales_price = parseFloat(this.editingData.my_rate) * parseFloat(this.editingData.pub_price);
+      }
+
+      if (parseFloat(this.editingData.cost_price) > 0 && parseInt(this.editingData.copies) > 0) {
+        this.editingData.total_price = parseFloat(this.editingData.cost_price) * parseFloat(this.editingData.copies);
+      }
+
+      if (parseFloat(this.editingData.pub_price) > 0 && parseInt(this.editingData.copies) > 0) {
+        this.editingData.total_pub_price = parseFloat(this.editingData.pub_price) * parseFloat(this.editingData.copies);
+      }
+
+
+
+
+
+
+
     },
     sidebarClose() {
       $("body").addClass("sidebar-collapse");
@@ -525,7 +768,27 @@ export default {
     sidebarOpen() {
       $("body").removeClass("sidebar-collapse");
       $("body").addClass("sidebar-open");
-    }
+    },
+
+
+        getConsignRef(){
+          axios.get(`get-last-consign-serial`)
+          .then(response => {
+              this.dataArray.consign_ref = this.formatConsignRef(response.data)
+          })
+        },
+        formatConsignRef(serial){
+            let consignRef = `${moment().format('DD/MM/YY')}/${this.padString(serial)}`
+            return consignRef
+        },
+        padString(serial){
+            var str = "" + serial
+            var pad = "0000"
+            var ans = pad.substring(0, pad.length - str.length) + str
+            return ans
+        }
+
+
   },
 
   components: {
@@ -535,6 +798,7 @@ export default {
   mounted() {
     this.viewConsignment();
     this.sidebarClose();
+    this.getConsignRef();
   },
   destroyed() {
     this.sidebarOpen();

@@ -29,7 +29,7 @@
                                             </thead>
                                             <tbody>
                                                 <tr v-for="invoice, key in temp">
-                                                    <td>Invoice/2020/{{ invoice.invoice_ref }}</td>
+                                                    <td>{{ invoice.invoice_ref }}</td>
                                                     <td>{{ invoice.created_at | formatDate }}</td>
                                                     <td>{{ invoice.cus_name }}</td>
                                                     <td>{{ invoice.pay_mode }}</td>

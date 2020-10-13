@@ -21,17 +21,19 @@ class InvoiceController extends Controller
         // return $request->all();
         DB::beginTransaction();
         try{
-            $fastInvoice = Invoice::latest()->first();
 
-            if($fastInvoice->invoice_serial == null){
-                $lastInvoice = 1;
-                
-            }else{
-                $lastInvoice = $fastInvoice->invoice_serial + 1;
-            }
+            $lastInvoice = Invoice::whereDate('created_at', date('Y-m-d'))->orderBy('id', 'desc')->first();
+            $lastInvoice = $lastInvoice ? $lastInvoice->invoice_serial ? $lastInvoice->invoice_serial + 1 : 1 : 1;
+
+            // $invoice = Invoice::create($request->only(['invoice_ref', 'total_price', 'total_discount', 'pay_mode', 'cus_name','invoice_serial' => $lastInvoice]));
+            $invoice = Invoice::create(['invoice_ref'=>$request->invoice_ref,
+            'total_price' => $request->total_price,
+            'total_discount' => $request->total_discount,
+            'pay_mode' => $request->pay_mode,
+            'cus_name' => $request->cus_name,
+            'invoice_serial' => $lastInvoice]);
 
 
-            $invoice = Invoice::create($request->only(['invoice_ref', 'total_price', 'total_discount', 'pay_mode', 'cus_name','invoice_serial' => $lastInvoice]));
             foreach($request->details as $key => $item){
                 // dd($item);
                $invoi = InvoiceDetails::create(array_merge($item, ['qty' => $item['copies'], 'invoice_id' => $invoice->id]));
@@ -129,7 +131,7 @@ class InvoiceController extends Controller
     public function getLastInvoiceSerial()
     {
         $lastInvoice = Invoice::whereDate('created_at', date('Y-m-d'))->orderBy('id', 'desc')->first();
-        return  $lastInvoice ? $lastInvoice->invoice_serial ? $lastInvoice->invoice_serial + 1 : 1 : 1; 
+        return  $lastInvoice ? $lastInvoice->invoice_serial ? $lastInvoice->invoice_serial + 1 : 1 : 1;
     }
 
 

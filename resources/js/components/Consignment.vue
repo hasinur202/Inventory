@@ -45,7 +45,7 @@
                       </thead>
                       <tbody>
                         <tr v-for="consignment, key in temp">
-                          <td>Consignment/2020/{{ consignment.consign_ref }}</td>
+                          <td>{{ consignment.consign_ref }}</td>
                           <td>{{ consignment.created_at | formatDate }}</td>
                           <td>{{ consignment.get_supplier.supplier }}</td>
                           <td>Cash</td>

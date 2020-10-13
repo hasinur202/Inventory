@@ -24,7 +24,7 @@
                     <table class="table table-hover">
                       <thead>
                         <tr>
-                          <th>SI #</th>
+                          <th>Invoice #</th>
                           <th>Customer Name</th>
                           <th>Payment Status</th>
                           <th>Created At</th>
@@ -33,7 +33,7 @@
                       </thead>
                       <tbody>
                           <tr v-for="inventory in inventoryList" :key="inventory.id">
-                          <td>{{ inventory.id }}</td>
+                          <td>{{ inventory.invoice_ref }}</td>
                           <td>{{ inventory.cus_name }}</td>
                           <td v-if="inventory.new_due > 0">
                               <button @click="editCusById(inventory)" data-toggle="modal" data-target="#editNew" class="btn btn-info btn-sm">Due</button>
@@ -41,8 +41,7 @@
                           <td v-else><p class="btn btn-success btn-sm">Paid</p></td>
                           <td>{{ inventory.created_at |formatDate }}</td>
                           <td>
-                              <button @click="editCusById(inventory)"
-                              data-toggle="modal" data-target="#viewNew"
+                              <button @click="viewCusById(inventory)"
                                class="btn btn-info btn-sm">
                                 <i class="fa fa-eye"></i>
                               </button>
@@ -61,6 +60,60 @@
                 </div>
                 <!-- /.card -->
               </div>
+
+
+
+              <div class="col-md-4" style="float:right;">
+                  <div class="card">
+                      <span style="text-align:center;font-size:16px; margin-top:15px;">সন্ধিপাঠ লাইব্রেরি</span>
+                      <p style="text-align:center;">১৪ পূর্ব শেওড়াপাড়া, মিরপুর,ঢাকা-১২১৬ <br>০১৮৬০৭২২৭২২</p>
+                  <div class="card-body table-responsive p-0">
+                    <table class="table table-hover">
+                        <thead v-for="allCust in CustInventById" :key="allCust.id">
+                            <tr>
+                                <td>Invoice No: {{ allCust.invoice_ref }}</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <th>Customer Name</th>
+                                <td>{{ allCust.cus_name }}</td>
+                            </tr>
+                            <tr>
+                                <th>Total Due</th>
+                                <td>{{ allCust.total_due }} Tk.</td>
+                            </tr>
+                            <tr>
+                                <th>Total Paid</th>
+                                <td>{{ allCust.total_paid }} Tk.</td>
+                            </tr>
+                            <tr>
+                                <th>Current Due</th>
+                                <td>{{ allCust.new_due }} Tk.</td>
+                            </tr>
+                            <tr>
+                                <th>Pay History:</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="payCust in CustInventByIdList" :key="payCust.id">
+                                <td>Date: {{ payCust.created_at | formatDate }}</td>
+                                <td>{{ payCust.pay }} Tk.</td>
+                            </tr>
+
+                        <!-- <tr>
+                            <th>Total Due</th>
+                            <td>{{ item.total_due }}</td>
+                        </tr> -->
+
+
+                      </tbody>
+                    </table>
+                  </div>
+              </div>
+
+              </div>
+
+
 
 
             </div>
@@ -85,7 +138,7 @@
                   <!-- /.card-header -->
                   <div class="modal-content">
                     <div class="modal-header">
-                      <h5 class="modal-title" id="addNewLabel">Edit Inventory</h5>
+                      <h5 class="modal-title" id="addNewLabel">Add Inventory</h5>
                     </div>
                     <form @submit.prevent="createCusInventory">
                     <div class="modal-body">
@@ -102,14 +155,13 @@
                                 placeholder="Select Customer"
                                 class="form-control"
                                 />
-                            </div>
-                            <div class="form-group" v-show="getSearchCus">
-                                <ul class="ulstyle">
-                                <li v-for="val in filterdCus" :key="val.id">
-                                    <p @click.prevent="getCus(val)">{{ val.cus_name }}</p>
-                                </li>
+                                <ul v-show="getSearchCus" class="ulstyle">
+                                    <li v-for="val in filterdCus" :key="val.id">
+                                        <p @click.prevent="getCus(val)">{{ val.cus_name }}</p>
+                                    </li>
                                 </ul>
                             </div>
+
 
                             <div class="form-group">
                                 <label>Total Due</label>
@@ -162,7 +214,7 @@
                                 />
                                 <has-error :form="form" field="new_due"></has-error>
                             </div>
-
+                            <input v-model="form.invoice_ref" type="text" hidden/>
                         </div>
                       </div>
                       <div class="modal-footer">
@@ -184,7 +236,7 @@
 <!-- edit inventory -->
                 <div
                     class="modal fade"
-                    id="editNew"
+                    id=""
                     tabindex="-1"
                     role="dialog"
                     aria-labelledby="exampleModalLabel"
@@ -196,7 +248,7 @@
                     <div class="modal-header">
                       <h5 class="modal-title" id="addNewLabel">Edit Inventory</h5>
                     </div>
-                    <form @submit.prevent="updateCusInventory">
+                    <form @submit.prevent="">
                     <div class="modal-body">
                       <div class="col-md-12">
 
@@ -226,10 +278,10 @@
                 </div>
                 <!--- end col md-12 -->
 
-<!-- edit inventory -->
+<!-- view inventory -->
                 <div
                     class="modal fade"
-                    id="viewNew"
+                    id="editNew"
                     tabindex="-1"
                     role="dialog"
                     aria-labelledby="exampleModalLabel"
@@ -239,7 +291,7 @@
                   <!-- /.card-header -->
                   <div class="modal-content">
                     <div class="modal-header">
-                      <h5 class="modal-title" id="addNewLabel">View Inventory</h5>
+                      <h5 class="modal-title" id="addNewLabel">Edit Inventory</h5>
                     </div>
                     <div class="modal-body">
                       <div class="col-md-12">
@@ -268,7 +320,7 @@
                                 <label>Last Paid ({{ editInventory.updated_at | formatDate }})</label>
                                 <input
                                 v-model="editInventory.pay"
-                                type="text" readonly
+                                type="text"
                                 placeholder="Pay Now"
                                 class="form-control"
                                 />
@@ -299,7 +351,7 @@
                         </div>
                       </div>
                       <div class="modal-footer">
-
+                          <button type="submit" @click="updateCusInventory"  class="btn btn-primary">Update</button>
                           <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
                       </div>
                     </div>
@@ -324,6 +376,8 @@ export default {
         getSearchValue: false,
         getSearchCus: false,
         customers: [],
+        CustInventByIdList: [],
+        CustInventById: '',
         inventoryList: "",
 
         form: new Form({
@@ -332,6 +386,7 @@ export default {
             total_paid: "",
             new_due: "",
             pay: "",
+            consign_ref:"",
         }),
 
       editInventory: {
@@ -392,6 +447,13 @@ export default {
         }
     },
 
+    viewCusById(inventory){
+        axios.get(`/getCustDetailsById?id=${inventory.id}`).then(response => {
+        this.CustInventByIdList = response.data.inventCustDetails;
+        this.CustInventById = response.data.inventCust;
+      });
+    },
+
 
 
     total_due: function(event) {
@@ -411,8 +473,6 @@ export default {
             this.form.total_paid = parseFloat(this.form.pay);
         }
 
-
-
     },
 
 
@@ -421,6 +481,7 @@ export default {
 
     getCus(val) {
       this.form.cus_name = val.cus_name;
+      this.form.invoice_ref = val.invoice_ref;
       this.form.invoice_id = val.id;
       this.getSearchCus = false;
     },

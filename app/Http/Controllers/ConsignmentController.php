@@ -43,7 +43,16 @@ class ConsignmentController extends Controller
     {
         DB::beginTransaction();
         try{
-            $consignment = Consignment::create($request->only(['consign_ref', 'supplier_id', 'total_price']));
+
+            $lastConsign = Consignment::whereDate('created_at', date('Y-m-d'))->orderBy('id', 'desc')->first();
+            $lastConsign= $lastConsign ? $lastConsign->consign_serial ? $lastConsign->consign_serial + 1 : 1 : 1;
+
+            $consignment = Consignment::create(['consign_ref' => $request->consign_ref,
+                'supplier_id' => $request->supplier_id,
+                'total_price' => $request->total_price,
+                'consign_serial' => $lastConsign]);
+
+            // $consignment = Consignment::create($request->only(['consign_ref', 'supplier_id', 'total_price']));
             foreach($request->details as $key => $item){
 
                $consig = ConsignmentDetails::create(array_merge($item, ['qty' => $item['copies'], 'consignment_id' => $consignment->id]));
@@ -131,6 +140,7 @@ class ConsignmentController extends Controller
         return response(['message' => 'Details Deleted Successfully!']);
     }
 
+
     public function updateConsignment(Request $request){
 
         $consignmentDetails = ConsignmentDetails::findOrfail($request->id);
@@ -164,4 +174,12 @@ class ConsignmentController extends Controller
         return response(['message' => 'Data Updated Successfully']);
 
     }
+
+    public function getLastConsignSerial()
+    {
+        $lastConsign = Consignment::whereDate('created_at', date('Y-m-d'))->orderBy('id', 'desc')->first();
+        return  $lastConsign ? $lastConsign->consign_serial ? $lastConsign->consign_serial + 1 : 1 : 1;
+    }
+
+
 }

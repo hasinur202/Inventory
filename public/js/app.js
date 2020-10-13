@@ -3624,6 +3624,58 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -3633,13 +3685,16 @@ __webpack_require__.r(__webpack_exports__);
       getSearchValue: false,
       getSearchCus: false,
       customers: [],
+      CustInventByIdList: [],
+      CustInventById: '',
       inventoryList: "",
       form: new Form({
         cus_name: "",
         total_due: "",
         total_paid: "",
         new_due: "",
-        pay: ""
+        pay: "",
+        consign_ref: ""
       }),
       editInventory: {
         'cus_name': '',
@@ -3707,6 +3762,14 @@ __webpack_require__.r(__webpack_exports__);
         }
       }
     },
+    viewCusById: function viewCusById(inventory) {
+      var _this5 = this;
+
+      axios.get("/getCustDetailsById?id=".concat(inventory.id)).then(function (response) {
+        _this5.CustInventByIdList = response.data.inventCustDetails;
+        _this5.CustInventById = response.data.inventCust;
+      });
+    },
     total_due: function total_due(event) {
       this.form.total_due = event.target.value;
     },
@@ -3724,18 +3787,19 @@ __webpack_require__.r(__webpack_exports__);
     },
     getCus: function getCus(val) {
       this.form.cus_name = val.cus_name;
+      this.form.invoice_ref = val.invoice_ref;
       this.form.invoice_id = val.id;
       this.getSearchCus = false;
     },
     //method for searching supplier
     searchCus: function searchCus() {
-      var _this5 = this;
+      var _this6 = this;
 
       if (this.form.cus_name == "") {
         this.getSearchCus = false;
       } else {
         axios.get("/getInvoices").then(function (response) {
-          _this5.customers = response.data.data;
+          _this6.customers = response.data.data;
         });
         this.getSearchCus = true;
       }
@@ -3743,11 +3807,11 @@ __webpack_require__.r(__webpack_exports__);
   },
   computed: {
     filterdCus: function filterdCus() {
-      var _this6 = this;
+      var _this7 = this;
 
       //supllier filtered
       return this.customers.filter(function (val) {
-        return val.cus_name.toLowerCase().startsWith(_this6.form.cus_name.toLowerCase());
+        return val.cus_name.toLowerCase().startsWith(_this7.form.cus_name.toLowerCase());
       });
     }
   },
@@ -4575,10 +4639,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
 
 
 
@@ -4711,6 +4771,8 @@ __webpack_require__.r(__webpack_exports__);
       } else {
         axios.post("/storeInvoice", this.dataArray).then(function () {
           console.log("success"); // this.dataArray.details = [];
+
+          _this3.getInvoiceRef();
 
           _this3.dataArray = {
             cus_name: "",
@@ -4914,7 +4976,7 @@ __webpack_require__.r(__webpack_exports__);
     },
     padString: function padString(serial) {
       var str = "" + serial;
-      var pad = "000";
+      var pad = "0000";
       var ans = pad.substring(0, pad.length - str.length) + str;
       return ans;
     }
@@ -4942,6 +5004,7 @@ __webpack_require__.r(__webpack_exports__);
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _header__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./header */ "./resources/js/components/header.vue");
 /* harmony import */ var _footer__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./footer */ "./resources/js/components/footer.vue");
+//
 //
 //
 //
@@ -5120,7 +5183,8 @@ __webpack_require__.r(__webpack_exports__);
     },
     download: function download() {
       this.$htmlToPaper('printMe');
-    }
+    },
+    doc: function doc() {}
   },
   components: {
     headerComponent: _header__WEBPACK_IMPORTED_MODULE_0__["default"],
@@ -6059,20 +6123,24 @@ __webpack_require__.r(__webpack_exports__);
       }
     },
     getSupp: function getSupp(val) {
-      this.form.supplier = val.supplier.supplier;
-      this.form.consign_ref = val.consign_ref;
-      this.form.supplier_id = val.supplier.id;
-      this.getSearchSupp = false;
+      var _this5 = this;
+
+      this.suppliers.forEach(function (el) {
+        if (_this5.form.supplier = el.get_supplier.supplier) {
+          _this5.form.consign_ref = el.consign_ref;
+          _this5.getSearchSupp = false;
+        }
+      });
     },
     //method for searching supplier
     searchSupp: function searchSupp() {
-      var _this5 = this;
+      var _this6 = this;
 
       if (this.form.supplier == "") {
         this.getSearchSupp = false;
       } else {
-        axios.get("/getConsignment").then(function (response) {
-          _this5.suppliers = response.data.data;
+        axios.get("/getSuppConsign").then(function (response) {
+          _this6.suppliers = response.data.data;
         });
         this.getSearchSupp = true;
       }
@@ -6080,11 +6148,11 @@ __webpack_require__.r(__webpack_exports__);
   },
   computed: {
     filterdSupp: function filterdSupp() {
-      var _this6 = this;
+      var _this7 = this;
 
       //supllier filtered
       return this.suppliers.filter(function (val) {
-        return val.supplier.supplier.toLowerCase().startsWith(_this6.form.supplier.toLowerCase());
+        return val.get_supplier.supplier.toLowerCase().startsWith(_this7.form.supplier.toLowerCase());
       });
     }
   },
@@ -6742,6 +6810,8 @@ __webpack_require__.r(__webpack_exports__);
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _header__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./header */ "./resources/js/components/header.vue");
 /* harmony import */ var _footer__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./footer */ "./resources/js/components/footer.vue");
+/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
+/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(moment__WEBPACK_IMPORTED_MODULE_2__);
 //
 //
 //
@@ -7031,6 +7101,189 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -7039,6 +7292,7 @@ __webpack_require__.r(__webpack_exports__);
     return {
       load: false,
       errors: {},
+      editingIndex: 0,
       total_consign_price: "",
       getSearchValue: false,
       getSearchSupp: false,
@@ -7067,6 +7321,21 @@ __webpack_require__.r(__webpack_exports__);
         total_pub_price: "",
         details: [],
         supplier: ""
+      },
+      editingData: {
+        book_id: "",
+        copies: "",
+        pub_price: "",
+        cost_price: "",
+        sales_price: "",
+        isbn: "",
+        book_name: "",
+        currency: "TK",
+        conv_rate: "",
+        st_rate: "",
+        my_ratem: "",
+        total_price: "",
+        total_pub_price: ""
       }
     };
   },
@@ -7098,18 +7367,55 @@ __webpack_require__.r(__webpack_exports__);
   methods: {
     deleteItem: function deleteItem(index) {
       this.dataArray.details.splice(index, 1);
+      this.dataArray.total_price = this.dataArray.details.reduce(function (acc, curr) {
+        return parseFloat(curr.total_price) - parseFloat(acc);
+      }, 0);
+      this.dataArray.total_pub_price = this.dataArray.details.reduce(function (acc, curr) {
+        return parseFloat(curr.total_pub_price) - parseFloat(acc);
+      }, 0);
+    },
+    editItem: function editItem(item, index) {
+      this.editingIndex = index;
+      this.editingData = item;
+    },
+    createEditConsignment: function createEditConsignment() {
+      this.dataArray.details[this.editingIndex] = this.editingData;
+      this.dataArray.total_price = this.dataArray.details.reduce(function (acc, curr) {
+        return parseFloat(acc) + parseFloat(curr.total_price);
+      }, 0);
+      this.dataArray.total_pub_price = this.dataArray.details.reduce(function (acc, curr) {
+        return parseFloat(acc) + parseFloat(curr.total_pub_price);
+      }, 0);
     },
     finalUpdate: function finalUpdate() {
       var _this4 = this;
 
-      axios.post("/storeConsignment", this.dataArray).then(function () {
-        console.log("success");
-        _this4.dataArray.details = [];
+      if (this.dataArray.supplier == "") {
         Toast.fire({
-          icon: 'success',
-          title: 'Consignments Saved Successfully'
+          icon: 'danger',
+          title: 'Supplier name must not be empty!'
         });
-      });
+      } else {
+        axios.post("/storeConsignment", this.dataArray).then(function () {
+          console.log("success");
+          _this4.dataArray.details = [];
+
+          _this4.getConsignRef();
+
+          _this4.dataArray = {
+            supplier_id: "",
+            consign_ref: "",
+            total_price: 0,
+            total_pub_price: "",
+            details: [],
+            supplier: ""
+          };
+          Toast.fire({
+            icon: 'success',
+            title: 'Consignments Saved Successfully'
+          });
+        });
+      }
     },
     createConsignment: function createConsignment() {
       this.dataArray.details.push(this.detailsFormData);
@@ -7143,13 +7449,14 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     //this method for generate random number
-    myFunction: function myFunction(min, max) {
-      if (this.dataArray.consign_ref == "") {
-        this.dataArray.consign_ref = Math.floor(Math.random() * (max - min)) + min;
-      } else {
-        this.dataArray.consign_ref = "";
-      }
-    },
+    // myFunction: function(min, max) {
+    //   if (this.dataArray.consign_ref == "") {
+    //     this.dataArray.consign_ref =
+    //       Math.floor(Math.random() * (max - min)) + min;
+    //   } else {
+    //     this.dataArray.consign_ref = "";
+    //   }
+    // },
     //search value for isbn
     searchVal: function searchVal() {
       if (this.detailsFormData.isbn == "") {
@@ -7226,6 +7533,27 @@ __webpack_require__.r(__webpack_exports__);
 
       if (parseFloat(this.detailsFormData.pub_price) > 0 && parseInt(this.detailsFormData.copies) > 0) {
         this.detailsFormData.total_pub_price = parseFloat(this.detailsFormData.pub_price) * parseFloat(this.detailsFormData.copies);
+      } //Edit Item
+
+
+      if (parseFloat(this.editingData.pub_price) > 0 && parseFloat(this.editingData.conv_rate) > 0) {
+        this.editingData.cost_price = parseFloat(this.editingData.conv_rate) * parseFloat(this.editingData.pub_price);
+      }
+
+      if (parseFloat(this.editingData.pub_price) > 0 && parseFloat(this.editingData.st_rate) > 0) {
+        this.editingData.sales_price = parseFloat(this.editingData.st_rate) * parseFloat(this.editingData.pub_price);
+      }
+
+      if (parseFloat(this.editingData.pub_price) > 0 && parseFloat(this.editingData.my_rate) > 0) {
+        this.editingData.sales_price = parseFloat(this.editingData.my_rate) * parseFloat(this.editingData.pub_price);
+      }
+
+      if (parseFloat(this.editingData.cost_price) > 0 && parseInt(this.editingData.copies) > 0) {
+        this.editingData.total_price = parseFloat(this.editingData.cost_price) * parseFloat(this.editingData.copies);
+      }
+
+      if (parseFloat(this.editingData.pub_price) > 0 && parseInt(this.editingData.copies) > 0) {
+        this.editingData.total_pub_price = parseFloat(this.editingData.pub_price) * parseFloat(this.editingData.copies);
       }
     },
     sidebarClose: function sidebarClose() {
@@ -7235,6 +7563,23 @@ __webpack_require__.r(__webpack_exports__);
     sidebarOpen: function sidebarOpen() {
       $("body").removeClass("sidebar-collapse");
       $("body").addClass("sidebar-open");
+    },
+    getConsignRef: function getConsignRef() {
+      var _this8 = this;
+
+      axios.get("get-last-consign-serial").then(function (response) {
+        _this8.dataArray.consign_ref = _this8.formatConsignRef(response.data);
+      });
+    },
+    formatConsignRef: function formatConsignRef(serial) {
+      var consignRef = "".concat(moment__WEBPACK_IMPORTED_MODULE_2___default()().format('DD/MM/YY'), "/").concat(this.padString(serial));
+      return consignRef;
+    },
+    padString: function padString(serial) {
+      var str = "" + serial;
+      var pad = "0000";
+      var ans = pad.substring(0, pad.length - str.length) + str;
+      return ans;
     }
   },
   components: {
@@ -7244,6 +7589,7 @@ __webpack_require__.r(__webpack_exports__);
   mounted: function mounted() {
     this.viewConsignment();
     this.sidebarClose();
+    this.getConsignRef();
   },
   destroyed: function destroyed() {
     this.sidebarOpen();
@@ -12599,7 +12945,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.ulstyle[data-v-6db0a08d] {\r\n  list-style: none;\r\n  padding-left: 0px;\r\n  float: left;\r\n  width: 100%;\n}\n.ulstyle > li[data-v-6db0a08d]:hover {\r\n  background: #ddd;\r\n  color: blue;\r\n  border-radius: 5px;\n}\n.ulstyle > li > p[data-v-6db0a08d] {\r\n  padding: 5px;\r\n  cursor: pointer;\r\n  margin-bottom: 4px;\r\n  float: left;\r\n  width: 100%;\n}\n.card-title[data-v-6db0a08d] {\r\n  float: left;\n}\r\n\r\n", ""]);
+exports.push([module.i, "\n.ulstyle[data-v-6db0a08d] {\n  list-style: none;\n  padding-left: 0px;\n  float: left;\n  width: 100%;\n}\n.ulstyle > li[data-v-6db0a08d]:hover {\n  background: #ddd;\n  color: blue;\n  border-radius: 5px;\n}\n.ulstyle > li > p[data-v-6db0a08d] {\n  padding: 5px;\n  cursor: pointer;\n  margin-bottom: 4px;\n  float: left;\n  width: 100%;\n}\n.card-title[data-v-6db0a08d] {\n  float: left;\n}\n\n", ""]);
 
 // exports
 
@@ -12618,7 +12964,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.ulstyle[data-v-6545489e] {\r\n  list-style: none;\r\n  padding-left: 0px;\r\n  float: left;\r\n  width: 100%;\n}\n.ulstyle > li[data-v-6545489e]:hover {\r\n  background: #ddd;\r\n  color: blue;\r\n  border-radius: 5px;\n}\n.ulstyle > li > p[data-v-6545489e] {\r\n  padding: 5px;\r\n  cursor: pointer;\r\n  margin-bottom: 4px;\r\n  float: left;\r\n  width: 100%;\n}\r\n\r\n\r\n", ""]);
+exports.push([module.i, "\n.ulstyle[data-v-6545489e] {\n  list-style: none;\n  padding-left: 0px;\n  float: left;\n  width: 100%;\n}\n.ulstyle > li[data-v-6545489e]:hover {\n  background: #ddd;\n  color: blue;\n  border-radius: 5px;\n}\n.ulstyle > li > p[data-v-6545489e] {\n  padding: 5px;\n  cursor: pointer;\n  margin-bottom: 4px;\n  float: left;\n  width: 100%;\n}\n\n\n", ""]);
 
 // exports
 
@@ -12637,7 +12983,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.ulstyle[data-v-6545489e] {\r\n  list-style: none;\r\n  padding-left: 0px;\r\n  float: left;\r\n  position: absolute;\r\n    background: aliceblue;\r\n    width: 50%;\r\n    z-index: 999;\n}\n.ulstyle > li[data-v-6545489e]:hover {\r\n  background: #ddd;\r\n  color: blue;\r\n  border-radius: 5px;\n}\n.ulstyle > li > p[data-v-6545489e] {\r\n  padding: 5px;\r\n  cursor: pointer;\r\n  margin-bottom: 4px;\r\n  float: left;\r\n  margin-bottom: 0px;\r\nborder-bottom: 1px solid #DCA;\n}\n.invoice_title[data-v-6545489e]{\r\n    text-align: center;\r\n    font-weight: bold;\r\n    margin-bottom: 10px;\r\n    border-bottom: 2px solid #ddd;\r\n    padding-bottom: 5px;\n}\r\n\r\n", ""]);
+exports.push([module.i, "\n.ulstyle[data-v-6545489e] {\n  list-style: none;\n  padding-left: 0px;\n  float: left;\n  position: absolute;\n    background: aliceblue;\n    width: 50%;\n    z-index: 999;\n}\n.ulstyle > li[data-v-6545489e]:hover {\n  background: #ddd;\n  color: blue;\n  border-radius: 5px;\n}\n.ulstyle > li > p[data-v-6545489e] {\n  padding: 5px;\n  cursor: pointer;\n  margin-bottom: 4px;\n  float: left;\n  margin-bottom: 0px;\nborder-bottom: 1px solid #DCA;\n}\n.invoice_title[data-v-6545489e]{\n    text-align: center;\n    font-weight: bold;\n    margin-bottom: 10px;\n    border-bottom: 2px solid #ddd;\n    padding-bottom: 5px;\n}\n\n", ""]);
 
 // exports
 
@@ -12656,7 +13002,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.ulstyle[data-v-249b947c] {\r\n  list-style: none;\r\n  padding-left: 0px;\r\n  float: left;\r\n  width: 100%;\n}\n.ulstyle > li[data-v-249b947c]:hover {\r\n  background: #ddd;\r\n  color: blue;\r\n  border-radius: 5px;\n}\n.ulstyle > li > p[data-v-249b947c] {\r\n  padding: 5px;\r\n  cursor: pointer;\r\n  margin-bottom: 4px;\r\n  float: left;\r\n  width: 100%;\n}\n.card-title[data-v-249b947c] {\r\n  float: left;\n}\r\n\r\n", ""]);
+exports.push([module.i, "\n.ulstyle[data-v-249b947c]{\n    list-style: none;\n    padding-left: 0px;\n    position: absolute;\n    background: aliceblue;\n    width: 50%;\n    z-index: 999;\n}\n.ulstyle > li[data-v-249b947c]:hover {\n    background:#ddd;\n    color: blue;\n    border-radius: 5px;\n}\n.ulstyle > li > p[data-v-249b947c]{\n    padding: 5px;\n    cursor: pointer;\n    margin-bottom: 0px;\n    border-bottom: 1px solid #DCA;\n}\n.card-title[data-v-249b947c] {\n  float: left;\n}\n\n", ""]);
 
 // exports
 
@@ -12675,7 +13021,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.ulstyle[data-v-8e43ef84] {\r\n  list-style: none;\r\n  padding-left: 0px;\r\n  float: left;\r\n  width: 95%;\r\n  position: absolute;\r\n  background: aliceblue;\r\n  z-index: 999;\n}\n.ulstyle > li[data-v-8e43ef84]:hover {\r\n  background: #ddd;\r\n  color: blue;\r\n  border-radius: 5px;\n}\n.ulstyle > li > p[data-v-8e43ef84] {\r\n  padding: 5px;\r\n  cursor: pointer;\r\n  margin-bottom: 4px;\r\n  float: left;\r\n  width: 100%;\r\n  margin-bottom: 0px;\r\n    border-bottom: 1px solid #DCA;\n}\n.card-title[data-v-8e43ef84] {\r\n  float: left;\n}\n.supp[data-v-8e43ef84] {\r\n  width: 100%;\r\n  float: right;\n}\r\n", ""]);
+exports.push([module.i, "\n.ulstyle[data-v-8e43ef84] {\n  list-style: none;\n  padding-left: 0px;\n  float: left;\n  width: 95%;\n  position: absolute;\n  background: aliceblue;\n  z-index: 999;\n}\n.ulstyle > li[data-v-8e43ef84]:hover {\n  background: #ddd;\n  color: blue;\n  border-radius: 5px;\n}\n.ulstyle > li > p[data-v-8e43ef84] {\n  padding: 5px;\n  cursor: pointer;\n  margin-bottom: 4px;\n  float: left;\n  width: 100%;\n  margin-bottom: 0px;\n    border-bottom: 1px solid #DCA;\n}\n.card-title[data-v-8e43ef84] {\n  float: left;\n}\n.supp[data-v-8e43ef84] {\n  width: 100%;\n  float: right;\n}\n", ""]);
 
 // exports
 
@@ -73219,10 +73565,7 @@ var render = function() {
                               _vm._l(_vm.temp, function(consignment, key) {
                                 return _c("tr", [
                                   _c("td", [
-                                    _vm._v(
-                                      "Consignment/2020/" +
-                                        _vm._s(consignment.consign_ref)
-                                    )
+                                    _vm._v(_vm._s(consignment.consign_ref))
                                   ]),
                                   _vm._v(" "),
                                   _c("td", [
@@ -73909,7 +74252,9 @@ var render = function() {
                               "tbody",
                               _vm._l(_vm.inventoryList, function(inventory) {
                                 return _c("tr", { key: inventory.id }, [
-                                  _c("td", [_vm._v(_vm._s(inventory.id))]),
+                                  _c("td", [
+                                    _vm._v(_vm._s(inventory.invoice_ref))
+                                  ]),
                                   _vm._v(" "),
                                   _c("td", [
                                     _vm._v(_vm._s(inventory.cus_name))
@@ -73962,13 +74307,9 @@ var render = function() {
                                       "button",
                                       {
                                         staticClass: "btn btn-info btn-sm",
-                                        attrs: {
-                                          "data-toggle": "modal",
-                                          "data-target": "#viewNew"
-                                        },
                                         on: {
                                           click: function($event) {
-                                            return _vm.editCusById(inventory)
+                                            return _vm.viewCusById(inventory)
                                           }
                                         }
                                       },
@@ -73995,6 +74336,115 @@ var render = function() {
                               0
                             )
                           ])
+                        ]
+                      )
+                    ])
+                  ]
+                ),
+                _vm._v(" "),
+                _c(
+                  "div",
+                  { staticClass: "col-md-4", staticStyle: { float: "right" } },
+                  [
+                    _c("div", { staticClass: "card" }, [
+                      _c(
+                        "span",
+                        {
+                          staticStyle: {
+                            "text-align": "center",
+                            "font-size": "16px",
+                            "margin-top": "15px"
+                          }
+                        },
+                        [_vm._v("সন্ধিপাঠ লাইব্রেরি")]
+                      ),
+                      _vm._v(" "),
+                      _vm._m(2),
+                      _vm._v(" "),
+                      _c(
+                        "div",
+                        { staticClass: "card-body table-responsive p-0" },
+                        [
+                          _c(
+                            "table",
+                            { staticClass: "table table-hover" },
+                            [
+                              _vm._l(_vm.CustInventById, function(allCust) {
+                                return _c("thead", { key: allCust.id }, [
+                                  _c("tr", [
+                                    _c("td", [
+                                      _vm._v(
+                                        "Invoice No: " +
+                                          _vm._s(allCust.invoice_ref)
+                                      )
+                                    ]),
+                                    _vm._v(" "),
+                                    _c("td")
+                                  ]),
+                                  _vm._v(" "),
+                                  _c("tr", [
+                                    _c("th", [_vm._v("Customer Name")]),
+                                    _vm._v(" "),
+                                    _c("td", [_vm._v(_vm._s(allCust.cus_name))])
+                                  ]),
+                                  _vm._v(" "),
+                                  _c("tr", [
+                                    _c("th", [_vm._v("Total Due")]),
+                                    _vm._v(" "),
+                                    _c("td", [
+                                      _vm._v(_vm._s(allCust.total_due) + " Tk.")
+                                    ])
+                                  ]),
+                                  _vm._v(" "),
+                                  _c("tr", [
+                                    _c("th", [_vm._v("Total Paid")]),
+                                    _vm._v(" "),
+                                    _c("td", [
+                                      _vm._v(
+                                        _vm._s(allCust.total_paid) + " Tk."
+                                      )
+                                    ])
+                                  ]),
+                                  _vm._v(" "),
+                                  _c("tr", [
+                                    _c("th", [_vm._v("Current Due")]),
+                                    _vm._v(" "),
+                                    _c("td", [
+                                      _vm._v(_vm._s(allCust.new_due) + " Tk.")
+                                    ])
+                                  ]),
+                                  _vm._v(" "),
+                                  _vm._m(3, true)
+                                ])
+                              }),
+                              _vm._v(" "),
+                              _c(
+                                "tbody",
+                                _vm._l(_vm.CustInventByIdList, function(
+                                  payCust
+                                ) {
+                                  return _c("tr", { key: payCust.id }, [
+                                    _c("td", [
+                                      _vm._v(
+                                        "Date: " +
+                                          _vm._s(
+                                            _vm._f("formatDate")(
+                                              payCust.created_at
+                                            )
+                                          )
+                                      )
+                                    ]),
+                                    _vm._v(" "),
+                                    _c("td", [
+                                      _vm._v(_vm._s(payCust.pay) + " Tk.")
+                                    ])
+                                  ])
+                                }),
+                                0
+                              )
+                            ],
+                            2
+                          )
                         ]
                       )
                     ])
@@ -74029,7 +74479,7 @@ var render = function() {
             },
             [
               _c("div", { staticClass: "modal-content" }, [
-                _vm._m(2),
+                _vm._m(4),
                 _vm._v(" "),
                 _c(
                   "form",
@@ -74085,46 +74535,40 @@ var render = function() {
                                     )
                                   }
                                 }
-                              })
-                            ]),
-                            _vm._v(" "),
-                            _c(
-                              "div",
-                              {
-                                directives: [
-                                  {
-                                    name: "show",
-                                    rawName: "v-show",
-                                    value: _vm.getSearchCus,
-                                    expression: "getSearchCus"
-                                  }
-                                ],
-                                staticClass: "form-group"
-                              },
-                              [
-                                _c(
-                                  "ul",
-                                  { staticClass: "ulstyle" },
-                                  _vm._l(_vm.filterdCus, function(val) {
-                                    return _c("li", { key: val.id }, [
-                                      _c(
-                                        "p",
-                                        {
-                                          on: {
-                                            click: function($event) {
-                                              $event.preventDefault()
-                                              return _vm.getCus(val)
-                                            }
+                              }),
+                              _vm._v(" "),
+                              _c(
+                                "ul",
+                                {
+                                  directives: [
+                                    {
+                                      name: "show",
+                                      rawName: "v-show",
+                                      value: _vm.getSearchCus,
+                                      expression: "getSearchCus"
+                                    }
+                                  ],
+                                  staticClass: "ulstyle"
+                                },
+                                _vm._l(_vm.filterdCus, function(val) {
+                                  return _c("li", { key: val.id }, [
+                                    _c(
+                                      "p",
+                                      {
+                                        on: {
+                                          click: function($event) {
+                                            $event.preventDefault()
+                                            return _vm.getCus(val)
                                           }
-                                        },
-                                        [_vm._v(_vm._s(val.cus_name))]
-                                      )
-                                    ])
-                                  }),
-                                  0
-                                )
-                              ]
-                            ),
+                                        }
+                                      },
+                                      [_vm._v(_vm._s(val.cus_name))]
+                                    )
+                                  ])
+                                }),
+                                0
+                              )
+                            ]),
                             _vm._v(" "),
                             _c(
                               "div",
@@ -74324,12 +74768,37 @@ var render = function() {
                                 })
                               ],
                               1
-                            )
+                            ),
+                            _vm._v(" "),
+                            _c("input", {
+                              directives: [
+                                {
+                                  name: "model",
+                                  rawName: "v-model",
+                                  value: _vm.form.invoice_ref,
+                                  expression: "form.invoice_ref"
+                                }
+                              ],
+                              attrs: { type: "text", hidden: "" },
+                              domProps: { value: _vm.form.invoice_ref },
+                              on: {
+                                input: function($event) {
+                                  if ($event.target.composing) {
+                                    return
+                                  }
+                                  _vm.$set(
+                                    _vm.form,
+                                    "invoice_ref",
+                                    $event.target.value
+                                  )
+                                }
+                              }
+                            })
                           ]
                         )
                       ]),
                       _vm._v(" "),
-                      _vm._m(3)
+                      _vm._m(5)
                     ])
                   ]
                 )
@@ -74344,7 +74813,7 @@ var render = function() {
         {
           staticClass: "modal fade",
           attrs: {
-            id: "editNew",
+            id: "",
             tabindex: "-1",
             role: "dialog",
             "aria-labelledby": "exampleModalLabel",
@@ -74360,7 +74829,7 @@ var render = function() {
             },
             [
               _c("div", { staticClass: "modal-content" }, [
-                _vm._m(4),
+                _vm._m(6),
                 _vm._v(" "),
                 _c(
                   "form",
@@ -74368,7 +74837,6 @@ var render = function() {
                     on: {
                       submit: function($event) {
                         $event.preventDefault()
-                        return _vm.updateCusInventory($event)
                       }
                     }
                   },
@@ -74405,7 +74873,7 @@ var render = function() {
                           })
                         ]),
                         _vm._v(" "),
-                        _vm._m(5)
+                        _vm._m(7)
                       ])
                     ])
                   ]
@@ -74421,7 +74889,7 @@ var render = function() {
         {
           staticClass: "modal fade",
           attrs: {
-            id: "viewNew",
+            id: "editNew",
             tabindex: "-1",
             role: "dialog",
             "aria-labelledby": "exampleModalLabel",
@@ -74437,7 +74905,7 @@ var render = function() {
             },
             [
               _c("div", { staticClass: "modal-content" }, [
-                _vm._m(6),
+                _vm._m(8),
                 _vm._v(" "),
                 _c("div", { staticClass: "modal-body" }, [
                   _c("div", { staticClass: "col-md-12" }, [
@@ -74538,11 +75006,7 @@ var render = function() {
                               }
                             ],
                             staticClass: "form-control",
-                            attrs: {
-                              type: "text",
-                              readonly: "",
-                              placeholder: "Pay Now"
-                            },
+                            attrs: { type: "text", placeholder: "Pay Now" },
                             domProps: { value: _vm.editInventory.pay },
                             on: {
                               input: function($event) {
@@ -74642,7 +75106,26 @@ var render = function() {
                     )
                   ]),
                   _vm._v(" "),
-                  _vm._m(7)
+                  _c("div", { staticClass: "modal-footer" }, [
+                    _c(
+                      "button",
+                      {
+                        staticClass: "btn btn-primary",
+                        attrs: { type: "submit" },
+                        on: { click: _vm.updateCusInventory }
+                      },
+                      [_vm._v("Update")]
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "button",
+                      {
+                        staticClass: "btn btn-danger",
+                        attrs: { type: "button", "data-dismiss": "modal" }
+                      },
+                      [_vm._v("Close")]
+                    )
+                  ])
                 ])
               ])
             ]
@@ -74686,7 +75169,7 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c("thead", [
       _c("tr", [
-        _c("th", [_vm._v("SI #")]),
+        _c("th", [_vm._v("Invoice #")]),
         _vm._v(" "),
         _c("th", [_vm._v("Customer Name")]),
         _vm._v(" "),
@@ -74702,9 +75185,25 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
+    return _c("p", { staticStyle: { "text-align": "center" } }, [
+      _vm._v("১৪ পূর্ব শেওড়াপাড়া, মিরপুর,ঢাকা-১২১৬ "),
+      _c("br"),
+      _vm._v("০১৮৬০৭২২৭২২")
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("tr", [_c("th", [_vm._v("Pay History:")])])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
     return _c("div", { staticClass: "modal-header" }, [
       _c("h5", { staticClass: "modal-title", attrs: { id: "addNewLabel" } }, [
-        _vm._v("Edit Inventory")
+        _vm._v("Add Inventory")
       ])
     ])
   },
@@ -74748,23 +75247,8 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c("div", { staticClass: "modal-header" }, [
       _c("h5", { staticClass: "modal-title", attrs: { id: "addNewLabel" } }, [
-        _vm._v("View Inventory")
+        _vm._v("Edit Inventory")
       ])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "modal-footer" }, [
-      _c(
-        "button",
-        {
-          staticClass: "btn btn-danger",
-          attrs: { type: "button", "data-dismiss": "modal" }
-        },
-        [_vm._v("Close")]
-      )
     ])
   }
 ]
@@ -74846,10 +75330,7 @@ var render = function() {
                               _vm._l(_vm.temp, function(invoice, key) {
                                 return _c("tr", [
                                   _c("td", [
-                                    _vm._v(
-                                      "Invoice/2020/" +
-                                        _vm._s(invoice.invoice_ref)
-                                    )
+                                    _vm._v(_vm._s(invoice.invoice_ref))
                                   ]),
                                   _vm._v(" "),
                                   _c("td", [
@@ -75594,13 +76075,7 @@ var render = function() {
                                 )
                               }
                             }
-                          }),
-                          _vm._v(" "),
-                          _vm.errors.hasOwnProperty("invoice_ref")
-                            ? _c("span", { staticClass: "text-danger" }, [
-                                _vm._v(_vm._s(_vm.errors.invoice_ref[0]))
-                              ])
-                            : _vm._e()
+                          })
                         ])
                       ]),
                       _vm._v(" "),
@@ -77907,6 +78382,16 @@ var render = function() {
                               on: { click: _vm.download }
                             },
                             [_vm._v("Download PDF")]
+                          ),
+                          _vm._v(" "),
+                          _c(
+                            "button",
+                            {
+                              staticClass: "btn btn-success",
+                              staticStyle: { float: "right" },
+                              on: { click: _vm.doc }
+                            },
+                            [_vm._v("word")]
                           )
                         ])
                       ])
@@ -79078,46 +79563,44 @@ var render = function() {
                                     )
                                   }
                                 }
-                              })
-                            ]),
-                            _vm._v(" "),
-                            _c(
-                              "div",
-                              {
-                                directives: [
-                                  {
-                                    name: "show",
-                                    rawName: "v-show",
-                                    value: _vm.getSearchSupp,
-                                    expression: "getSearchSupp"
-                                  }
-                                ],
-                                staticClass: "form-group"
-                              },
-                              [
-                                _c(
-                                  "ul",
-                                  { staticClass: "ulstyle" },
-                                  _vm._l(_vm.filterdSupp, function(val) {
-                                    return _c("li", { key: val.id }, [
-                                      _c(
-                                        "p",
-                                        {
-                                          on: {
-                                            click: function($event) {
-                                              $event.preventDefault()
-                                              return _vm.getSupp(val)
-                                            }
+                              }),
+                              _vm._v(" "),
+                              _c(
+                                "ul",
+                                {
+                                  directives: [
+                                    {
+                                      name: "show",
+                                      rawName: "v-show",
+                                      value: _vm.getSearchSupp,
+                                      expression: "getSearchSupp"
+                                    }
+                                  ],
+                                  staticClass: "ulstyle"
+                                },
+                                _vm._l(_vm.filterdSupp, function(val) {
+                                  return _c("li", { key: val.id }, [
+                                    _c(
+                                      "p",
+                                      {
+                                        on: {
+                                          click: function($event) {
+                                            $event.preventDefault()
+                                            return _vm.getSupp(val)
                                           }
-                                        },
-                                        [_vm._v(_vm._s(val.supplier))]
-                                      )
-                                    ])
-                                  }),
-                                  0
-                                )
-                              ]
-                            ),
+                                        }
+                                      },
+                                      [
+                                        _vm._v(
+                                          _vm._s(val.get_supplier.supplier)
+                                        )
+                                      ]
+                                    )
+                                  ])
+                                }),
+                                0
+                              )
+                            ]),
                             _vm._v(" "),
                             _c(
                               "div",
@@ -79328,7 +79811,7 @@ var render = function() {
                                   expression: "form.consign_ref"
                                 }
                               ],
-                              attrs: { type: "text", hidden: "" },
+                              attrs: { type: "text" },
                               domProps: { value: _vm.form.consign_ref },
                               on: {
                                 input: function($event) {
@@ -81494,17 +81977,6 @@ var render = function() {
                                       },
                                       [
                                         _c("input", {
-                                          staticClass: "form-check-input",
-                                          staticStyle: { "margin-top": "7px" },
-                                          attrs: { type: "checkbox" },
-                                          on: {
-                                            click: function($event) {
-                                              return _vm.myFunction(1000, 9000)
-                                            }
-                                          }
-                                        }),
-                                        _vm._v(" "),
-                                        _c("input", {
                                           directives: [
                                             {
                                               name: "model",
@@ -81518,6 +81990,7 @@ var render = function() {
                                           staticStyle: { width: "25.5rem" },
                                           attrs: {
                                             type: "text",
+                                            readonly: "",
                                             placeholder: "Consign. Ref#"
                                           },
                                           domProps: {
@@ -82312,6 +82785,741 @@ var render = function() {
                     _vm._v(" "),
                     _c(
                       "div",
+                      {
+                        staticClass: "modal fade",
+                        attrs: {
+                          id: "itemEdit",
+                          tabindex: "-1",
+                          role: "dialog",
+                          "aria-labelledby": "addNewLabel",
+                          "aria-hidden": "true"
+                        }
+                      },
+                      [
+                        _c(
+                          "div",
+                          {
+                            staticClass:
+                              "modal-dialog modal-dialog-centered modal-lg",
+                            attrs: { role: "document" }
+                          },
+                          [
+                            _c("div", { staticClass: "modal-content" }, [
+                              _c("div", { staticClass: "modal-header" }, [
+                                _c(
+                                  "h5",
+                                  {
+                                    staticClass: "modal-title",
+                                    attrs: { id: "addNewLabel" }
+                                  },
+                                  [_vm._v("Add Consignment")]
+                                ),
+                                _vm._v(" "),
+                                _c(
+                                  "div",
+                                  {
+                                    staticStyle: {
+                                      "margin-left": "6rem",
+                                      "margin-top": "5px"
+                                    }
+                                  },
+                                  [
+                                    _c(
+                                      "div",
+                                      {
+                                        staticClass: "form-group",
+                                        staticStyle: {
+                                          float: "left",
+                                          "margin-bottom": "0 !important"
+                                        }
+                                      },
+                                      [
+                                        _c("input", {
+                                          directives: [
+                                            {
+                                              name: "model",
+                                              rawName: "v-model",
+                                              value: _vm.dataArray.consign_ref,
+                                              expression:
+                                                "dataArray.consign_ref"
+                                            }
+                                          ],
+                                          staticClass: "form-control",
+                                          staticStyle: { width: "25.5rem" },
+                                          attrs: {
+                                            type: "text",
+                                            readonly: "",
+                                            placeholder: "Consign. Ref#"
+                                          },
+                                          domProps: {
+                                            value: _vm.dataArray.consign_ref
+                                          },
+                                          on: {
+                                            input: function($event) {
+                                              if ($event.target.composing) {
+                                                return
+                                              }
+                                              _vm.$set(
+                                                _vm.dataArray,
+                                                "consign_ref",
+                                                $event.target.value
+                                              )
+                                            }
+                                          }
+                                        })
+                                      ]
+                                    )
+                                  ]
+                                )
+                              ]),
+                              _vm._v(" "),
+                              _c("div", { staticClass: "modal-body" }, [
+                                _c("div", { staticClass: "col-md-12" }, [
+                                  _c(
+                                    "div",
+                                    {
+                                      staticClass: "col-md-6",
+                                      staticStyle: {
+                                        "padding-left": "0px !important",
+                                        float: "left"
+                                      }
+                                    },
+                                    [
+                                      _c("div", { staticClass: "form-group" }, [
+                                        _c("input", {
+                                          directives: [
+                                            {
+                                              name: "model",
+                                              rawName: "v-model",
+                                              value: _vm.editingData.isbn,
+                                              expression: "editingData.isbn"
+                                            }
+                                          ],
+                                          staticClass: "form-control",
+                                          class: _vm.errors.hasOwnProperty(
+                                            "isbn"
+                                          )
+                                            ? "is-invalid"
+                                            : "",
+                                          attrs: {
+                                            type: "text",
+                                            placeholder: "Search ISBN",
+                                            readonly: ""
+                                          },
+                                          domProps: {
+                                            value: _vm.editingData.isbn
+                                          },
+                                          on: {
+                                            input: function($event) {
+                                              if ($event.target.composing) {
+                                                return
+                                              }
+                                              _vm.$set(
+                                                _vm.editingData,
+                                                "isbn",
+                                                $event.target.value
+                                              )
+                                            }
+                                          }
+                                        })
+                                      ])
+                                    ]
+                                  ),
+                                  _vm._v(" "),
+                                  _c(
+                                    "div",
+                                    {
+                                      staticClass: "col-md-6",
+                                      staticStyle: {
+                                        "padding-left": "0px !important",
+                                        width: "48%",
+                                        float: "right"
+                                      }
+                                    },
+                                    [
+                                      _c("div", { staticClass: "form-group" }, [
+                                        _c("input", {
+                                          directives: [
+                                            {
+                                              name: "model",
+                                              rawName: "v-model",
+                                              value: _vm.dataArray.supplier,
+                                              expression: "dataArray.supplier"
+                                            }
+                                          ],
+                                          staticClass: "form-control supp",
+                                          attrs: {
+                                            type: "text",
+                                            placeholder: "Select Supplier",
+                                            readonly: ""
+                                          },
+                                          domProps: {
+                                            value: _vm.dataArray.supplier
+                                          },
+                                          on: {
+                                            input: function($event) {
+                                              if ($event.target.composing) {
+                                                return
+                                              }
+                                              _vm.$set(
+                                                _vm.dataArray,
+                                                "supplier",
+                                                $event.target.value
+                                              )
+                                            }
+                                          }
+                                        })
+                                      ])
+                                    ]
+                                  ),
+                                  _vm._v(" "),
+                                  _c("div", [
+                                    _c("div", { staticClass: "form-group" }, [
+                                      _c("input", {
+                                        directives: [
+                                          {
+                                            name: "model",
+                                            rawName: "v-model",
+                                            value: _vm.editingData.book_name,
+                                            expression: "editingData.book_name"
+                                          }
+                                        ],
+                                        staticClass: "form-control",
+                                        attrs: {
+                                          readonly: "",
+                                          type: "text",
+                                          placeholder: "Select Book by ISBN "
+                                        },
+                                        domProps: {
+                                          value: _vm.editingData.book_name
+                                        },
+                                        on: {
+                                          input: function($event) {
+                                            if ($event.target.composing) {
+                                              return
+                                            }
+                                            _vm.$set(
+                                              _vm.editingData,
+                                              "book_name",
+                                              $event.target.value
+                                            )
+                                          }
+                                        }
+                                      })
+                                    ])
+                                  ]),
+                                  _vm._v(" "),
+                                  _c(
+                                    "div",
+                                    {
+                                      staticClass: "col-md-6",
+                                      staticStyle: {
+                                        "padding-left": "0px !important",
+                                        float: "left"
+                                      }
+                                    },
+                                    [
+                                      _c("div", { staticClass: "form-group" }, [
+                                        _c("label", [_vm._v("Copies")]),
+                                        _vm._v(" "),
+                                        _c("input", {
+                                          directives: [
+                                            {
+                                              name: "model",
+                                              rawName: "v-model",
+                                              value: _vm.editingData.copies,
+                                              expression: "editingData.copies"
+                                            }
+                                          ],
+                                          staticClass: "form-control",
+                                          attrs: {
+                                            type: "number",
+                                            name: "copies",
+                                            placeholder: "Copies"
+                                          },
+                                          domProps: {
+                                            value: _vm.editingData.copies
+                                          },
+                                          on: {
+                                            keyup: _vm.costBd,
+                                            input: function($event) {
+                                              if ($event.target.composing) {
+                                                return
+                                              }
+                                              _vm.$set(
+                                                _vm.editingData,
+                                                "copies",
+                                                $event.target.value
+                                              )
+                                            }
+                                          }
+                                        })
+                                      ]),
+                                      _vm._v(" "),
+                                      _c("div", { staticClass: "form-group" }, [
+                                        _c("label", [
+                                          _vm._v(
+                                            "Publishers Price [In Original Currency]"
+                                          )
+                                        ]),
+                                        _vm._v(" "),
+                                        _c(
+                                          "div",
+                                          {
+                                            staticStyle: {
+                                              width: "38%",
+                                              float: "left"
+                                            }
+                                          },
+                                          [
+                                            _c(
+                                              "select",
+                                              {
+                                                directives: [
+                                                  {
+                                                    name: "model",
+                                                    rawName: "v-model",
+                                                    value:
+                                                      _vm.editingData.currency,
+                                                    expression:
+                                                      "editingData.currency"
+                                                  }
+                                                ],
+                                                staticStyle: {
+                                                  padding: "6px",
+                                                  "padding-right": "60px"
+                                                },
+                                                attrs: {
+                                                  id: "type",
+                                                  name: "currency"
+                                                },
+                                                on: {
+                                                  change: function($event) {
+                                                    var $$selectedVal = Array.prototype.filter
+                                                      .call(
+                                                        $event.target.options,
+                                                        function(o) {
+                                                          return o.selected
+                                                        }
+                                                      )
+                                                      .map(function(o) {
+                                                        var val =
+                                                          "_value" in o
+                                                            ? o._value
+                                                            : o.value
+                                                        return val
+                                                      })
+                                                    _vm.$set(
+                                                      _vm.editingData,
+                                                      "currency",
+                                                      $event.target.multiple
+                                                        ? $$selectedVal
+                                                        : $$selectedVal[0]
+                                                    )
+                                                  }
+                                                }
+                                              },
+                                              [
+                                                _c(
+                                                  "option",
+                                                  { attrs: { value: "TK" } },
+                                                  [_vm._v("TK")]
+                                                ),
+                                                _vm._v(" "),
+                                                _c(
+                                                  "option",
+                                                  { attrs: { value: "INR" } },
+                                                  [_vm._v("INR")]
+                                                ),
+                                                _vm._v(" "),
+                                                _c(
+                                                  "option",
+                                                  { attrs: { value: "USD" } },
+                                                  [_vm._v("USD")]
+                                                )
+                                              ]
+                                            )
+                                          ]
+                                        ),
+                                        _vm._v(" "),
+                                        _c(
+                                          "div",
+                                          {
+                                            staticStyle: {
+                                              width: "60%",
+                                              float: "right"
+                                            }
+                                          },
+                                          [
+                                            _c("input", {
+                                              directives: [
+                                                {
+                                                  name: "model",
+                                                  rawName: "v-model",
+                                                  value:
+                                                    _vm.editingData.pub_price,
+                                                  expression:
+                                                    "editingData.pub_price"
+                                                }
+                                              ],
+                                              staticClass: "form-control",
+                                              attrs: {
+                                                type: "text",
+                                                placeholder: "Publishers Price"
+                                              },
+                                              domProps: {
+                                                value: _vm.editingData.pub_price
+                                              },
+                                              on: {
+                                                keyup: _vm.costBd,
+                                                input: function($event) {
+                                                  if ($event.target.composing) {
+                                                    return
+                                                  }
+                                                  _vm.$set(
+                                                    _vm.editingData,
+                                                    "pub_price",
+                                                    $event.target.value
+                                                  )
+                                                }
+                                              }
+                                            })
+                                          ]
+                                        )
+                                      ]),
+                                      _vm._v(" "),
+                                      _c(
+                                        "div",
+                                        {
+                                          staticStyle: {
+                                            width: "48%",
+                                            float: "left",
+                                            "padding-top": "16px"
+                                          }
+                                        },
+                                        [
+                                          _c(
+                                            "div",
+                                            { staticClass: "form-group" },
+                                            [
+                                              _c("label", [
+                                                _vm._v("Conv. Rate")
+                                              ]),
+                                              _vm._v(" "),
+                                              _c("input", {
+                                                directives: [
+                                                  {
+                                                    name: "model",
+                                                    rawName: "v-model",
+                                                    value:
+                                                      _vm.editingData.conv_rate,
+                                                    expression:
+                                                      "editingData.conv_rate"
+                                                  }
+                                                ],
+                                                staticClass: "form-control",
+                                                attrs: {
+                                                  type: "text",
+                                                  placeholder: "Conv. Rate"
+                                                },
+                                                domProps: {
+                                                  value:
+                                                    _vm.editingData.conv_rate
+                                                },
+                                                on: {
+                                                  keyup: _vm.costBd,
+                                                  input: function($event) {
+                                                    if (
+                                                      $event.target.composing
+                                                    ) {
+                                                      return
+                                                    }
+                                                    _vm.$set(
+                                                      _vm.editingData,
+                                                      "conv_rate",
+                                                      $event.target.value
+                                                    )
+                                                  }
+                                                }
+                                              })
+                                            ]
+                                          )
+                                        ]
+                                      ),
+                                      _vm._v(" "),
+                                      _c(
+                                        "div",
+                                        {
+                                          staticStyle: {
+                                            width: "48%",
+                                            float: "right",
+                                            "padding-top": "16px"
+                                          }
+                                        },
+                                        [
+                                          _c(
+                                            "div",
+                                            { staticClass: "form-group" },
+                                            [
+                                              _c("label", [_vm._v("Rate")]),
+                                              _vm._v(" "),
+                                              _c("input", {
+                                                directives: [
+                                                  {
+                                                    name: "model",
+                                                    rawName: "v-model",
+                                                    value:
+                                                      _vm.editingData.st_rate,
+                                                    expression:
+                                                      "editingData.st_rate"
+                                                  }
+                                                ],
+                                                staticClass: "form-control",
+                                                attrs: {
+                                                  type: "text",
+                                                  name: "st_rate",
+                                                  placeholder: "Rate"
+                                                },
+                                                domProps: {
+                                                  value: _vm.editingData.st_rate
+                                                },
+                                                on: {
+                                                  keyup: _vm.costBd,
+                                                  input: function($event) {
+                                                    if (
+                                                      $event.target.composing
+                                                    ) {
+                                                      return
+                                                    }
+                                                    _vm.$set(
+                                                      _vm.editingData,
+                                                      "st_rate",
+                                                      $event.target.value
+                                                    )
+                                                  }
+                                                }
+                                              })
+                                            ]
+                                          )
+                                        ]
+                                      )
+                                    ]
+                                  ),
+                                  _vm._v(" "),
+                                  _c(
+                                    "div",
+                                    {
+                                      staticClass: "col-md-6",
+                                      staticStyle: {
+                                        "padding-right": "0px !important",
+                                        float: "left"
+                                      }
+                                    },
+                                    [
+                                      _c("div", { staticClass: "form-group" }, [
+                                        _c("label", [
+                                          _vm._v("Cost Price in BD")
+                                        ]),
+                                        _vm._v(" "),
+                                        _c("input", {
+                                          directives: [
+                                            {
+                                              name: "model",
+                                              rawName: "v-model",
+                                              value: _vm.editingData.cost_price,
+                                              expression:
+                                                "editingData.cost_price"
+                                            }
+                                          ],
+                                          staticClass: "form-control",
+                                          attrs: {
+                                            readonly: "",
+                                            type: "text",
+                                            placeholder: "Cost in BD"
+                                          },
+                                          domProps: {
+                                            value: _vm.editingData.cost_price
+                                          },
+                                          on: {
+                                            input: function($event) {
+                                              if ($event.target.composing) {
+                                                return
+                                              }
+                                              _vm.$set(
+                                                _vm.editingData,
+                                                "cost_price",
+                                                $event.target.value
+                                              )
+                                            }
+                                          }
+                                        })
+                                      ]),
+                                      _vm._v(" "),
+                                      _c("div", { staticClass: "form-group" }, [
+                                        _c("label", [_vm._v("Rate")]),
+                                        _vm._v(" "),
+                                        _c("input", {
+                                          directives: [
+                                            {
+                                              name: "model",
+                                              rawName: "v-model",
+                                              value: _vm.editingData.my_rate,
+                                              expression: "editingData.my_rate"
+                                            }
+                                          ],
+                                          staticClass: "form-control",
+                                          attrs: {
+                                            type: "text",
+                                            name: "my_rate",
+                                            placeholder: "Rate"
+                                          },
+                                          domProps: {
+                                            value: _vm.editingData.my_rate
+                                          },
+                                          on: {
+                                            keyup: _vm.costBd,
+                                            input: function($event) {
+                                              if ($event.target.composing) {
+                                                return
+                                              }
+                                              _vm.$set(
+                                                _vm.editingData,
+                                                "my_rate",
+                                                $event.target.value
+                                              )
+                                            }
+                                          }
+                                        })
+                                      ]),
+                                      _vm._v(" "),
+                                      _c("div", { staticClass: "form-group" }, [
+                                        _c("label", [
+                                          _vm._v("Sales Price in BD")
+                                        ]),
+                                        _vm._v(" "),
+                                        _c("input", {
+                                          directives: [
+                                            {
+                                              name: "model",
+                                              rawName: "v-model",
+                                              value:
+                                                _vm.editingData.sales_price,
+                                              expression:
+                                                "editingData.sales_price"
+                                            }
+                                          ],
+                                          staticClass: "form-control",
+                                          attrs: {
+                                            readonly: "",
+                                            type: "text",
+                                            placeholder: "Sales in BD"
+                                          },
+                                          domProps: {
+                                            value: _vm.editingData.sales_price
+                                          },
+                                          on: {
+                                            input: function($event) {
+                                              if ($event.target.composing) {
+                                                return
+                                              }
+                                              _vm.$set(
+                                                _vm.editingData,
+                                                "sales_price",
+                                                $event.target.value
+                                              )
+                                            }
+                                          }
+                                        })
+                                      ]),
+                                      _vm._v(" "),
+                                      _c("input", {
+                                        directives: [
+                                          {
+                                            name: "model",
+                                            rawName: "v-model",
+                                            value: _vm.editingData.total_price,
+                                            expression:
+                                              "editingData.total_price"
+                                          }
+                                        ],
+                                        attrs: {
+                                          hidden: "",
+                                          readonly: "",
+                                          type: "text"
+                                        },
+                                        domProps: {
+                                          value: _vm.editingData.total_price
+                                        },
+                                        on: {
+                                          input: function($event) {
+                                            if ($event.target.composing) {
+                                              return
+                                            }
+                                            _vm.$set(
+                                              _vm.editingData,
+                                              "total_price",
+                                              $event.target.value
+                                            )
+                                          }
+                                        }
+                                      }),
+                                      _vm._v(" "),
+                                      _c("input", {
+                                        directives: [
+                                          {
+                                            name: "model",
+                                            rawName: "v-model",
+                                            value:
+                                              _vm.editingData.total_pub_price,
+                                            expression:
+                                              "editingData.total_pub_price"
+                                          }
+                                        ],
+                                        attrs: {
+                                          hidden: "",
+                                          readonly: "",
+                                          type: "text"
+                                        },
+                                        domProps: {
+                                          value: _vm.editingData.total_pub_price
+                                        },
+                                        on: {
+                                          input: function($event) {
+                                            if ($event.target.composing) {
+                                              return
+                                            }
+                                            _vm.$set(
+                                              _vm.editingData,
+                                              "total_pub_price",
+                                              $event.target.value
+                                            )
+                                          }
+                                        }
+                                      })
+                                    ]
+                                  )
+                                ]),
+                                _vm._v(" "),
+                                _c("div", { staticClass: "modal-footer" }, [
+                                  _c(
+                                    "button",
+                                    {
+                                      staticClass: "btn btn-primary",
+                                      attrs: { type: "button" },
+                                      on: { click: _vm.createEditConsignment }
+                                    },
+                                    [_vm._v("Update")]
+                                  )
+                                ])
+                              ])
+                            ])
+                          ]
+                        )
+                      ]
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "div",
                       { staticClass: "card-body table-responsive p-0" },
                       [
                         _c(
@@ -82363,6 +83571,23 @@ var render = function() {
                                             staticClass: "fa fa-trash"
                                           })
                                         ]
+                                      ),
+                                      _vm._v(" "),
+                                      _c(
+                                        "button",
+                                        {
+                                          staticClass: "btn btn-primary btn-sm",
+                                          attrs: {
+                                            "data-toggle": "modal",
+                                            "data-target": "#itemEdit"
+                                          },
+                                          on: {
+                                            click: function($event) {
+                                              return _vm.editItem(item, index)
+                                            }
+                                          }
+                                        },
+                                        [_c("i", { staticClass: "fa fa-edit" })]
                                       )
                                     ])
                                   ])
@@ -101421,8 +102646,8 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! D:\Office Project\Inventory\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! D:\Office Project\Inventory\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! D:\Hasinur\Inventory\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! D:\Hasinur\Inventory\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })

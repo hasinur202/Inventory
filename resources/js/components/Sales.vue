@@ -19,10 +19,6 @@
                                                     class="form-control"
                                                     style="width: 25.5rem;" readonly
                                                 />
-                                                <span
-                                                    class="text-danger"
-                                                    v-if="errors.hasOwnProperty('invoice_ref')"
-                                                >{{errors.invoice_ref[0]}}</span>
                                             </div>
                                     </div>
 
@@ -584,6 +580,7 @@ export default {
                 axios.post("/storeInvoice", this.dataArray).then(() => {
                     console.log("success");
                     // this.dataArray.details = [];
+                    this.getInvoiceRef();
                     this.dataArray = {
                     cus_name:"",
                     email:"",
@@ -801,7 +798,7 @@ export default {
         },
         padString(serial){
             var str = "" + serial
-            var pad = "000"
+            var pad = "0000"
             var ans = pad.substring(0, pad.length - str.length) + str
             return ans
         }
@@ -817,7 +814,7 @@ export default {
       console.log('Component mounted.')
         this.getInvoiceRef();
   },
-  
+
 };
 </script>
 

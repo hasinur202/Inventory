@@ -56,8 +56,13 @@ Route::get('/getCategory', 'CategoryController@index');
 Route::get('/getSupplier', 'SupplierController@index');
 //get Consignment
 Route::get('/getConsignment', 'ConsignmentController@index');
-//get invoice list
 
+//get supplier from consignemtn
+Route::get('/getSuppConsign', 'InventoryController@SupplierGetConsign');
+//get all info customer inventory
+Route::get('/getCustDetailsById', 'InventoryController@getDetailsCustId');
+
+//get invoice list
 Route::get('/getInvoices', 'InvoiceController@index');
 
 //get details for invoice/sale
@@ -130,3 +135,5 @@ Route::get('sales-summery-report', 'ReportController@summeryReport');
 Route::get('sales-statement-report', 'ReportController@statementReport');
 
 Route::get('get-last-invoice-serial', 'InvoiceController@getLastInvoiceSerial');
+
+Route::get('get-last-consign-serial', 'ConsignmentController@getLastConsignSerial');

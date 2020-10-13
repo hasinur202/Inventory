@@ -95,4 +95,3 @@ new Vue({
     render: h => h('app'),
     router
 }).$mount('#app');
-

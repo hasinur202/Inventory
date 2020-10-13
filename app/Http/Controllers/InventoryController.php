@@ -4,16 +4,28 @@ namespace App\Http\Controllers;
 
 use App\CustInventory;
 use App\SuppIventory;
-
+use App\Consignment;
+use App\CustInventoryDetails;
 use Illuminate\Http\Request;
 
 class InventoryController extends Controller
 {
+
+    public function SupplierGetConsign(){
+
+        $data = Consignment::with('get_supplier')->get();
+
+        return response()->json([
+            'data' => $data,
+            'message' => "success"
+        ], 200);
+    }
+
     public function storeIventorySup(Request $request){
+
         $this->validate($request, [
             'supplier'  => 'required',
             'total_due' => 'required',
-
         ]);
 
         $inventory = new SuppIventory();
@@ -32,25 +44,19 @@ class InventoryController extends Controller
 
 
     public function storeIventoryCus(Request $request){
-        $this->validate($request, [
-            'cus_name'  => 'required',
-            'total_due' => 'required',
 
-        ]);
+        $custInvent = CustInventory::create(['invoice_ref' => $request->invoice_ref,
+                'cus_name' => $request->cus_name,
+                'total_due' => $request->total_due,
+                'total_paid' => $request->total_paid,
+                'new_due' => $request->new_due]);
 
-        $inventory = new CustInventory();
-        $inventory->cus_name    = $request->cus_name;
-        $inventory->total_due    = $request->total_due;
-        $inventory->total_paid    = $request->total_paid;
-        $inventory->new_due     = $request->new_due;
-        $inventory->pay     = $request->pay;
+        CustInventoryDetails::create(['pay' => $request->pay, 'cust_id' => $custInvent->id]);
 
-        $inventory->save();
         return response()->json([
-            'inventory'=> $inventory
+            'message'=> 'success'
         ],200);
     }
-
 
 
 
@@ -66,7 +72,7 @@ class InventoryController extends Controller
 
         $inventory->save();
         return response()->json([
-            'inventory'=> $inventory
+            'message'=> 'success'
         ],200);
 
     }
@@ -79,11 +85,13 @@ class InventoryController extends Controller
         $inventory->total_due    = $request->total_due;
         $inventory->total_paid    = $inventory->total_paid + $request->pay;
         $inventory->new_due     = $inventory->total_due - $inventory->total_paid;
-        $inventory->pay     = $request->pay;
-
         $inventory->save();
+
+        CustInventoryDetails::create(['pay' => $request->pay, 'cust_id' => $inventory->id]);
+
+
         return response()->json([
-            'inventory'=> $inventory
+            'message'=> 'success'
         ],200);
 
     }
@@ -125,6 +133,22 @@ class InventoryController extends Controller
         return response()->json([
             'custinven'=> $custinven
         ],200);
+    }
+
+
+    public function getDetailsCustId(Request $request){
+
+        $inventCust = CustInventory::where('id', $request->id)->get();
+
+        $inventCustDetails = CustInventoryDetails::where('cust_id', $request->id)->get();
+
+
+        return response()->json([
+            'inventCust'=> $inventCust,
+            'inventCustDetails'=> $inventCustDetails,
+        ],200);
+
+
     }
 
 
