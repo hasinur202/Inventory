@@ -137,3 +137,4 @@ Route::get('sales-statement-report', 'ReportController@statementReport');
 Route::get('get-last-invoice-serial', 'InvoiceController@getLastInvoiceSerial');
 
 Route::get('get-last-consign-serial', 'ConsignmentController@getLastConsignSerial');
+Route::get('get-last-isbn-serial', 'BookController@getLastBookSerial');

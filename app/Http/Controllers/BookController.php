@@ -6,6 +6,8 @@ use App\Consignment;
 use App\Invoice;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
+use Exception;
 use Image;
 class BookController extends Controller
 {
@@ -41,6 +43,7 @@ class BookController extends Controller
             'book_name' => 'required',
             'category'  => 'required',
             'publisher' => 'required',
+            'isbn' => 'unique',
         ]);
 
         $book = new Book;
@@ -57,6 +60,11 @@ class BookController extends Controller
 
         if(!$request->isbn){
             $book->isbn = $request->checkisbn;
+            $lastIsbn = Book::where('isbn_serial', '!=', null)->orderBy('id', 'desc')->first();
+
+            $lastIsbn = $lastIsbn ? $lastIsbn->isbn_serial ? $lastIsbn->isbn_serial + 1 : 1 : 1;
+            $book->isbn_serial = $lastIsbn;
+
         }else{
             $book->isbn = $request->isbn;
         }
@@ -72,12 +80,12 @@ class BookController extends Controller
         $book->status       = $request->status;
         $book->summary      = $request->summary;
         $book->year         = $request->year;
-
-
         $book->save();
+
         return response()->json([
-            'book'=>$book
+            'message'=>'success'
         ],200);
+
     }
 
 
@@ -143,6 +151,13 @@ class BookController extends Controller
         ], 200);
 
 
+    }
+
+
+    public function getLastBookSerial()
+    {
+        $lastIsbn = Book::where('isbn_serial', '!=', null)->orderBy('id', 'desc')->first();
+        return  $lastIsbn ? $lastIsbn->isbn_serial ? $lastIsbn->isbn_serial + 1 : 1 : 1;
     }
 
 }

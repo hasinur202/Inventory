@@ -29,6 +29,7 @@ class CreateBooksTable extends Migration
             $table->string('language')->nullable();
             $table->string('ref')->nullable();
             $table->string('status')->nullable();
+            $table->integer('isbn_serial')->nullable();
             $table->timestamps();
         });
     }

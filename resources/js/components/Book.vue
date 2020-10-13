@@ -19,14 +19,14 @@
                     <div class="row">
                         <div class="col-md-12">
                             <label for="exampleInputIsbn" class="isbn">ISBN Auto</label>
-                            <input @click="myFunction(1000, 9000)" v-model="form.isbnCheck" type="checkbox" class="form-check-input">
+                            <input @click="myFunction()" v-model="form.isbnCheck" type="checkbox" class="form-check-input">
                             <label class="form-check-label"> Generate: </label>
                             <input v-model="form.checkisbn" placeholder="ISBN" style="width:31%; border-style:none;">
                         </div>
 
                     <div class="col-md-6">
-                        <div class="form-group">
-                            <input v-model="form.isbn" :class="{ 'is-invalid': form.errors.has('isbn') }"
+                        <div class="form-group" v-show="visible">
+                            <input v-model="form.isbn" :class="{ 'is-invalid': form.errors.has('isbn') }" 
                             type="text" name="isbn" placeholder="ISBN No." class="form-control" minlength="13" maxlength="13" >
                             <has-error :form="form" field="isbn"></has-error>
                         </div>
@@ -202,9 +202,11 @@ import footerComponent from "./footer";
 
         data(){
             return{
+                errors:{},
                 getSesrchValue: false,
                 getSesrchPub: false,
                 getSesrchCat: false,
+                visible:true,
                 authors:[],
                 publishers:[],
                 categories:[],
@@ -368,19 +370,55 @@ import footerComponent from "./footer";
                 }
             },
 
-            myFunction: function (min, max) {
-                if(this.form.checkisbn == ''){
-                    this.form.checkisbn = Math.floor(Math.random() * (max - min)) + min;
+            // myFunction: function (min, max) {
+            //     if(this.form.checkisbn == ''){
+            //         this.form.checkisbn = Math.floor(Math.random() * (max - min)) + min;
+            //     }else{
+            //         this.form.checkisbn =""
+            //     }
+            // },
+
+            // myFunction: function () {
+            //     if(this.form.checkisbn == ""){
+            //         this.getBookIsbnSerial();
+            //     }else{
+            //         this.form.checkisbn = "";
+            //     }
+            // },
+
+            myFunction: function(){
+                if(this.form.checkisbn == ""){
+                    axios.get(`get-last-isbn-serial`)
+                    .then(response => {
+                        this.form.checkisbn = this.formatBookIsbnSerial(response.data);
+                        this.visible=false;
+                    })
                 }else{
-                    this.form.checkisbn =""
+                    this.form.checkisbn = "";
+                    this.visible = true;
                 }
             },
+
+            
+
+            formatBookIsbnSerial(serial){
+                let isbnSerial = `${this.padString(serial)}`
+                return isbnSerial
+            },
+
+            padString(serial){
+                var str = "" + serial
+                var pad = "0000"
+                var ans = pad.substring(0, pad.length - str.length) + str
+                return ans
+            }
 
         },
 
         mounted() {
             console.log('Component mounted.')
-        }
+            // this.getBookIsbnSerial();
+        },
     }
 </script>
 
