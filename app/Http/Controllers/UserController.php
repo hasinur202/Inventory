@@ -171,4 +171,6 @@ class UserController extends Controller
 
 
 ///pas_hash = $2y$10$6qKajYiHYI/u8V8n.ELPN.FIXlKMzqmhSIAkwnypAO2InPEg9kC1K
+
+//without php artisan serve: https://stackoverflow.com/questions/28788285/how-to-run-laravel-without-artisan/30053989#30053989
 }
