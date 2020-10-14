@@ -81,8 +81,8 @@
                     </div> -->
                     <div id="printMe">
                         <div class="card-header" style="text-align:center;">
-                            <h3 class="card-title">Prothoma Publications</h3>
-                            <p>43-44 Aziz Co-op Super Market, Shahbag, Dhaka - 1000</p>
+                            <h3 class="card-title">{{ settingData.title }}</h3>
+                            <p>{{ settingData.address }} <br>Contact: {{ settingData.mobile }}</p>
                             <h4 v-if="formData.fixedDate == ''">Sales Summary: {{ formData.fromDate }} to {{ formData.toDate }}</h4>
                             <h4 v-else>Sales Summary: {{ formData.fixedDate }}</h4>
                         </div>
@@ -307,10 +307,17 @@ export default {
     return {
       isHidden: true,
       errors: {},
+      dataList:'',
       formData: {
         toDate: "",
         fromDate: "",
         fixedDate: ""
+      },
+      settingData:{
+          logo:"",
+          mobile:"",
+          address:"",
+          title:"",
       },
       consignmentData: {},
       salesData: {},
@@ -344,6 +351,21 @@ export default {
         });
     },
 
+    viewSettingsData(){
+          axios.get('/getSettingData')
+            .then((response)=>{
+                this.dataList = response.data.data;
+
+                this.dataList.forEach(el => {
+                    this.settingData.title = el.title;
+                    this.settingData.mobile = el.mobile;
+                    this.settingData.address = el.address;
+                    this.settingData.logo = el.logo;
+
+                });
+            })
+      },
+
     download(){
         this.$htmlToPaper('printMe');
     },
@@ -355,7 +377,9 @@ export default {
     headerComponent,
     footerComponent
   },
-  mounted() {}
+  mounted() {
+      this.viewSettingsData();
+  }
 };
 </script>
 <style scoped>

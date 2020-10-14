@@ -6,6 +6,7 @@ use App\CustInventory;
 use App\SuppIventory;
 use App\Consignment;
 use App\CustInventoryDetails;
+use App\SuppIventoryDetails;
 use Illuminate\Http\Request;
 
 class InventoryController extends Controller
@@ -23,23 +24,18 @@ class InventoryController extends Controller
 
     public function storeIventorySup(Request $request){
 
-        $this->validate($request, [
-            'supplier'  => 'required',
-            'total_due' => 'required',
-        ]);
+        $suppInvent = SuppIventory::create(['consign_ref' => $request->consign_ref,
+                'supplier' => $request->supplier,
+                'total_due' => $request->total_due,
+                'total_paid' => $request->total_paid,
+                'new_due' => $request->new_due]);
 
-        $inventory = new SuppIventory();
-        $inventory->supplier    = $request->supplier;
-        $inventory->total_due    = $request->total_due;
-        $inventory->total_paid    = $request->total_paid;
-        $inventory->new_due     = $request->new_due;
-        $inventory->pay         = $request->pay;
-        $inventory->consign_ref     = $request->consign_ref;
+        SuppIventoryDetails::create(['pay' => $request->pay, 'supp_id' => $suppInvent->id]);
 
-        $inventory->save();
         return response()->json([
-            'inventory'=> $inventory
+            'message'=> 'success'
         ],200);
+
     }
 
 
@@ -68,9 +64,11 @@ class InventoryController extends Controller
         $inventory->total_due    = $request->total_due;
         $inventory->total_paid    = $inventory->total_paid + $request->pay;
         $inventory->new_due     = $inventory->total_due - $inventory->total_paid;
-        $inventory->pay     = $request->pay;
-
         $inventory->save();
+
+        SuppIventoryDetails::create(['pay' => $request->pay, 'supp_id' => $inventory->id]);
+
+
         return response()->json([
             'message'=> 'success'
         ],200);
@@ -119,7 +117,8 @@ class InventoryController extends Controller
 
     public function deleteSupInventoryById(Request $request){
 
-        $suppinven = SuppIventory::findOrFail($request->id)->delete();
+        $suppinven = SuppIventoryDetails::where('supp_id',$request->id)->delete();
+        SuppIventory::findOrFail($request->id)->delete();
 
         return response()->json([
             'suppinven'=> $suppinven
@@ -128,7 +127,8 @@ class InventoryController extends Controller
 
     public function deleteCusInventoryById(Request $request){
 
-        $custinven = CustInventory::findOrFail($request->id)->delete();
+        $custinven = CustInventoryDetails::where('supp_id',$request->id)->delete();
+        CustInventory::findOrFail($request->id)->delete();
 
         return response()->json([
             'custinven'=> $custinven
@@ -139,16 +139,23 @@ class InventoryController extends Controller
     public function getDetailsCustId(Request $request){
 
         $inventCust = CustInventory::where('id', $request->id)->get();
-
         $inventCustDetails = CustInventoryDetails::where('cust_id', $request->id)->get();
-
 
         return response()->json([
             'inventCust'=> $inventCust,
             'inventCustDetails'=> $inventCustDetails,
         ],200);
+    }
 
+    public function getDetailsSuppId(Request $request){
 
+        $inventSupp = SuppIventory::where('id', $request->id)->get();
+        $inventSuppDetails = SuppIventoryDetails::where('supp_id', $request->id)->get();
+
+        return response()->json([
+            'inventSupp'=> $inventSupp,
+            'inventSuppDetails'=> $inventSuppDetails,
+        ],200);
     }
 
 

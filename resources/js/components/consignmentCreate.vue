@@ -783,7 +783,7 @@ export default {
         },
         padString(serial){
             var str = "" + serial
-            var pad = "0000"
+            var pad = "000"
             var ans = pad.substring(0, pad.length - str.length) + str
             return ans
         }

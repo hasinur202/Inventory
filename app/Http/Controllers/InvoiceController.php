@@ -18,9 +18,7 @@ class InvoiceController extends Controller
 
 
     public function invoiceStore(Request $request){
-        // return $request->all();
-        DB::beginTransaction();
-        try{
+
 
             $lastInvoice = Invoice::whereDate('created_at', date('Y-m-d'))->orderBy('id', 'desc')->first();
             $lastInvoice = $lastInvoice ? $lastInvoice->invoice_serial ? $lastInvoice->invoice_serial + 1 : 1 : 1;
@@ -31,6 +29,9 @@ class InvoiceController extends Controller
             'total_discount' => $request->total_discount,
             'pay_mode' => $request->pay_mode,
             'cus_name' => $request->cus_name,
+            'phone' => $request->phone,
+            'email' => $request->email,
+            'address' => $request->address,
             'invoice_serial' => $lastInvoice]);
 
 
@@ -41,12 +42,9 @@ class InvoiceController extends Controller
 
                $book->update(['available_quantity' => $book->available_quantity - $invoi->qty]);
             }
-            DB::commit();
+
             return response(['invoice' => $invoice]);
-        }catch(Exception $e){
-            DB::rollBack();
-            return response(['invoice' => $invoice], 500);
-        }
+
     }
 
 
@@ -61,7 +59,6 @@ class InvoiceController extends Controller
 
     public function getIdInvoice(Request $request){
         return InvoiceDetails::with('book')->where('invoice_id', $request->id)->get();
-
     }
 
     public function deleteInvoice(Request $request){
@@ -132,6 +129,20 @@ class InvoiceController extends Controller
     {
         $lastInvoice = Invoice::whereDate('created_at', date('Y-m-d'))->orderBy('id', 'desc')->first();
         return  $lastInvoice ? $lastInvoice->invoice_serial ? $lastInvoice->invoice_serial + 1 : 1 : 1;
+    }
+
+    public function latestInvoiceDetails(){
+
+        $data = Invoice::latest()->first();
+
+        $data2 = InvoiceDetails::with('book')->where('invoice_id',$data->id)->get();
+
+        return response()->json([
+            'data' => $data,
+            'data2' => $data2,
+            'message' => "success"
+        ], 200);
+
     }
 
 

@@ -10,8 +10,8 @@
                             <div class="col-md-8" style="float:left;">
                                 <div class="card">
                                     <div class="card-header" style="text-align:center;">
-                                        <h3 class="card-title">Prothoma Publications</h3>
-                                        <p>43-44 Aziz Co-op Super Market, Shahbag, Dhaka - 1000</p>
+                                        <h3 class="card-title">{{ settingData.title }}</h3>
+                                        <p>{{ settingData.address }} <br>Contact: {{ settingData.mobile }}</p>
                                         <h4>Stock Report</h4>
                                     </div>
 
@@ -101,6 +101,14 @@
                 totalq:'',
                 totalAvailablePrice:'',
 
+                dataList:'',
+                settingData:{
+                    logo:"",
+                    mobile:"",
+                    address:"",
+                    title:"",
+                },
+
             }
         },
         created(){
@@ -126,6 +134,21 @@
                 this.$htmlToPaper('printMe');
             },
 
+            viewSettingsData(){
+                axios.get('/getSettingData')
+                    .then((response)=>{
+                        this.dataList = response.data.data;
+
+                        this.dataList.forEach(el => {
+                            this.settingData.title = el.title;
+                            this.settingData.mobile = el.mobile;
+                            this.settingData.address = el.address;
+                            this.settingData.logo = el.logo;
+
+                        });
+                    })
+            },
+
         },
 
         components: {
@@ -134,6 +157,7 @@
         },
         mounted() {
             this.viewStockDetails();
+            this. viewSettingsData();
         }
     };
 

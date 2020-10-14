@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateSuppIventoriesTable extends Migration
+class CreateSuppIventoryDetailsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,11 @@ class CreateSuppIventoriesTable extends Migration
      */
     public function up()
     {
-        Schema::create('supp_iventories', function (Blueprint $table) {
+        Schema::create('supp_iventory_details', function (Blueprint $table) {
             $table->id();
-            $table->string('supplier');
-            $table->string('consign_ref');
-            $table->float('total_due');
-            $table->float('total_paid')->default(0.00);
-            $table->float('new_due')->default(0.00);
+            $table->unsignedBigInteger('supp_id');
+            $table->foreign('supp_id')->references('id')->on('supp_iventories');
+            $table->float('pay')->default(0.00);
             $table->timestamps();
         });
     }
@@ -31,6 +29,6 @@ class CreateSuppIventoriesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('supp_iventories');
+        Schema::dropIfExists('supp_iventory_details');
     }
 }

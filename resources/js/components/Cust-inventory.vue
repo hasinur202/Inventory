@@ -64,12 +64,14 @@
 
 
               <div class="col-md-4" style="float:right;">
-                  <div class="card">
+                    <button class="btn btn-info btn-sm" @click="download" style="">Print/Download PDF</button>
+
+                  <div id="printMe" class="card">
                       <span style="text-align:center;font-size:16px; margin-top:15px;">সন্ধিপাঠ লাইব্রেরি</span>
                       <p style="text-align:center;">১৪ পূর্ব শেওড়াপাড়া, মিরপুর,ঢাকা-১২১৬ <br>০১৮৬০৭২২৭২২</p>
                   <div class="card-body table-responsive p-0">
                     <table class="table table-hover">
-                        <thead v-for="allCust in CustInventById" :key="allCust.id">
+                        <thead style="line-height:8px;" v-for="allCust in CustInventById" :key="allCust.id">
                             <tr>
                                 <td>Invoice No: {{ allCust.invoice_ref }}</td>
                                 <td></td>
@@ -94,7 +96,7 @@
                                 <th>Pay History:</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody style="line-height:8px;">
                             <tr v-for="payCust in CustInventByIdList" :key="payCust.id">
                                 <td>Date: {{ payCust.created_at | formatDate }}</td>
                                 <td>{{ payCust.pay }} Tk.</td>
@@ -112,6 +114,10 @@
               </div>
 
               </div>
+
+
+
+
 
 
 
@@ -278,6 +284,10 @@
                 </div>
                 <!--- end col md-12 -->
 
+
+
+
+
 <!-- view inventory -->
                 <div
                     class="modal fade"
@@ -365,6 +375,7 @@
   </div>
 </template>
 
+
 <script>
 import headerComponent from "./header";
 import footerComponent from "./footer";
@@ -386,7 +397,7 @@ export default {
             total_paid: "",
             new_due: "",
             pay: "",
-            consign_ref:"",
+            invoice_ref:"",
         }),
 
       editInventory: {
@@ -455,6 +466,11 @@ export default {
     },
 
 
+    download(){
+        this.$htmlToPaper('printMe');
+    },
+
+
 
     total_due: function(event) {
       this.form.total_due = event.target.value;
@@ -476,14 +492,11 @@ export default {
     },
 
 
-
-
-
     getCus(val) {
-      this.form.cus_name = val.cus_name;
-      this.form.invoice_ref = val.invoice_ref;
-      this.form.invoice_id = val.id;
-      this.getSearchCus = false;
+        this.form.cus_name = val.cus_name;
+        this.form.invoice_ref = val.invoice_ref;
+        this.form.invoice_id = val.id;
+        this.getSearchCus = false;
     },
 
     //method for searching supplier

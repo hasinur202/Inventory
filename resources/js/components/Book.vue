@@ -26,8 +26,8 @@
 
                     <div class="col-md-6">
                         <div class="form-group" v-show="visible">
-                            <input v-model="form.isbn" :class="{ 'is-invalid': form.errors.has('isbn') }" 
-                            type="text" name="isbn" placeholder="ISBN No." class="form-control" minlength="13" maxlength="13" >
+                            <input v-model="form.isbn" :class="{ 'is-invalid': form.errors.has('isbn') }"
+                            type="text" placeholder="ISBN No." class="form-control" minlength="13" maxlength="13" >
                             <has-error :form="form" field="isbn"></has-error>
                         </div>
 
@@ -399,7 +399,7 @@ import footerComponent from "./footer";
                 }
             },
 
-            
+
 
             formatBookIsbnSerial(serial){
                 let isbnSerial = `${this.padString(serial)}`

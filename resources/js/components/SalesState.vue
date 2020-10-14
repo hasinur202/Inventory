@@ -81,8 +81,8 @@
                                     </div> -->
                                     <div id="printMe">
                                         <div class="card-header" style="text-align:center;">
-                                            <h3 class="card-title">Prothoma Publications</h3>
-                                            <p>43-44 Aziz Co-op Super Market, Shahbag, Dhaka - 1000</p>
+                                            <h3 class="card-title">{{ settingData.title }}</h3>
+                                            <p>{{ settingData.address }} <br>Contact: {{ settingData.mobile }}</p>
                                             <h4 v-if="formData.fixedDate == ''">Sales Statement: {{ formData.fromDate }} to {{ formData.toDate }}</h4>
                                             <h4 v-else>Sales Statement: {{ formData.fixedDate }}</h4>
 
@@ -160,6 +160,14 @@
                 },
                 statementData:[],
 
+                dataList:'',
+                settingData:{
+                    logo:"",
+                    mobile:"",
+                    address:"",
+                    title:"",
+                },
+
             };
         },
         created() {},
@@ -190,10 +198,20 @@
                 this.$htmlToPaper('printMe');
             },
 
-            doc(){
+             viewSettingsData(){
+                axios.get('/getSettingData')
+                    .then((response)=>{
+                        this.dataList = response.data.data;
 
+                        this.dataList.forEach(el => {
+                            this.settingData.title = el.title;
+                            this.settingData.mobile = el.mobile;
+                            this.settingData.address = el.address;
+                            this.settingData.logo = el.logo;
 
-            }
+                        });
+                    })
+            },
 
 
 
@@ -205,7 +223,9 @@
             headerComponent,
             footerComponent
         },
-        mounted() {}
+        mounted() {
+            this. viewSettingsData();
+        }
         };
 </script>
 <style scoped>

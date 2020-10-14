@@ -11,20 +11,20 @@ import users from "./components/Users"
 import salesState from "./components/SalesState"
 import salesSum from "./components/SalesSum"
 import stock from "./components/Stock"
-import databackup from "./components/Backup"
+import settings from "./components/Settings"
 import custInventory from "./components/Cust-inventory"
 import suppInventory from "./components/Sup-inventory"
+import invoiceprint from "./components/Invoiceprint"
 
 
 export default [{
         path: '/',
         component: login,
         name: 'login',
-        beforeEnter(to,from,next){
-            if(!localStorage.getItem('inventory'))
-            {
+        beforeEnter(to, from, next) {
+            if (!localStorage.getItem('inventory')) {
                 next();
-            }else{
+            } else {
                 next('/sales');
             }
         }
@@ -33,11 +33,10 @@ export default [{
         path: '/sales',
         component: sales,
         name: 'sales',
-        beforeEnter(to,from,next){
-            if(localStorage.getItem('inventory'))
-            {
+        beforeEnter(to, from, next) {
+            if (localStorage.getItem('inventory')) {
                 next();
-            }else{
+            } else {
                 next('/');
             }
         }
@@ -46,11 +45,10 @@ export default [{
         path: '/saleshistory',
         component: saleshistory,
         name: 'saleshistory',
-        beforeEnter(to,from,next){
-            if(localStorage.getItem('inventory'))
-            {
+        beforeEnter(to, from, next) {
+            if (localStorage.getItem('inventory')) {
                 next();
-            }else{
+            } else {
                 next('/');
             }
         }
@@ -59,11 +57,10 @@ export default [{
         path: '/book',
         component: book,
         name: 'book',
-        beforeEnter(to,from,next){
-            if(localStorage.getItem('inventory'))
-            {
+        beforeEnter(to, from, next) {
+            if (localStorage.getItem('inventory')) {
                 next();
-            }else{
+            } else {
                 next('/');
             }
         }
@@ -72,11 +69,10 @@ export default [{
         path: '/booklist',
         component: booklist,
         name: 'booklist',
-        beforeEnter(to,from,next){
-            if(localStorage.getItem('inventory'))
-            {
+        beforeEnter(to, from, next) {
+            if (localStorage.getItem('inventory')) {
                 next();
-            }else{
+            } else {
                 next('/');
             }
         }
@@ -85,11 +81,10 @@ export default [{
         path: '/consignment',
         component: consignment,
         name: 'consignment',
-        beforeEnter(to,from,next){
-            if(localStorage.getItem('inventory'))
-            {
+        beforeEnter(to, from, next) {
+            if (localStorage.getItem('inventory')) {
                 next();
-            }else{
+            } else {
                 next('/');
             }
         }
@@ -98,11 +93,10 @@ export default [{
         path: '/newconsignment',
         component: consignmentCreate,
         name: 'newconsignment',
-        beforeEnter(to,from,next){
-            if(localStorage.getItem('inventory'))
-            {
+        beforeEnter(to, from, next) {
+            if (localStorage.getItem('inventory')) {
                 next();
-            }else{
+            } else {
                 next('/');
             }
         }
@@ -111,11 +105,10 @@ export default [{
         path: '/viewconsignment',
         component: viewconsignment,
         name: 'viewconsignment',
-        beforeEnter(to,from,next){
-            if(localStorage.getItem('inventory'))
-            {
+        beforeEnter(to, from, next) {
+            if (localStorage.getItem('inventory')) {
                 next();
-            }else{
+            } else {
                 next('/');
             }
         }
@@ -124,11 +117,10 @@ export default [{
         path: '/supplier',
         component: supplier,
         name: 'supplier',
-        beforeEnter(to,from,next){
-            if(localStorage.getItem('inventory'))
-            {
+        beforeEnter(to, from, next) {
+            if (localStorage.getItem('inventory')) {
                 next();
-            }else{
+            } else {
                 next('/');
             }
         }
@@ -137,11 +129,10 @@ export default [{
         path: '/users',
         component: users,
         name: 'users',
-        beforeEnter(to,from,next){
-            if(localStorage.getItem('inventory'))
-            {
+        beforeEnter(to, from, next) {
+            if (localStorage.getItem('inventory')) {
                 next();
-            }else{
+            } else {
                 next('/');
             }
         }
@@ -150,11 +141,10 @@ export default [{
         path: '/salesSum',
         component: salesSum,
         name: 'salesSum',
-        beforeEnter(to,from,next){
-            if(localStorage.getItem('inventory'))
-            {
+        beforeEnter(to, from, next) {
+            if (localStorage.getItem('inventory')) {
                 next();
-            }else{
+            } else {
                 next('/');
             }
         }
@@ -163,11 +153,10 @@ export default [{
         path: '/salesState',
         component: salesState,
         name: 'salesState',
-        beforeEnter(to,from,next){
-            if(localStorage.getItem('inventory'))
-            {
+        beforeEnter(to, from, next) {
+            if (localStorage.getItem('inventory')) {
                 next();
-            }else{
+            } else {
                 next('/');
             }
         }
@@ -176,24 +165,22 @@ export default [{
         path: '/stock',
         component: stock,
         name: 'stock',
-        beforeEnter(to,from,next){
-            if(localStorage.getItem('inventory'))
-            {
+        beforeEnter(to, from, next) {
+            if (localStorage.getItem('inventory')) {
                 next();
-            }else{
+            } else {
                 next('/');
             }
         }
     },
     {
-        path: '/databackup',
-        component: databackup,
-        name: 'databackup',
-        beforeEnter(to,from,next){
-            if(localStorage.getItem('inventory'))
-            {
+        path: '/settings',
+        component: settings,
+        name: 'settings',
+        beforeEnter(to, from, next) {
+            if (localStorage.getItem('inventory')) {
                 next();
-            }else{
+            } else {
                 next('/');
             }
         }
@@ -202,11 +189,10 @@ export default [{
         path: '/suppInventory',
         component: suppInventory,
         name: 'suppInventory',
-        beforeEnter(to,from,next){
-            if(localStorage.getItem('inventory'))
-            {
+        beforeEnter(to, from, next) {
+            if (localStorage.getItem('inventory')) {
                 next();
-            }else{
+            } else {
                 next('/');
             }
         }
@@ -215,11 +201,23 @@ export default [{
         path: '/custInventory',
         component: custInventory,
         name: 'custInventory',
-        beforeEnter(to,from,next){
-            if(localStorage.getItem('inventory'))
-            {
+        beforeEnter(to, from, next) {
+            if (localStorage.getItem('inventory')) {
                 next();
-            }else{
+            } else {
+                next('/');
+            }
+        }
+    },
+
+    {
+        path: '/invoiceprint',
+        component: invoiceprint,
+        name: 'invoiceprint',
+        beforeEnter(to, from, next) {
+            if (localStorage.getItem('inventory')) {
+                next();
+            } else {
                 next('/');
             }
         }

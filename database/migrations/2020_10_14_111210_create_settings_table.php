@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateSuppIventoriesTable extends Migration
+class CreateSettingsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,12 @@ class CreateSuppIventoriesTable extends Migration
      */
     public function up()
     {
-        Schema::create('supp_iventories', function (Blueprint $table) {
+        Schema::create('settings', function (Blueprint $table) {
             $table->id();
-            $table->string('supplier');
-            $table->string('consign_ref');
-            $table->float('total_due');
-            $table->float('total_paid')->default(0.00);
-            $table->float('new_due')->default(0.00);
+            $table->string('title');
+            $table->text('address');
+            $table->string('mobile');
+            $table->string('logo')->nullable();
             $table->timestamps();
         });
     }
@@ -31,6 +30,6 @@ class CreateSuppIventoriesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('supp_iventories');
+        Schema::dropIfExists('settings');
     }
 }

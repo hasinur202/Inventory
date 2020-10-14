@@ -38,13 +38,14 @@ class BookController extends Controller
     //ekktu wait koro
 
     public function store(Request $request){
+
         $this->validate($request, [
             'author'    => 'required',
             'book_name' => 'required',
             'category'  => 'required',
             'publisher' => 'required',
-            'isbn' => 'unique',
         ]);
+
 
         $book = new Book;
 

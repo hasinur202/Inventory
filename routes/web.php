@@ -43,7 +43,14 @@ Route::post('/storeInvoice', 'InvoiceController@invoiceStore');
 //store User
 Route::post('/storeUser', 'UserController@userStore');
 
+//store User
+Route::post('/storeSetting', 'SettingController@store');
 
+//store User
+Route::post('/updateSetting/{id}', 'SettingController@update');
+
+//getBook
+Route::get('getSettingData', 'SettingController@getData');
 //getBook
 Route::get('getBook', 'BookController@index');
 //Get Author details
@@ -61,7 +68,8 @@ Route::get('/getConsignment', 'ConsignmentController@index');
 Route::get('/getSuppConsign', 'InventoryController@SupplierGetConsign');
 //get all info customer inventory
 Route::get('/getCustDetailsById', 'InventoryController@getDetailsCustId');
-
+//get all info customer inventory
+Route::get('/getSuppDetailsById', 'InventoryController@getDetailsSuppId');
 //get invoice list
 Route::get('/getInvoices', 'InvoiceController@index');
 
@@ -100,12 +108,11 @@ Route::post('/update-cusinventory-details', 'InventoryController@updateCusInvent
 
 //Delete Supplier By Id
 Route::post('/deleteSuppById', 'SupplierController@updateSuppById');
-
 //Delete User By Id
 Route::post('/deleteUserById', 'UserController@deleteUserById');
 
 //Delete supplier inventory By Id
-Route::post('/deleteIvenSuppById', 'InventoryController@deleteSupInventoryById');
+Route::post('/deleteInvenSuppById', 'InventoryController@deleteSupInventoryById');
 //Delete customer inventory By Id
 Route::post('/deleteIvenCusById', 'InventoryController@deleteCusInventoryById');
 //Create Supplier Inventory
@@ -138,3 +145,5 @@ Route::get('get-last-invoice-serial', 'InvoiceController@getLastInvoiceSerial');
 
 Route::get('get-last-consign-serial', 'ConsignmentController@getLastConsignSerial');
 Route::get('get-last-isbn-serial', 'BookController@getLastBookSerial');
+Route::get('getLatestInvoiceDetails', 'InvoiceController@latestInvoiceDetails');
+

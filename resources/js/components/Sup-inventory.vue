@@ -24,7 +24,7 @@
                     <table class="table table-hover">
                       <thead>
                         <tr>
-                          <th>SI #</th>
+                          <th>Consign #</th>
                           <th>Supplier Name</th>
                           <th>Payment Status</th>
                           <th>Created At</th>
@@ -33,7 +33,7 @@
                       </thead>
                       <tbody>
                           <tr v-for="inventory in inventoryList" :key="inventory.id">
-                          <td>{{ inventory.id }}</td>
+                          <td>{{ inventory.consign_ref }}</td>
                           <td>{{ inventory.supplier }}</td>
                           <td v-if="inventory.new_due > 0">
                               <button @click="editSupById(inventory)" data-toggle="modal" data-target="#editNew" class="btn btn-info btn-sm">Due</button>
@@ -41,8 +41,7 @@
                           <td v-else><p class="btn btn-success btn-sm">Paid</p></td>
                           <td>{{ inventory.created_at |formatDate }}</td>
                           <td>
-                              <button @click="editSupById(inventory)"
-                              data-toggle="modal" data-target="#viewNew"
+                              <button @click="viewSupById(inventory)"
                                class="btn btn-info btn-sm">
                                 <i class="fa fa-eye"></i>
                               </button>
@@ -60,6 +59,56 @@
                   <!-- /.card-body -->
                 </div>
                 <!-- /.card -->
+              </div>
+
+
+              <div class="col-md-4" style="float:right;">
+                  <div class="card">
+                      <span style="text-align:center;font-size:16px; margin-top:15px;">সন্ধিপাঠ লাইব্রেরি</span>
+                      <p style="text-align:center;">১৪ পূর্ব শেওড়াপাড়া, মিরপুর,ঢাকা-১২১৬ <br>০১৮৬০৭২২৭২২</p>
+                  <div class="card-body table-responsive p-0">
+                    <table class="table table-hover">
+                        <thead v-for="allSupp in SuppInventById" :key="allSupp.id">
+                            <tr>
+                                <td>Consign Ref#: {{ allSupp.consign_ref }}</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <th>Customer Name</th>
+                                <td>{{ allSupp.supplier }}</td>
+                            </tr>
+                            <tr>
+                                <th>Total Due</th>
+                                <td>{{ allSupp.total_due }} Tk.</td>
+                            </tr>
+                            <tr>
+                                <th>Total Paid</th>
+                                <td>{{ allSupp.total_paid }} Tk.</td>
+                            </tr>
+                            <tr>
+                                <th>Current Due</th>
+                                <td>{{ allSupp.new_due }} Tk.</td>
+                            </tr>
+                            <tr>
+                                <th>Pay History:</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="paySupp in SuppInventByIdList" :key="paySupp.id">
+                                <td>Date: {{ paySupp.created_at | formatDate }}</td>
+                                <td>{{ paySupp.pay }} Tk.</td>
+                            </tr>
+
+                        <!-- <tr>
+                            <th>Total Due</th>
+                            <td>{{ item.total_due }}</td>
+                        </tr> -->
+
+                      </tbody>
+                    </table>
+                  </div>
+              </div>
+
               </div>
 
 
@@ -162,7 +211,7 @@
                                 />
                                 <has-error :form="form" field="new_due"></has-error>
                             </div>
-                              <input v-model="form.consign_ref" type="text"/>
+                              <input hidden v-model="form.consign_ref" type="text"/>
                         </div>
                       </div>
                       <div class="modal-footer">
@@ -179,57 +228,12 @@
                   <!--- end col md-12 -->
 
 
-
-
 <!-- edit inventory -->
+
+<!-- view inventory -->
                 <div
                     class="modal fade"
                     id="editNew"
-                    tabindex="-1"
-                    role="dialog"
-                    aria-labelledby="exampleModalLabel"
-                    aria-hidden="true"
-                    >
-                    <div class="modal-dialog modal-dialog-centered" role="document">
-                  <!-- /.card-header -->
-                  <div class="modal-content">
-                    <div class="modal-header">
-                      <h5 class="modal-title" id="addNewLabel">Edit Inventory</h5>
-                    </div>
-                    <form @submit.prevent="updateSuppInventory">
-                    <div class="modal-body">
-                      <div class="col-md-12">
-
-                            <div class="form-group">
-                                <label>Pay Now</label>
-                                <input
-                                v-model="editInventory.pay"
-                                type="text"
-                                placeholder="Pay Now"
-                                class="form-control"
-                                />
-                            </div>
-
-                        <div class="modal-footer">
-                            <button
-                          type="submit"
-                          class="btn btn-primary"
-                        >Update</button>
-
-                        </div>
-
-                      </div>
-                    </div>
-                    </form>
-                  </div>
-                </div>
-                </div>
-                <!--- end col md-12 -->
-
-<!-- edit inventory -->
-                <div
-                    class="modal fade"
-                    id="viewNew"
                     tabindex="-1"
                     role="dialog"
                     aria-labelledby="exampleModalLabel"
@@ -239,7 +243,7 @@
                   <!-- /.card-header -->
                   <div class="modal-content">
                     <div class="modal-header">
-                      <h5 class="modal-title" id="addNewLabel">View Inventory</h5>
+                      <h5 class="modal-title" id="addNewLabel">Edit Inventory</h5>
                     </div>
                     <div class="modal-body">
                       <div class="col-md-12">
@@ -268,7 +272,7 @@
                                 <label>Last Paid ({{ editInventory.updated_at | formatDate }})</label>
                                 <input
                                 v-model="editInventory.pay"
-                                type="text" readonly
+                                type="text"
                                 placeholder="Pay Now"
                                 class="form-control"
                                 />
@@ -299,7 +303,7 @@
                         </div>
                       </div>
                       <div class="modal-footer">
-
+                          <button type="submit" @click="updateSupInventory"  class="btn btn-primary">Update</button>
                           <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
                       </div>
                     </div>
@@ -307,6 +311,7 @@
                 </div>
                 </div>
                 <!--- end col md-12 -->
+
 
 
 
@@ -323,6 +328,8 @@ export default {
     return {
         getSearchValue: false,
         getSearchSupp: false,
+        SuppInventByIdList:[],
+        SuppInventById:'',
         suppliers: [],
         inventoryList: "",
 
@@ -362,7 +369,7 @@ export default {
 
     deleteInventorySup(inventory){
         axios
-        .post(`/deleteIvenSuppById/`,inventory)
+        .post(`/deleteInvenSuppById/`,inventory)
         .then(response => {
         this.viewInventorySupplier();
             Toast.fire({
@@ -373,7 +380,7 @@ export default {
     },
 
 
-    updateSuppInventory(){
+    updateSupInventory(){
         axios
         .post(`/update-supinventory-details`, this.editInventory)
         .then(response => {
@@ -391,6 +398,13 @@ export default {
                 this.editInventory[index] = inventory[index];
             }
         }
+    },
+
+    viewSupById(inventory){
+        axios.get(`/getSuppDetailsById?id=${inventory.id}`).then(response => {
+        this.SuppInventByIdList = response.data.inventSuppDetails;
+        this.SuppInventById = response.data.inventSupp;
+      });
     },
 
 
@@ -411,20 +425,15 @@ export default {
             this.form.total_paid = parseFloat(this.form.pay);
         }
 
-
-
     },
 
 
 
-    getSupp(val) {
 
-        this.suppliers.forEach(el => {
-                if (this.form.supplier = el.get_supplier.supplier) {
-                this.form.consign_ref = el.consign_ref;
-                this.getSearchSupp = false;
-                }
-            });
+    getSupp(val) {
+        this.form.supplier = val.get_supplier.supplier;
+        this.form.consign_ref = val.consign_ref;
+        this.getSearchSupp = false;
     },
 
     //method for searching supplier

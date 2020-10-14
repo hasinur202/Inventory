@@ -141,6 +141,7 @@
                                                     <th>Copies</th>
                                                     <th>Unit Price</th>
                                                     <th>Sales Price</th>
+                                                    <th>Total Price</th>
                                                     <th>Discount</th>
                                                     <th>Modify</th>
                                                 </tr>
@@ -151,6 +152,7 @@
                                                     <td>{{ item.isbn }}</td>
                                                     <td>{{ item.book_name }}</td>
                                                     <td>{{ item.copies }}</td>
+                                                    <td>{{ item.unit_price }} Tk.</td>
                                                     <td>{{ item.unit_price }} Tk.</td>
                                                     <td>{{ item.total_price }} Tk.</td>
                                                     <td>{{ item.total_dis }} Tk.</td>
@@ -493,7 +495,6 @@ export default {
         }
     },
 
-
     created() {
         axios.get("/getDetailsForInvoice").then(response => {
             this.allBook = response.data.data;
@@ -578,9 +579,8 @@ export default {
                 })
             }else{
                 axios.post("/storeInvoice", this.dataArray).then(() => {
-                    console.log("success");
-                    // this.dataArray.details = [];
                     this.getInvoiceRef();
+                    this.$router.push('invoiceprint');
                     this.dataArray = {
                     cus_name:"",
                     email:"",
@@ -798,7 +798,7 @@ export default {
         },
         padString(serial){
             var str = "" + serial
-            var pad = "0000"
+            var pad = "000"
             var ans = pad.substring(0, pad.length - str.length) + str
             return ans
         }
