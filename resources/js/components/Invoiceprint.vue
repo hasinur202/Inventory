@@ -58,7 +58,7 @@
                                                     <tr>
                                                         <th>Total Quantity</th>
                                                         <td>:</td>
-                                                        <td style="padding-left:20px;">13</td>
+                                                        <td style="padding-left:20px;">{{ totalQty }}</td>
                                                     </tr>
                                                     <tr>
                                                         <th>Total Price</th>
@@ -168,6 +168,7 @@ export default {
         return{
             lastInvoice:'',
             lastInvoiceDetails:'',
+            totalQty:'',
 
         }
     },
@@ -208,7 +209,7 @@ export default {
       console.log('Component mounted.');
       axios.get("/getLatestInvoiceDetails").then(response => {
             this.lastInvoice = response.data.data;
-
+            this.totalQty = response.data.totalqty;
             this.lastInvoiceDetails = response.data.data2;
         });
   },

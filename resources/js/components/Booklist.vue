@@ -37,12 +37,14 @@
                                 <td>{{ books.copyright }}</td>
                                 <td>{{ books.category }}</td>
                                 <td>{{ books.edition }}</td>
-                                <td>{{ books.edition }}</td>
+                                <td>{{ books.language }}</td>
                                 <td>
                                     <button @click="bookByid(books)" data-toggle="modal" data-target="#editBook" class="btn btn-info btn-sm"><i class="fa fa-edit"></i></button>
-                                    <button class="btn btn-danger btn-sm"><i class="fa fa-trash"></i></button>
+                                    
+                                    
                                     <button @click="bookByid(books)" data-toggle="modal" data-target="#viewBook" class="btn btn-primary btn-sm"><i class="fa fa-eye"></i></button>
                                     <!-- <button data-toggle="modal" data-target="#viewBook" class="btn btn-primary btn-sm"><i class="fa fa-eye"></i></button> -->
+                                    <button v-if="books.available_quantity == 0" @click="deleteBookId(books)" class="btn btn-danger btn-sm"><i class="fa fa-trash"></i></button>
                                 </td>
                             </tr>
 
@@ -74,7 +76,7 @@
 
                                 <div class="form-group">
                                     <label>Cover</label>
-                                <div class="input-group">
+                                <div class="input-group" style="width:200px !important; height:180px;">
                                     <div class="custom-file file-input-style">
                                         <img class="img-style" :src="`/images/${singleBookDetails.cover}`" />
                                     </div>
@@ -213,8 +215,8 @@
                                     <label>Cover</label>
                                 <div class="input-group"  style="width:200px; height:180px;">
                                     <div class="custom-file file-input-style">
-                                        <img class="img-style" :src="`/images/${singleBookDetails.cover}`" />
-                                        <input  @change="changePhoto($event)" type="file" name="cover" class="custom-file-input input-new-style" id="exampleInputFile">
+                                        <img class="img-style" :src="editMode ? updateImage() : singleBookDetails.cover" />
+                                        <input  @change="changePhoto($event)" type="file" class="custom-file-input input-new-style" id="exampleInputFile">
                                     </div>
                                 </div>
                                 </div>
@@ -267,7 +269,7 @@
                                         <label>Publish Country</label>
                                     </div>
                                     <div class="col-md-8">
-                                        <input v-model="singleBookDetails.country" readonly>
+                                        <input v-model="singleBookDetails.country">
                                     </div>
                                 </div>
                                 <div class="row">
@@ -354,6 +356,7 @@ export default {
     },
     data(){
         return{
+            editMode:false,
             booklist: "",
             searchQuery:'',
             temp:[],
@@ -422,7 +425,14 @@ export default {
                 });
         },
 
-
+        updateImage() {
+            var img = this.singleBookDetails.cover;
+            if (img.length > 100) {
+                return this.singleBookDetails.cover;
+            } else {
+                return "/images/" + this.singleBookDetails.cover;
+            }
+        },
 
         ourImage(img) {
                 return "/images/" + img;
@@ -437,6 +447,18 @@ export default {
             reader.readAsDataURL(file);
 
         },
+
+        deleteBookId(books){
+            axios
+                .post(`/deleteBookById/`,books)
+                .then(response => {
+                this.viewBook();
+                    Toast.fire({
+                        icon: "success",
+                        title: "Book Deleted Successfully"
+                    });
+            });
+        }
 
 
 

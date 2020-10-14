@@ -11,31 +11,16 @@ use Exception;
 use Image;
 class BookController extends Controller
 {
-    // public function __construct()
-    // {
-    //     $this->middleware('auth');
-    // }
 
     public function index(){
         $data = Book::all();
 
-        // $bookid = $data->id->latest()->first();
         return response()->json([
             'data'=>$data,
             'message'=>'success'
         ],200);
     }
 
-    // public function getBookById($key){
-    //     $data = Book::find($key);
-    //     return response()->json([
-    //         'data'=>$data,
-    //         'message'=>'success'
-    //     ],200);
-    // }
-
-    //ekhon data entry daw mia
-    //ekktu wait koro
 
     public function store(Request $request){
 
@@ -94,15 +79,17 @@ class BookController extends Controller
     public function updateBook(Request $request){
         $book = Book::find($request->id);
 
-        // if ($request->get('cover')) {
-        //     $cover = $request->get('cover');
-        //     $name = Str::random(5).'.' . explode('/', explode(':', substr($cover, 0, strpos($cover, ';')))[1])[1];
-        //     $img = Image::make($request->cover);
-        //     $upload_path = public_path()."/images/";
-        //     $img->save($upload_path.$name);
+        if ($request->get('cover') != $book->cover) {
+            $cover = $request->get('cover');
+            $name = Str::random(5).'.' . explode('/', explode(':', substr($cover, 0, strpos($cover, ';')))[1])[1];
+            $img = Image::make($request->cover);
+            $upload_path = public_path()."/images/";
+            $img->save($upload_path.$name);
 
-        //     $book->cover        = $name;
-        // }
+            $book->cover        = $name;
+        }else{
+            $book->cover        = $request->cover;
+        }
 
         $book->isbn         = $request->isbn;
         $book->book_name    = $request->book_name;
@@ -125,6 +112,16 @@ class BookController extends Controller
         ],200);
 
     }
+
+    
+    public function deleteBook(Request $request){
+        $book = Book::findOrFail($request->id)->delete();
+
+        return response()->json([
+            'book'=> $book
+        ],200);
+    }
+
 
 
 

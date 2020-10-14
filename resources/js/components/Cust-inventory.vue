@@ -537,23 +537,25 @@ export default {
 </script>
 
 <style scoped>
-.ulstyle {
-  list-style: none;
-  padding-left: 0px;
-  float: left;
-  width: 100%;
+.ulstyle{
+    list-style: none;
+    padding-left: 0px;
+    position: absolute;
+    background: aliceblue;
+    width: 50%;
+    z-index: 999;
 }
 .ulstyle > li:hover {
-  background: #ddd;
-  color: blue;
-  border-radius: 5px;
+    background:#ddd;
+    color: blue;
+    border-radius: 5px;
 }
-.ulstyle > li > p {
-  padding: 5px;
-  cursor: pointer;
-  margin-bottom: 4px;
-  float: left;
-  width: 100%;
+
+.ulstyle > li > p{
+    padding: 5px;
+    cursor: pointer;
+    margin-bottom: 0px;
+    border-bottom: 1px solid #DCA;
 }
 
 .card-title {

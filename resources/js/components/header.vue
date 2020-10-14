@@ -412,30 +412,20 @@
                  <tr>
                      <th>Available Quantity</th>
                      <td>:</td>
-                     <td>{{ detailsFormData.available_quantity }}</td>
+                     <td v-if="detailsFormData.available_quantity != ''">{{ detailsFormData.available_quantity }}</td>
+                     <td v-else>Empty Stock</td>
                  </tr>
 
              </table>
 
-            <!-- <label>Book Name </label> <p>{{ detailsFormData.book_name }}</p>
-            <label>Author </label> <p>{{ detailsFormData.author }}</p>
-            <label>Available Quantity </label> <p>{{ detailsFormData.available_quantity }}</p> -->
-
             </div>
             <div class="modal-footer">
+              <button @click="quickIsbnRest" type="button" class="btn btn-info">Clear</button>
               <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
             </div>
         </div>
       </div>
     </div>
-
-
-
-
-
-
-
-
 
   </div>
 </template>
@@ -480,6 +470,9 @@ export default {
   },
 
     methods:{
+      quickIsbnRest(){
+        this.detailsFormData = [];
+      },
       logout(){
         axios.get('/logout')
         .then(()=>{

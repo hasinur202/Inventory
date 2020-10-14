@@ -85,6 +85,8 @@ Route::get('/getConsignId', 'ConsignmentController@getIdConsign');
 Route::get('/getUserDetails', 'UserController@index');
 
 
+//delete Book
+Route::post('/deleteBookById', 'BookController@deleteBook');
 //delete Consignment
 Route::post('/delete-consignment', 'ConsignmentController@deleteConsignment');
 

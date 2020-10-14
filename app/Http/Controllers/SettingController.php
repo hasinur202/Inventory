@@ -20,12 +20,12 @@ class SettingController extends Controller
     }
 
     public function store(Request $request){
+
         $this->validate($request, [
             'title'    => 'required',
             'mobile' => 'required',
             'address'  => 'required',
         ]);
-
 
         $settings = new Setting();
 
@@ -53,6 +53,19 @@ class SettingController extends Controller
 
     public function update(Request $request){
         $settings = Setting::find($request->id);
+
+        if ($request->get('logo') != $settings->logo) {
+            $logo = $request->get('logo');
+            $name = Str::random(5).'.' . explode('/', explode(':', substr($logo, 0, strpos($logo, ';')))[1])[1];
+            $img = Image::make($request->logo);
+            $upload_path = public_path()."/images/";
+            $img->save($upload_path.$name);
+
+            $settings->logo        = $name;
+        }else{
+            $settings->logo        = $request->logo;
+        }
+
         $settings->title    = $request->title;
         $settings->mobile      = $request->mobile;
         $settings->address     = $request->address;

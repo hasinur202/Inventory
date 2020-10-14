@@ -17,7 +17,7 @@
                     </div>
                   </div>
                   <div class="card-body">
-                    <form @submit.prevent="createSettings">
+                    <form>
                       <div style="float:left;" class="col-md-6">
                         <div class="form-group">
                             <label>Library Title</label>
@@ -47,13 +47,13 @@
                         <div class="input-group">
                             <div class="custom-file file-input-style">
 
-                                <!-- <img :src="form.logo" class="img-style" />
+                                <img :src="editMode ? updateImage() : form.logo" class="img-style" />
                                 <input  @change="changePhoto($event)" type="file"
-                                 class="custom-file-input input-new-style" id="exampleInputFile"> -->
+                                 class="custom-file-input input-new-style" id="exampleInputFile">
 
-                                 <img class="img-style" :src="`/images/${form.logo}`"/>
+                                 <!-- <img class="img-style" :src="`/images/${form.logo}`"/>
                                 <input  @change="changePhoto($event)" type="file"
-                                class="custom-file-input input-new-style" id="exampleInputFile">
+                                class="custom-file-input input-new-style" id="exampleInputFile"> -->
 
                             </div>
                         </div>
@@ -63,7 +63,7 @@
                     <div class="col-md-12" >
                         <div class="form-group" style="float:right; padding-right:0px">
                             <button type="button" class="btn btn-danger" >Cancel</button>
-                            <button type="submit" class="btn btn-primary">Save</button>
+                            <button @click.prevent="editMode ? updateSettings():createSettings()" type="button" class="btn btn-primary">Save</button>
                         </div>
                     </div>
                 </form>
@@ -96,6 +96,7 @@ export default {
   data() {
     return {
         dataList: "",
+        editMode: false,
         form: new Form({
             title: "",
             mobile: "",
@@ -105,7 +106,18 @@ export default {
         }),
     };
   },
-
+  created(){
+     axios.get('/getSettingData')
+        .then((response)=>{
+          if(response.data.data == ''){
+            this.editMode = false;
+          }else{
+            this.editMode = true;
+            
+          }
+            
+        })
+  },
   methods: {
 
       viewSettingsData(){
@@ -126,30 +138,35 @@ export default {
 
       createSettings(){
 
-          if(this.form == ""){
-              this.form.post('/storeSetting')
-              .then(() => {
-                  Toast.fire({
-                      icon: 'success',
-                      title: 'Setting Saved Successfully'
-                  })
-              })
-
-          }else{
-              this.form.post('/updateSetting/'+this.form.id)
-              .then(() => {
-                  Toast.fire({
-                      icon: 'success',
-                      title: 'Setting Updated Successfully'
-                  })
-              })
-          }
-
-
-
-
-
+        this.form.post('/storeSetting')
+        .then(() => {
+            Toast.fire({
+                icon: 'success',
+                title: 'Setting Saved Successfully'
+            })
+        })
+          
      },
+
+     updateSettings(){
+       
+        this.form.post('/updateSetting/'+this.form.id)
+        .then(() => {
+            Toast.fire({
+                icon: 'success',
+                title: 'Setting Updated Successfully'
+            })
+        })    
+     },
+
+     updateImage() {
+      var img = this.form.logo;
+      if (img.length > 100) {
+        return this.form.logo;
+      } else {
+        return "/images/" + this.form.logo;
+      }
+    },
 
       ourImage(img) {
             return "/images/" + img;

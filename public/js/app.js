@@ -2760,6 +2760,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -2770,6 +2772,7 @@ __webpack_require__.r(__webpack_exports__);
   },
   data: function data() {
     return {
+      editMode: false,
       booklist: "",
       searchQuery: '',
       temp: [],
@@ -2837,6 +2840,15 @@ __webpack_require__.r(__webpack_exports__);
         });
       });
     },
+    updateImage: function updateImage() {
+      var img = this.singleBookDetails.cover;
+
+      if (img.length > 100) {
+        return this.singleBookDetails.cover;
+      } else {
+        return "/images/" + this.singleBookDetails.cover;
+      }
+    },
     ourImage: function ourImage(img) {
       return "/images/" + img;
     },
@@ -2851,6 +2863,18 @@ __webpack_require__.r(__webpack_exports__);
       };
 
       reader.readAsDataURL(file);
+    },
+    deleteBookId: function deleteBookId(books) {
+      var _this5 = this;
+
+      axios.post("/deleteBookById/", books).then(function (response) {
+        _this5.viewBook();
+
+        Toast.fire({
+          icon: "success",
+          title: "Book Deleted Successfully"
+        });
+      });
     }
   },
   mounted: function mounted() {
@@ -3960,7 +3984,8 @@ __webpack_require__.r(__webpack_exports__);
   data: function data() {
     return {
       lastInvoice: '',
-      lastInvoiceDetails: ''
+      lastInvoiceDetails: '',
+      totalQty: ''
     };
   },
   created: function created() {// axios.get("/getLatestInvoiceDetai").then(response => {
@@ -3987,6 +4012,7 @@ __webpack_require__.r(__webpack_exports__);
     console.log('Component mounted.');
     axios.get("/getLatestInvoiceDetails").then(function (response) {
       _this.lastInvoice = response.data.data;
+      _this.totalQty = response.data.totalqty;
       _this.lastInvoiceDetails = response.data.data2;
     });
   }
@@ -5316,7 +5342,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -5879,6 +5904,7 @@ __webpack_require__.r(__webpack_exports__);
   data: function data() {
     return {
       dataList: "",
+      editMode: false,
       form: new Form({
         title: "",
         mobile: "",
@@ -5888,50 +5914,69 @@ __webpack_require__.r(__webpack_exports__);
       })
     };
   },
+  created: function created() {
+    var _this = this;
+
+    axios.get('/getSettingData').then(function (response) {
+      if (response.data.data == '') {
+        _this.editMode = false;
+      } else {
+        _this.editMode = true;
+      }
+    });
+  },
   methods: {
     viewSettingsData: function viewSettingsData() {
-      var _this = this;
+      var _this2 = this;
 
       axios.get('/getSettingData').then(function (response) {
-        _this.dataList = response.data.data;
+        _this2.dataList = response.data.data;
 
-        _this.dataList.forEach(function (el) {
-          _this.form.title = el.title;
-          _this.form.mobile = el.mobile;
-          _this.form.address = el.address;
-          _this.form.logo = el.logo;
-          _this.form.id = el.id;
+        _this2.dataList.forEach(function (el) {
+          _this2.form.title = el.title;
+          _this2.form.mobile = el.mobile;
+          _this2.form.address = el.address;
+          _this2.form.logo = el.logo;
+          _this2.form.id = el.id;
         });
       });
     },
     createSettings: function createSettings() {
-      if (this.form == "") {
-        this.form.post('/storeSetting').then(function () {
-          Toast.fire({
-            icon: 'success',
-            title: 'Setting Saved Successfully'
-          });
+      this.form.post('/storeSetting').then(function () {
+        Toast.fire({
+          icon: 'success',
+          title: 'Setting Saved Successfully'
         });
+      });
+    },
+    updateSettings: function updateSettings() {
+      this.form.post('/updateSetting/' + this.form.id).then(function () {
+        Toast.fire({
+          icon: 'success',
+          title: 'Setting Updated Successfully'
+        });
+      });
+    },
+    updateImage: function updateImage() {
+      var img = this.form.logo;
+
+      if (img.length > 100) {
+        return this.form.logo;
       } else {
-        this.form.post('/updateSetting/' + this.form.id).then(function () {
-          Toast.fire({
-            icon: 'success',
-            title: 'Setting Updated Successfully'
-          });
-        });
+        return "/images/" + this.form.logo;
       }
     },
     ourImage: function ourImage(img) {
       return "/images/" + img;
     },
     changePhoto: function changePhoto(event) {
-      var _this2 = this;
+      var _this3 = this;
 
       var file = event.target.files[0];
       var reader = new FileReader();
 
       reader.onload = function (event) {
-        _this2.form.logo = event.target.result;
+        _this3.form.logo = event.target.result;
       };
 
       reader.readAsDataURL(file);
@@ -8487,16 +8532,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'app',
   data: function data() {
@@ -8536,6 +8571,9 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   methods: {
+    quickIsbnRest: function quickIsbnRest() {
+      this.detailsFormData = [];
+    },
     logout: function logout() {
       var _this3 = this;
 
@@ -8690,15 +8728,24 @@ __webpack_require__.r(__webpack_exports__);
       var _this = this;
 
       this.form.post('/login').then(function (response) {
-        localStorage.setItem("inventory", response.data.access_token);
+        console.log(response.data.error);
 
-        _this.$router.push('/sales');
+        if (response.data.status == 500) {
+          Toast.fire({
+            icon: "warning",
+            title: "Wrong Credential or Inactive. Contact with Admin!"
+          });
+        } else {
+          localStorage.setItem("inventory", response.data.access_token);
 
-        window.location.reload();
-        Toast.fire({
-          icon: "success",
-          title: "Successfully Login."
-        });
+          _this.$router.push('/sales');
+
+          window.location.reload();
+          Toast.fire({
+            icon: "success",
+            title: "Successfully Login."
+          });
+        }
       });
     }
   }
@@ -13369,7 +13416,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.ulstyle[data-v-6db0a08d] {\n  list-style: none;\n  padding-left: 0px;\n  float: left;\n  width: 100%;\n}\n.ulstyle > li[data-v-6db0a08d]:hover {\n  background: #ddd;\n  color: blue;\n  border-radius: 5px;\n}\n.ulstyle > li > p[data-v-6db0a08d] {\n  padding: 5px;\n  cursor: pointer;\n  margin-bottom: 4px;\n  float: left;\n  width: 100%;\n}\n.card-title[data-v-6db0a08d] {\n  float: left;\n}\n\n", ""]);
+exports.push([module.i, "\n.ulstyle[data-v-6db0a08d]{\r\n    list-style: none;\r\n    padding-left: 0px;\r\n    position: absolute;\r\n    background: aliceblue;\r\n    width: 50%;\r\n    z-index: 999;\n}\n.ulstyle > li[data-v-6db0a08d]:hover {\r\n    background:#ddd;\r\n    color: blue;\r\n    border-radius: 5px;\n}\n.ulstyle > li > p[data-v-6db0a08d]{\r\n    padding: 5px;\r\n    cursor: pointer;\r\n    margin-bottom: 0px;\r\n    border-bottom: 1px solid #DCA;\n}\n.card-title[data-v-6db0a08d] {\r\n  float: left;\n}\r\n\r\n", ""]);
 
 // exports
 
@@ -13388,7 +13435,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.invoice_title[data-v-75c3f0ea]{\n    text-align: center;\n    font-weight: bold;\n    margin-bottom: 10px;\n    border-bottom: 2px solid #ddd;\n    padding-bottom: 5px;\n}\n\n", ""]);
+exports.push([module.i, "\n.invoice_title[data-v-75c3f0ea]{\r\n    text-align: center;\r\n    font-weight: bold;\r\n    margin-bottom: 10px;\r\n    border-bottom: 2px solid #ddd;\r\n    padding-bottom: 5px;\n}\r\n\r\n", ""]);
 
 // exports
 
@@ -13407,7 +13454,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.ulstyle[data-v-6545489e] {\n  list-style: none;\n  padding-left: 0px;\n  float: left;\n  width: 100%;\n}\n.ulstyle > li[data-v-6545489e]:hover {\n  background: #ddd;\n  color: blue;\n  border-radius: 5px;\n}\n.ulstyle > li > p[data-v-6545489e] {\n  padding: 5px;\n  cursor: pointer;\n  margin-bottom: 4px;\n  float: left;\n  width: 100%;\n}\n\n\n", ""]);
+exports.push([module.i, "\n.ulstyle[data-v-6545489e] {\r\n  list-style: none;\r\n  padding-left: 0px;\r\n  float: left;\r\n  width: 100%;\n}\n.ulstyle > li[data-v-6545489e]:hover {\r\n  background: #ddd;\r\n  color: blue;\r\n  border-radius: 5px;\n}\n.ulstyle > li > p[data-v-6545489e] {\r\n  padding: 5px;\r\n  cursor: pointer;\r\n  margin-bottom: 4px;\r\n  float: left;\r\n  width: 100%;\n}\r\n\r\n\r\n", ""]);
 
 // exports
 
@@ -13426,7 +13473,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.ulstyle[data-v-6545489e] {\n  list-style: none;\n  padding-left: 0px;\n  float: left;\n  position: absolute;\n    background: aliceblue;\n    width: 50%;\n    z-index: 999;\n}\n.ulstyle > li[data-v-6545489e]:hover {\n  background: #ddd;\n  color: blue;\n  border-radius: 5px;\n}\n.ulstyle > li > p[data-v-6545489e] {\n  padding: 5px;\n  cursor: pointer;\n  margin-bottom: 4px;\n  float: left;\n  margin-bottom: 0px;\nborder-bottom: 1px solid #DCA;\n}\n.invoice_title[data-v-6545489e]{\n    text-align: center;\n    font-weight: bold;\n    margin-bottom: 10px;\n    border-bottom: 2px solid #ddd;\n    padding-bottom: 5px;\n}\n\n", ""]);
+exports.push([module.i, "\n.ulstyle[data-v-6545489e] {\r\n  list-style: none;\r\n  padding-left: 0px;\r\n  float: left;\r\n  position: absolute;\r\n    background: aliceblue;\r\n    width: 50%;\r\n    z-index: 999;\n}\n.ulstyle > li[data-v-6545489e]:hover {\r\n  background: #ddd;\r\n  color: blue;\r\n  border-radius: 5px;\n}\n.ulstyle > li > p[data-v-6545489e] {\r\n  padding: 5px;\r\n  cursor: pointer;\r\n  margin-bottom: 4px;\r\n  float: left;\r\n  margin-bottom: 0px;\r\nborder-bottom: 1px solid #DCA;\n}\n.invoice_title[data-v-6545489e]{\r\n    text-align: center;\r\n    font-weight: bold;\r\n    margin-bottom: 10px;\r\n    border-bottom: 2px solid #ddd;\r\n    padding-bottom: 5px;\n}\r\n\r\n", ""]);
 
 // exports
 
@@ -13445,7 +13492,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.file-input-style[data-v-3a09080e]{\n    border: dashed 1.5px blue;\n    background-image: repeating-linear-gradient(45deg, black, transparent 100px);\n    height: 180px !important;\n    max-width: 200px !important;\n    /* margin-left: 50px !important; */\n    margin:auto;\n}\n.input-new-style[data-v-3a09080e]{\n    margin-left: -100%;\n    height: 180px;\n    border: dashed 1.5px blue;\n    background-image: repeating-linear-gradient(45deg, black, transparent 100px);\n    width: 100% !important;\n    cursor: pointer;\n}\n.icon-style[data-v-3a09080e]{\n    font-size: 50px;\n    margin-left: 145px;\n    margin-top:5px;\n}\n.img-style[data-v-3a09080e]{\n    width: 200px !important;\n    height: 180px !important;\n}\n", ""]);
+exports.push([module.i, "\n.file-input-style[data-v-3a09080e]{\r\n    border: dashed 1.5px blue;\r\n    background-image: repeating-linear-gradient(45deg, black, transparent 100px);\r\n    height: 180px !important;\r\n    max-width: 200px !important;\r\n    /* margin-left: 50px !important; */\r\n    margin:auto;\n}\n.input-new-style[data-v-3a09080e]{\r\n    margin-left: -100%;\r\n    height: 180px;\r\n    border: dashed 1.5px blue;\r\n    background-image: repeating-linear-gradient(45deg, black, transparent 100px);\r\n    width: 100% !important;\r\n    cursor: pointer;\n}\n.icon-style[data-v-3a09080e]{\r\n    font-size: 50px;\r\n    margin-left: 145px;\r\n    margin-top:5px;\n}\n.img-style[data-v-3a09080e]{\r\n    width: 200px !important;\r\n    height: 180px !important;\n}\r\n", ""]);
 
 // exports
 
@@ -13464,7 +13511,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.ulstyle[data-v-249b947c]{\n    list-style: none;\n    padding-left: 0px;\n    position: absolute;\n    background: aliceblue;\n    width: 50%;\n    z-index: 999;\n}\n.ulstyle > li[data-v-249b947c]:hover {\n    background:#ddd;\n    color: blue;\n    border-radius: 5px;\n}\n.ulstyle > li > p[data-v-249b947c]{\n    padding: 5px;\n    cursor: pointer;\n    margin-bottom: 0px;\n    border-bottom: 1px solid #DCA;\n}\n.card-title[data-v-249b947c] {\n  float: left;\n}\n\n", ""]);
+exports.push([module.i, "\n.ulstyle[data-v-249b947c]{\r\n    list-style: none;\r\n    padding-left: 0px;\r\n    position: absolute;\r\n    background: aliceblue;\r\n    width: 50%;\r\n    z-index: 999;\n}\n.ulstyle > li[data-v-249b947c]:hover {\r\n    background:#ddd;\r\n    color: blue;\r\n    border-radius: 5px;\n}\n.ulstyle > li > p[data-v-249b947c]{\r\n    padding: 5px;\r\n    cursor: pointer;\r\n    margin-bottom: 0px;\r\n    border-bottom: 1px solid #DCA;\n}\n.card-title[data-v-249b947c] {\r\n  float: left;\n}\r\n\r\n", ""]);
 
 // exports
 
@@ -13483,7 +13530,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.ulstyle[data-v-8e43ef84] {\n  list-style: none;\n  padding-left: 0px;\n  float: left;\n  width: 95%;\n  position: absolute;\n  background: aliceblue;\n  z-index: 999;\n}\n.ulstyle > li[data-v-8e43ef84]:hover {\n  background: #ddd;\n  color: blue;\n  border-radius: 5px;\n}\n.ulstyle > li > p[data-v-8e43ef84] {\n  padding: 5px;\n  cursor: pointer;\n  margin-bottom: 4px;\n  float: left;\n  width: 100%;\n  margin-bottom: 0px;\n    border-bottom: 1px solid #DCA;\n}\n.card-title[data-v-8e43ef84] {\n  float: left;\n}\n.supp[data-v-8e43ef84] {\n  width: 100%;\n  float: right;\n}\n", ""]);
+exports.push([module.i, "\n.ulstyle[data-v-8e43ef84] {\r\n  list-style: none;\r\n  padding-left: 0px;\r\n  float: left;\r\n  width: 95%;\r\n  position: absolute;\r\n  background: aliceblue;\r\n  z-index: 999;\n}\n.ulstyle > li[data-v-8e43ef84]:hover {\r\n  background: #ddd;\r\n  color: blue;\r\n  border-radius: 5px;\n}\n.ulstyle > li > p[data-v-8e43ef84] {\r\n  padding: 5px;\r\n  cursor: pointer;\r\n  margin-bottom: 4px;\r\n  float: left;\r\n  width: 100%;\r\n  margin-bottom: 0px;\r\n    border-bottom: 1px solid #DCA;\n}\n.card-title[data-v-8e43ef84] {\r\n  float: left;\n}\n.supp[data-v-8e43ef84] {\r\n  width: 100%;\r\n  float: right;\n}\r\n", ""]);
 
 // exports
 
@@ -13502,7 +13549,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.head_menu{\n        border-radius: 10px;\n        border: 1px solid #fff;\n        background: #494E54;\n        color: #fff !important;\n        margin-left: 14px;\n}\n.head_menu:hover {\n          background: gray !important;\n          color: black !important;\n          border:1px solid #ddd;transition-delay: 0.2s;\n}\n.fixed_position{\n          left:0;\n          right:0; top: 0;\n          position: fixed;\n}\n", ""]);
+exports.push([module.i, "\n.head_menu{\r\n        border-radius: 10px;\r\n        border: 1px solid #fff;\r\n        background: #494E54;\r\n        color: #fff !important;\r\n        margin-left: 14px;\n}\n.head_menu:hover {\r\n          background: gray !important;\r\n          color: black !important;\r\n          border:1px solid #ddd;transition-delay: 0.2s;\n}\n.fixed_position{\r\n          left:0;\r\n          right:0; top: 0;\r\n          position: fixed;\n}\r\n", ""]);
 
 // exports
 
@@ -72490,12 +72537,12 @@ var staticRenderFns = [
       "div",
       { staticClass: "card-footer", staticStyle: { display: "block" } },
       [
-        _vm._v("\n                    Visit "),
+        _vm._v("\r\n                    Visit "),
         _c("a", { attrs: { href: "https://select2.github.io/" } }, [
           _vm._v("Select2 documentation")
         ]),
         _vm._v(
-          " for more examples and information about\n                    the plugin.\n                "
+          " for more examples and information about\r\n                    the plugin.\r\n                "
         )
       ]
     )
@@ -72591,7 +72638,7 @@ var render = function() {
                                 _vm._v(" "),
                                 _c("td", [_vm._v(_vm._s(books.edition))]),
                                 _vm._v(" "),
-                                _c("td", [_vm._v(_vm._s(books.edition))]),
+                                _c("td", [_vm._v(_vm._s(books.language))]),
                                 _vm._v(" "),
                                 _c("td", [
                                   _c(
@@ -72611,8 +72658,6 @@ var render = function() {
                                     [_c("i", { staticClass: "fa fa-edit" })]
                                   ),
                                   _vm._v(" "),
-                                  _vm._m(1, true),
-                                  _vm._v(" "),
                                   _c(
                                     "button",
                                     {
@@ -72628,7 +72673,26 @@ var render = function() {
                                       }
                                     },
                                     [_c("i", { staticClass: "fa fa-eye" })]
-                                  )
+                                  ),
+                                  _vm._v(" "),
+                                  books.available_quantity == 0
+                                    ? _c(
+                                        "button",
+                                        {
+                                          staticClass: "btn btn-danger btn-sm",
+                                          on: {
+                                            click: function($event) {
+                                              return _vm.deleteBookId(books)
+                                            }
+                                          }
+                                        },
+                                        [
+                                          _c("i", {
+                                            staticClass: "fa fa-trash"
+                                          })
+                                        ]
+                                      )
+                                    : _vm._e()
                                 ])
                               ])
                             }),
@@ -72663,7 +72727,7 @@ var render = function() {
                   },
                   [
                     _c("div", { staticClass: "modal-content" }, [
-                      _vm._m(2),
+                      _vm._m(1),
                       _vm._v(" "),
                       _c("div", { staticClass: "modal-body" }, [
                         _c("div", { staticClass: "row" }, [
@@ -72671,30 +72735,41 @@ var render = function() {
                             _c("div", { staticClass: "form-group" }, [
                               _c("label", [_vm._v("Cover")]),
                               _vm._v(" "),
-                              _c("div", { staticClass: "input-group" }, [
-                                _c(
-                                  "div",
-                                  {
-                                    staticClass: "custom-file file-input-style"
-                                  },
-                                  [
-                                    _c("img", {
-                                      staticClass: "img-style",
-                                      attrs: {
-                                        src:
-                                          "/images/" +
-                                          _vm.singleBookDetails.cover
-                                      }
-                                    })
-                                  ]
-                                )
-                              ])
+                              _c(
+                                "div",
+                                {
+                                  staticClass: "input-group",
+                                  staticStyle: {
+                                    width: "200px !important",
+                                    height: "180px"
+                                  }
+                                },
+                                [
+                                  _c(
+                                    "div",
+                                    {
+                                      staticClass:
+                                        "custom-file file-input-style"
+                                    },
+                                    [
+                                      _c("img", {
+                                        staticClass: "img-style",
+                                        attrs: {
+                                          src:
+                                            "/images/" +
+                                            _vm.singleBookDetails.cover
+                                        }
+                                      })
+                                    ]
+                                  )
+                                ]
+                              )
                             ])
                           ]),
                           _vm._v(" "),
                           _c("div", { staticClass: "col-md-8 mytable" }, [
                             _c("div", { staticClass: "row" }, [
-                              _vm._m(3),
+                              _vm._m(2),
                               _vm._v(" "),
                               _c("div", { staticClass: "col-md-8" }, [
                                 _c("input", {
@@ -72727,7 +72802,7 @@ var render = function() {
                             ]),
                             _vm._v(" "),
                             _c("div", { staticClass: "row" }, [
-                              _vm._m(4),
+                              _vm._m(3),
                               _vm._v(" "),
                               _c("div", { staticClass: "col-md-8" }, [
                                 _c("input", {
@@ -72760,7 +72835,7 @@ var render = function() {
                             ]),
                             _vm._v(" "),
                             _c("div", { staticClass: "row" }, [
-                              _vm._m(5),
+                              _vm._m(4),
                               _vm._v(" "),
                               _c("div", { staticClass: "col-md-8" }, [
                                 _c("input", {
@@ -72793,7 +72868,7 @@ var render = function() {
                             ]),
                             _vm._v(" "),
                             _c("div", { staticClass: "row" }, [
-                              _vm._m(6),
+                              _vm._m(5),
                               _vm._v(" "),
                               _c("div", { staticClass: "col-md-8" }, [
                                 _c("input", {
@@ -72826,7 +72901,7 @@ var render = function() {
                             ]),
                             _vm._v(" "),
                             _c("div", { staticClass: "row" }, [
-                              _vm._m(7),
+                              _vm._m(6),
                               _vm._v(" "),
                               _c("div", { staticClass: "col-md-8" }, [
                                 _c("input", {
@@ -72859,7 +72934,7 @@ var render = function() {
                             ]),
                             _vm._v(" "),
                             _c("div", { staticClass: "row" }, [
-                              _vm._m(8),
+                              _vm._m(7),
                               _vm._v(" "),
                               _c("div", { staticClass: "col-md-8" }, [
                                 _c("input", {
@@ -72892,7 +72967,7 @@ var render = function() {
                             ]),
                             _vm._v(" "),
                             _c("div", { staticClass: "row" }, [
-                              _vm._m(9),
+                              _vm._m(8),
                               _vm._v(" "),
                               _c("div", { staticClass: "col-md-8" }, [
                                 _c("input", {
@@ -72925,7 +73000,7 @@ var render = function() {
                             ]),
                             _vm._v(" "),
                             _c("div", { staticClass: "row" }, [
-                              _vm._m(10),
+                              _vm._m(9),
                               _vm._v(" "),
                               _c("div", { staticClass: "col-md-8" }, [
                                 _c("input", {
@@ -72958,7 +73033,7 @@ var render = function() {
                             ]),
                             _vm._v(" "),
                             _c("div", { staticClass: "row" }, [
-                              _vm._m(11),
+                              _vm._m(10),
                               _vm._v(" "),
                               _c("div", { staticClass: "col-md-8" }, [
                                 _c("input", {
@@ -72991,7 +73066,7 @@ var render = function() {
                             ]),
                             _vm._v(" "),
                             _c("div", { staticClass: "row" }, [
-                              _vm._m(12),
+                              _vm._m(11),
                               _vm._v(" "),
                               _c("div", { staticClass: "col-md-8" }, [
                                 _c("input", {
@@ -73024,7 +73099,7 @@ var render = function() {
                             ]),
                             _vm._v(" "),
                             _c("div", { staticClass: "row" }, [
-                              _vm._m(13),
+                              _vm._m(12),
                               _vm._v(" "),
                               _c("div", { staticClass: "col-md-8" }, [
                                 _c("input", {
@@ -73057,7 +73132,7 @@ var render = function() {
                             ]),
                             _vm._v(" "),
                             _c("div", { staticClass: "row" }, [
-                              _vm._m(14),
+                              _vm._m(13),
                               _vm._v(" "),
                               _c("div", { staticClass: "col-md-8" }, [
                                 _c("textarea", {
@@ -73092,7 +73167,7 @@ var render = function() {
                         ])
                       ]),
                       _vm._v(" "),
-                      _vm._m(15)
+                      _vm._m(14)
                     ])
                   ]
                 )
@@ -73120,7 +73195,7 @@ var render = function() {
                   },
                   [
                     _c("div", { staticClass: "modal-content" }, [
-                      _vm._m(16),
+                      _vm._m(15),
                       _vm._v(" "),
                       _c(
                         "form",
@@ -73159,9 +73234,9 @@ var render = function() {
                                           _c("img", {
                                             staticClass: "img-style",
                                             attrs: {
-                                              src:
-                                                "/images/" +
-                                                _vm.singleBookDetails.cover
+                                              src: _vm.editMode
+                                                ? _vm.updateImage()
+                                                : _vm.singleBookDetails.cover
                                             }
                                           }),
                                           _vm._v(" "),
@@ -73170,7 +73245,6 @@ var render = function() {
                                               "custom-file-input input-new-style",
                                             attrs: {
                                               type: "file",
-                                              name: "cover",
                                               id: "exampleInputFile"
                                             },
                                             on: {
@@ -73188,7 +73262,7 @@ var render = function() {
                               _vm._v(" "),
                               _c("div", { staticClass: "col-md-8 mytable" }, [
                                 _c("div", { staticClass: "row" }, [
-                                  _vm._m(17),
+                                  _vm._m(16),
                                   _vm._v(" "),
                                   _c("div", { staticClass: "col-md-8" }, [
                                     _c("input", {
@@ -73220,7 +73294,7 @@ var render = function() {
                                 ]),
                                 _vm._v(" "),
                                 _c("div", { staticClass: "row" }, [
-                                  _vm._m(18),
+                                  _vm._m(17),
                                   _vm._v(" "),
                                   _c("div", { staticClass: "col-md-8" }, [
                                     _c("input", {
@@ -73252,7 +73326,7 @@ var render = function() {
                                 ]),
                                 _vm._v(" "),
                                 _c("div", { staticClass: "row" }, [
-                                  _vm._m(19),
+                                  _vm._m(18),
                                   _vm._v(" "),
                                   _c("div", { staticClass: "col-md-8" }, [
                                     _c("input", {
@@ -73285,7 +73359,7 @@ var render = function() {
                                 ]),
                                 _vm._v(" "),
                                 _c("div", { staticClass: "row" }, [
-                                  _vm._m(20),
+                                  _vm._m(19),
                                   _vm._v(" "),
                                   _c("div", { staticClass: "col-md-8" }, [
                                     _c("input", {
@@ -73319,7 +73393,7 @@ var render = function() {
                                 ]),
                                 _vm._v(" "),
                                 _c("div", { staticClass: "row" }, [
-                                  _vm._m(21),
+                                  _vm._m(20),
                                   _vm._v(" "),
                                   _c("div", { staticClass: "col-md-8" }, [
                                     _c("input", {
@@ -73351,7 +73425,7 @@ var render = function() {
                                 ]),
                                 _vm._v(" "),
                                 _c("div", { staticClass: "row" }, [
-                                  _vm._m(22),
+                                  _vm._m(21),
                                   _vm._v(" "),
                                   _c("div", { staticClass: "col-md-8" }, [
                                     _c("input", {
@@ -73364,7 +73438,6 @@ var render = function() {
                                             "singleBookDetails.country"
                                         }
                                       ],
-                                      attrs: { readonly: "" },
                                       domProps: {
                                         value: _vm.singleBookDetails.country
                                       },
@@ -73385,7 +73458,7 @@ var render = function() {
                                 ]),
                                 _vm._v(" "),
                                 _c("div", { staticClass: "row" }, [
-                                  _vm._m(23),
+                                  _vm._m(22),
                                   _vm._v(" "),
                                   _c("div", { staticClass: "col-md-8" }, [
                                     _c("input", {
@@ -73419,7 +73492,7 @@ var render = function() {
                                 ]),
                                 _vm._v(" "),
                                 _c("div", { staticClass: "row" }, [
-                                  _vm._m(24),
+                                  _vm._m(23),
                                   _vm._v(" "),
                                   _c("div", { staticClass: "col-md-8" }, [
                                     _c("input", {
@@ -73452,7 +73525,7 @@ var render = function() {
                                 ]),
                                 _vm._v(" "),
                                 _c("div", { staticClass: "row" }, [
-                                  _vm._m(25),
+                                  _vm._m(24),
                                   _vm._v(" "),
                                   _c("div", { staticClass: "col-md-8" }, [
                                     _c("input", {
@@ -73485,7 +73558,7 @@ var render = function() {
                                 ]),
                                 _vm._v(" "),
                                 _c("div", { staticClass: "row" }, [
-                                  _vm._m(26),
+                                  _vm._m(25),
                                   _vm._v(" "),
                                   _c("div", { staticClass: "col-md-8" }, [
                                     _c("input", {
@@ -73517,7 +73590,7 @@ var render = function() {
                                 ]),
                                 _vm._v(" "),
                                 _c("div", { staticClass: "row" }, [
-                                  _vm._m(27),
+                                  _vm._m(26),
                                   _vm._v(" "),
                                   _c("div", { staticClass: "col-md-8" }, [
                                     _c("input", {
@@ -73549,7 +73622,7 @@ var render = function() {
                                 ]),
                                 _vm._v(" "),
                                 _c("div", { staticClass: "row" }, [
-                                  _vm._m(28),
+                                  _vm._m(27),
                                   _vm._v(" "),
                                   _c("div", { staticClass: "col-md-8" }, [
                                     _c("textarea", {
@@ -73584,7 +73657,7 @@ var render = function() {
                             ])
                           ]),
                           _vm._v(" "),
-                          _vm._m(29)
+                          _vm._m(28)
                         ]
                       )
                     ])
@@ -73624,14 +73697,6 @@ var staticRenderFns = [
         _vm._v(" "),
         _c("th", [_vm._v("Action")])
       ])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("button", { staticClass: "btn btn-danger btn-sm" }, [
-      _c("i", { staticClass: "fa fa-trash" })
     ])
   },
   function() {
@@ -75871,7 +75936,19 @@ var render = function() {
                               },
                               [
                                 _c("table", [
-                                  _vm._m(1),
+                                  _c("tr", [
+                                    _c("th", [_vm._v("Total Quantity")]),
+                                    _vm._v(" "),
+                                    _c("td", [_vm._v(":")]),
+                                    _vm._v(" "),
+                                    _c(
+                                      "td",
+                                      {
+                                        staticStyle: { "padding-left": "20px" }
+                                      },
+                                      [_vm._v(_vm._s(_vm.totalQty))]
+                                    )
+                                  ]),
                                   _vm._v(" "),
                                   _c("tr", [
                                     _c("th", [_vm._v("Total Price")]),
@@ -76007,7 +76084,7 @@ var render = function() {
                           { staticClass: "card-body table-responsive p-0" },
                           [
                             _c("table", { staticClass: "table table-hover" }, [
-                              _vm._m(2),
+                              _vm._m(1),
                               _vm._v(" "),
                               _c(
                                 "tbody",
@@ -76121,18 +76198,6 @@ var staticRenderFns = [
         )
       ]
     )
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("tr", [
-      _c("th", [_vm._v("Total Quantity")]),
-      _vm._v(" "),
-      _c("td", [_vm._v(":")]),
-      _vm._v(" "),
-      _c("td", { staticStyle: { "padding-left": "20px" } }, [_vm._v("13")])
-    ])
   },
   function() {
     var _vm = this
@@ -79295,16 +79360,6 @@ var render = function() {
                               on: { click: _vm.download }
                             },
                             [_vm._v("Download PDF")]
-                          ),
-                          _vm._v(" "),
-                          _c(
-                            "button",
-                            {
-                              staticClass: "btn btn-success",
-                              staticStyle: { float: "right" },
-                              on: { click: _vm.doc }
-                            },
-                            [_vm._v("word")]
                           )
                         ])
                       ])
@@ -80107,218 +80162,242 @@ var render = function() {
                       _vm._m(0),
                       _vm._v(" "),
                       _c("div", { staticClass: "card-body" }, [
-                        _c(
-                          "form",
-                          {
-                            on: {
-                              submit: function($event) {
-                                $event.preventDefault()
-                                return _vm.createSettings($event)
-                              }
-                            }
-                          },
-                          [
+                        _c("form", [
+                          _c(
+                            "div",
+                            {
+                              staticClass: "col-md-6",
+                              staticStyle: { float: "left" }
+                            },
+                            [
+                              _c(
+                                "div",
+                                { staticClass: "form-group" },
+                                [
+                                  _c("label", [_vm._v("Library Title")]),
+                                  _vm._v(" "),
+                                  _c("input", {
+                                    directives: [
+                                      {
+                                        name: "model",
+                                        rawName: "v-model",
+                                        value: _vm.form.title,
+                                        expression: "form.title"
+                                      }
+                                    ],
+                                    staticClass: "form-control",
+                                    class: {
+                                      "is-invalid": _vm.form.errors.has("title")
+                                    },
+                                    attrs: {
+                                      type: "text",
+                                      placeholder: "Library Title"
+                                    },
+                                    domProps: { value: _vm.form.title },
+                                    on: {
+                                      input: function($event) {
+                                        if ($event.target.composing) {
+                                          return
+                                        }
+                                        _vm.$set(
+                                          _vm.form,
+                                          "title",
+                                          $event.target.value
+                                        )
+                                      }
+                                    }
+                                  }),
+                                  _vm._v(" "),
+                                  _c("has-error", {
+                                    attrs: { form: _vm.form, field: "title" }
+                                  })
+                                ],
+                                1
+                              ),
+                              _vm._v(" "),
+                              _c(
+                                "div",
+                                { staticClass: "form-group" },
+                                [
+                                  _c("label", [_vm._v("Contact No.")]),
+                                  _vm._v(" "),
+                                  _c("input", {
+                                    directives: [
+                                      {
+                                        name: "model",
+                                        rawName: "v-model",
+                                        value: _vm.form.mobile,
+                                        expression: "form.mobile"
+                                      }
+                                    ],
+                                    staticClass: "form-control",
+                                    class: {
+                                      "is-invalid": _vm.form.errors.has(
+                                        "mobile"
+                                      )
+                                    },
+                                    attrs: {
+                                      type: "text",
+                                      placeholder: "Mobile"
+                                    },
+                                    domProps: { value: _vm.form.mobile },
+                                    on: {
+                                      input: function($event) {
+                                        if ($event.target.composing) {
+                                          return
+                                        }
+                                        _vm.$set(
+                                          _vm.form,
+                                          "mobile",
+                                          $event.target.value
+                                        )
+                                      }
+                                    }
+                                  }),
+                                  _vm._v(" "),
+                                  _c("has-error", {
+                                    attrs: { form: _vm.form, field: "mobile" }
+                                  })
+                                ],
+                                1
+                              ),
+                              _vm._v(" "),
+                              _c(
+                                "div",
+                                { staticClass: "form-group" },
+                                [
+                                  _c("label", [_vm._v("Address")]),
+                                  _vm._v(" "),
+                                  _c("textarea", {
+                                    directives: [
+                                      {
+                                        name: "model",
+                                        rawName: "v-model",
+                                        value: _vm.form.address,
+                                        expression: "form.address"
+                                      }
+                                    ],
+                                    staticClass: "form-control",
+                                    class: {
+                                      "is-invalid": _vm.form.errors.has(
+                                        "address"
+                                      )
+                                    },
+                                    attrs: {
+                                      type: "text",
+                                      placeholder: "Address"
+                                    },
+                                    domProps: { value: _vm.form.address },
+                                    on: {
+                                      input: function($event) {
+                                        if ($event.target.composing) {
+                                          return
+                                        }
+                                        _vm.$set(
+                                          _vm.form,
+                                          "address",
+                                          $event.target.value
+                                        )
+                                      }
+                                    }
+                                  }),
+                                  _vm._v(" "),
+                                  _c("has-error", {
+                                    attrs: { form: _vm.form, field: "address" }
+                                  })
+                                ],
+                                1
+                              )
+                            ]
+                          ),
+                          _vm._v(" "),
+                          _c(
+                            "div",
+                            {
+                              staticClass: "col-md-6",
+                              staticStyle: { float: "right" }
+                            },
+                            [
+                              _c("div", { staticClass: "form-group" }, [
+                                _c("label", [_vm._v("Logo")]),
+                                _vm._v(" "),
+                                _c("div", { staticClass: "input-group" }, [
+                                  _c(
+                                    "div",
+                                    {
+                                      staticClass:
+                                        "custom-file file-input-style"
+                                    },
+                                    [
+                                      _c("img", {
+                                        staticClass: "img-style",
+                                        attrs: {
+                                          src: _vm.editMode
+                                            ? _vm.updateImage()
+                                            : _vm.form.logo
+                                        }
+                                      }),
+                                      _vm._v(" "),
+                                      _c("input", {
+                                        staticClass:
+                                          "custom-file-input input-new-style",
+                                        attrs: {
+                                          type: "file",
+                                          id: "exampleInputFile"
+                                        },
+                                        on: {
+                                          change: function($event) {
+                                            return _vm.changePhoto($event)
+                                          }
+                                        }
+                                      })
+                                    ]
+                                  )
+                                ])
+                              ])
+                            ]
+                          ),
+                          _vm._v(" "),
+                          _c("div", { staticClass: "col-md-12" }, [
                             _c(
                               "div",
                               {
-                                staticClass: "col-md-6",
-                                staticStyle: { float: "left" }
+                                staticClass: "form-group",
+                                staticStyle: {
+                                  float: "right",
+                                  "padding-right": "0px"
+                                }
                               },
                               [
                                 _c(
-                                  "div",
-                                  { staticClass: "form-group" },
-                                  [
-                                    _c("label", [_vm._v("Library Title")]),
-                                    _vm._v(" "),
-                                    _c("input", {
-                                      directives: [
-                                        {
-                                          name: "model",
-                                          rawName: "v-model",
-                                          value: _vm.form.title,
-                                          expression: "form.title"
-                                        }
-                                      ],
-                                      staticClass: "form-control",
-                                      class: {
-                                        "is-invalid": _vm.form.errors.has(
-                                          "title"
-                                        )
-                                      },
-                                      attrs: {
-                                        type: "text",
-                                        placeholder: "Library Title"
-                                      },
-                                      domProps: { value: _vm.form.title },
-                                      on: {
-                                        input: function($event) {
-                                          if ($event.target.composing) {
-                                            return
-                                          }
-                                          _vm.$set(
-                                            _vm.form,
-                                            "title",
-                                            $event.target.value
-                                          )
-                                        }
-                                      }
-                                    }),
-                                    _vm._v(" "),
-                                    _c("has-error", {
-                                      attrs: { form: _vm.form, field: "title" }
-                                    })
-                                  ],
-                                  1
+                                  "button",
+                                  {
+                                    staticClass: "btn btn-danger",
+                                    attrs: { type: "button" }
+                                  },
+                                  [_vm._v("Cancel")]
                                 ),
                                 _vm._v(" "),
                                 _c(
-                                  "div",
-                                  { staticClass: "form-group" },
-                                  [
-                                    _c("label", [_vm._v("Contact No.")]),
-                                    _vm._v(" "),
-                                    _c("input", {
-                                      directives: [
-                                        {
-                                          name: "model",
-                                          rawName: "v-model",
-                                          value: _vm.form.mobile,
-                                          expression: "form.mobile"
-                                        }
-                                      ],
-                                      staticClass: "form-control",
-                                      class: {
-                                        "is-invalid": _vm.form.errors.has(
-                                          "mobile"
-                                        )
-                                      },
-                                      attrs: {
-                                        type: "text",
-                                        placeholder: "Mobile"
-                                      },
-                                      domProps: { value: _vm.form.mobile },
-                                      on: {
-                                        input: function($event) {
-                                          if ($event.target.composing) {
-                                            return
-                                          }
-                                          _vm.$set(
-                                            _vm.form,
-                                            "mobile",
-                                            $event.target.value
-                                          )
-                                        }
+                                  "button",
+                                  {
+                                    staticClass: "btn btn-primary",
+                                    attrs: { type: "button" },
+                                    on: {
+                                      click: function($event) {
+                                        $event.preventDefault()
+                                        _vm.editMode
+                                          ? _vm.updateSettings()
+                                          : _vm.createSettings()
                                       }
-                                    }),
-                                    _vm._v(" "),
-                                    _c("has-error", {
-                                      attrs: { form: _vm.form, field: "mobile" }
-                                    })
-                                  ],
-                                  1
-                                ),
-                                _vm._v(" "),
-                                _c(
-                                  "div",
-                                  { staticClass: "form-group" },
-                                  [
-                                    _c("label", [_vm._v("Address")]),
-                                    _vm._v(" "),
-                                    _c("textarea", {
-                                      directives: [
-                                        {
-                                          name: "model",
-                                          rawName: "v-model",
-                                          value: _vm.form.address,
-                                          expression: "form.address"
-                                        }
-                                      ],
-                                      staticClass: "form-control",
-                                      class: {
-                                        "is-invalid": _vm.form.errors.has(
-                                          "address"
-                                        )
-                                      },
-                                      attrs: {
-                                        type: "text",
-                                        placeholder: "Address"
-                                      },
-                                      domProps: { value: _vm.form.address },
-                                      on: {
-                                        input: function($event) {
-                                          if ($event.target.composing) {
-                                            return
-                                          }
-                                          _vm.$set(
-                                            _vm.form,
-                                            "address",
-                                            $event.target.value
-                                          )
-                                        }
-                                      }
-                                    }),
-                                    _vm._v(" "),
-                                    _c("has-error", {
-                                      attrs: {
-                                        form: _vm.form,
-                                        field: "address"
-                                      }
-                                    })
-                                  ],
-                                  1
+                                    }
+                                  },
+                                  [_vm._v("Save")]
                                 )
                               ]
-                            ),
-                            _vm._v(" "),
-                            _c(
-                              "div",
-                              {
-                                staticClass: "col-md-6",
-                                staticStyle: { float: "right" }
-                              },
-                              [
-                                _c("div", { staticClass: "form-group" }, [
-                                  _c("label", [_vm._v("Logo")]),
-                                  _vm._v(" "),
-                                  _c("div", { staticClass: "input-group" }, [
-                                    _c(
-                                      "div",
-                                      {
-                                        staticClass:
-                                          "custom-file file-input-style"
-                                      },
-                                      [
-                                        _c("img", {
-                                          staticClass: "img-style",
-                                          attrs: {
-                                            src: "/images/" + _vm.form.logo
-                                          }
-                                        }),
-                                        _vm._v(" "),
-                                        _c("input", {
-                                          staticClass:
-                                            "custom-file-input input-new-style",
-                                          attrs: {
-                                            type: "file",
-                                            id: "exampleInputFile"
-                                          },
-                                          on: {
-                                            change: function($event) {
-                                              return _vm.changePhoto($event)
-                                            }
-                                          }
-                                        })
-                                      ]
-                                    )
-                                  ])
-                                ])
-                              ]
-                            ),
-                            _vm._v(" "),
-                            _vm._m(1)
-                          ]
-                        )
+                            )
+                          ])
+                        ])
                       ])
                     ])
                   ]
@@ -80352,33 +80431,6 @@ var staticRenderFns = [
           [_c("i", { staticClass: "fa fa-minus" })]
         )
       ])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "col-md-12" }, [
-      _c(
-        "div",
-        {
-          staticClass: "form-group",
-          staticStyle: { float: "right", "padding-right": "0px" }
-        },
-        [
-          _c(
-            "button",
-            { staticClass: "btn btn-danger", attrs: { type: "button" } },
-            [_vm._v("Cancel")]
-          ),
-          _vm._v(" "),
-          _c(
-            "button",
-            { staticClass: "btn btn-primary", attrs: { type: "submit" } },
-            [_vm._v("Save")]
-          )
-        ]
-      )
     ])
   }
 ]
@@ -85798,14 +85850,35 @@ var render = function() {
                     _vm._v(" "),
                     _c("td", [_vm._v(":")]),
                     _vm._v(" "),
-                    _c("td", [
-                      _vm._v(_vm._s(_vm.detailsFormData.available_quantity))
-                    ])
+                    _vm.detailsFormData.available_quantity != ""
+                      ? _c("td", [
+                          _vm._v(_vm._s(_vm.detailsFormData.available_quantity))
+                        ])
+                      : _c("td", [_vm._v("Empty Stock")])
                   ])
                 ])
               ]),
               _vm._v(" "),
-              _vm._m(14)
+              _c("div", { staticClass: "modal-footer" }, [
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-info",
+                    attrs: { type: "button" },
+                    on: { click: _vm.quickIsbnRest }
+                  },
+                  [_vm._v("Clear")]
+                ),
+                _vm._v(" "),
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-danger",
+                    attrs: { type: "button", "data-dismiss": "modal" }
+                  },
+                  [_vm._v("Close")]
+                )
+              ])
             ])
           ]
         )
@@ -86133,21 +86206,6 @@ var staticRenderFns = [
           }
         },
         [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
-      )
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "modal-footer" }, [
-      _c(
-        "button",
-        {
-          staticClass: "btn btn-danger",
-          attrs: { type: "button", "data-dismiss": "modal" }
-        },
-        [_vm._v("Close")]
       )
     ])
   }
@@ -104018,8 +104076,8 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! D:\Hasinur\Inventory\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! D:\Hasinur\Inventory\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! D:\Office Project\Inventory\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! D:\Office Project\Inventory\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })

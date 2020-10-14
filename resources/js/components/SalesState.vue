@@ -119,7 +119,6 @@
 
                                     <div class="card-header">
                                         <button class="btn btn-success" @click="download" style="float:right;">Download PDF</button>
-                                        <button class="btn btn-success" @click="doc" style="float:right;">word</button>
                                     </div>
                                     <!-- /.card-body -->
                                     <!-- <div class="col-md-6 card" style="margin:auto">

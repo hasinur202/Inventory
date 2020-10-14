@@ -136,10 +136,14 @@ class InvoiceController extends Controller
         $data = Invoice::latest()->first();
 
         $data2 = InvoiceDetails::with('book')->where('invoice_id',$data->id)->get();
+       $data3 = $data2->sum('qty');
+
+        // $data2->qty->count();
 
         return response()->json([
             'data' => $data,
             'data2' => $data2,
+            'totalqty' => $data3,
             'message' => "success"
         ], 200);
 

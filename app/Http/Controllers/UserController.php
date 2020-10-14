@@ -25,6 +25,7 @@ class UserController extends Controller
         if (Auth::attempt([
             'email'=> $request->email,
             'password'=> $request->password,
+            'status'=> 1
             ])) {
                
                 $user = $request->user();
@@ -58,7 +59,8 @@ class UserController extends Controller
         }
         else{
             return response()->json([
-                'error'=>"wrong cridentials."
+                'error'=>"wrong cridentials.",
+                'status'=> 500
             ],200);
         }
     }
