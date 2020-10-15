@@ -48,7 +48,7 @@
                             <div class="col-md-4" style="float:right;">
                                 <div class="card">
                                     <div class="card-header" style="text-align:center;">
-                                        <h3 class="card-title">Prothoma Publications</h3>
+                                        <h3 class="card-title">{{ settingData.title }}</h3>
                                         <h4>Summary</h4>
                                     </div>
 

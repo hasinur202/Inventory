@@ -6,10 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class CustInventoryDetails extends Model
 {
-    protected $fillable = [
-        'cust_id',
-        'pay',
-    ];
+    protected $guarded=[];
 
     public function custInventory()
     {

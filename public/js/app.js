@@ -3665,6 +3665,7 @@ __webpack_require__.r(__webpack_exports__);
       CustInventByIdList: [],
       CustInventById: '',
       inventoryList: "",
+      dataList: '',
       form: new Form({
         cus_name: "",
         total_due: "",
@@ -3673,6 +3674,12 @@ __webpack_require__.r(__webpack_exports__);
         pay: "",
         invoice_ref: ""
       }),
+      settingData: {
+        logo: "",
+        mobile: "",
+        address: "",
+        title: ""
+      },
       editInventory: {
         'cus_name': '',
         'total_due': '',
@@ -3765,6 +3772,20 @@ __webpack_require__.r(__webpack_exports__);
         this.form.total_paid = parseFloat(this.form.pay);
       }
     },
+    viewSettingsData: function viewSettingsData() {
+      var _this6 = this;
+
+      axios.get('/getSettingData').then(function (response) {
+        _this6.dataList = response.data.data;
+
+        _this6.dataList.forEach(function (el) {
+          _this6.settingData.title = el.title;
+          _this6.settingData.mobile = el.mobile;
+          _this6.settingData.address = el.address;
+          _this6.settingData.logo = el.logo;
+        });
+      });
+    },
     getCus: function getCus(val) {
       this.form.cus_name = val.cus_name;
       this.form.invoice_ref = val.invoice_ref;
@@ -3773,13 +3794,13 @@ __webpack_require__.r(__webpack_exports__);
     },
     //method for searching supplier
     searchCus: function searchCus() {
-      var _this6 = this;
+      var _this7 = this;
 
       if (this.form.cus_name == "") {
         this.getSearchCus = false;
       } else {
         axios.get("/getInvoices").then(function (response) {
-          _this6.customers = response.data.data;
+          _this7.customers = response.data.data;
         });
         this.getSearchCus = true;
       }
@@ -3787,11 +3808,11 @@ __webpack_require__.r(__webpack_exports__);
   },
   computed: {
     filterdCus: function filterdCus() {
-      var _this7 = this;
+      var _this8 = this;
 
       //supllier filtered
       return this.customers.filter(function (val) {
-        return val.cus_name.toLowerCase().startsWith(_this7.form.cus_name.toLowerCase());
+        return val.cus_name.toLowerCase().startsWith(_this8.form.cus_name.toLowerCase());
       });
     }
   },
@@ -3801,6 +3822,7 @@ __webpack_require__.r(__webpack_exports__);
   },
   mounted: function mounted() {
     this.viewInventoryCustomer();
+    this.viewSettingsData();
   }
 });
 
@@ -3977,6 +3999,11 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -3985,7 +4012,14 @@ __webpack_require__.r(__webpack_exports__);
     return {
       lastInvoice: '',
       lastInvoiceDetails: '',
-      totalQty: ''
+      totalQty: '',
+      dataList: '',
+      settingData: {
+        logo: "",
+        mobile: "",
+        address: "",
+        title: ""
+      }
     };
   },
   created: function created() {// axios.get("/getLatestInvoiceDetai").then(response => {
@@ -4000,6 +4034,20 @@ __webpack_require__.r(__webpack_exports__);
     },
     download: function download() {
       this.$htmlToPaper('printMe');
+    },
+    viewSettingsData: function viewSettingsData() {
+      var _this = this;
+
+      axios.get('/getSettingData').then(function (response) {
+        _this.dataList = response.data.data;
+
+        _this.dataList.forEach(function (el) {
+          _this.settingData.title = el.title;
+          _this.settingData.mobile = el.mobile;
+          _this.settingData.address = el.address;
+          _this.settingData.logo = el.logo;
+        });
+      });
     }
   },
   components: {
@@ -4007,14 +4055,15 @@ __webpack_require__.r(__webpack_exports__);
     footerComponent: _footer__WEBPACK_IMPORTED_MODULE_1__["default"]
   },
   mounted: function mounted() {
-    var _this = this;
+    var _this2 = this;
 
     console.log('Component mounted.');
     axios.get("/getLatestInvoiceDetails").then(function (response) {
-      _this.lastInvoice = response.data.data;
-      _this.totalQty = response.data.totalqty;
-      _this.lastInvoiceDetails = response.data.data2;
+      _this2.lastInvoice = response.data.data;
+      _this2.totalQty = response.data.totalqty;
+      _this2.lastInvoiceDetails = response.data.data2;
     });
+    this.viewSettingsData();
   }
 });
 
@@ -6487,6 +6536,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -6499,6 +6549,7 @@ __webpack_require__.r(__webpack_exports__);
       SuppInventById: '',
       suppliers: [],
       inventoryList: "",
+      dataList: '',
       form: new Form({
         supplier: "",
         total_due: "",
@@ -6507,6 +6558,12 @@ __webpack_require__.r(__webpack_exports__);
         pay: "",
         consign_ref: ""
       }),
+      settingData: {
+        logo: "",
+        mobile: "",
+        address: "",
+        title: ""
+      },
       editInventory: {
         'supplier': '',
         'total_due': '',
@@ -6596,6 +6653,23 @@ __webpack_require__.r(__webpack_exports__);
         this.form.total_paid = parseFloat(this.form.pay);
       }
     },
+    viewSettingsData: function viewSettingsData() {
+      var _this6 = this;
+
+      axios.get('/getSettingData').then(function (response) {
+        _this6.dataList = response.data.data;
+
+        _this6.dataList.forEach(function (el) {
+          _this6.settingData.title = el.title;
+          _this6.settingData.mobile = el.mobile;
+          _this6.settingData.address = el.address;
+          _this6.settingData.logo = el.logo;
+        });
+      });
+    },
+    download: function download() {
+      this.$htmlToPaper('printMe');
+    },
     getSupp: function getSupp(val) {
       this.form.supplier = val.get_supplier.supplier;
       this.form.consign_ref = val.consign_ref;
@@ -6603,13 +6677,13 @@ __webpack_require__.r(__webpack_exports__);
     },
     //method for searching supplier
     searchSupp: function searchSupp() {
-      var _this6 = this;
+      var _this7 = this;
 
       if (this.form.supplier == "") {
         this.getSearchSupp = false;
       } else {
         axios.get("/getSuppConsign").then(function (response) {
-          _this6.suppliers = response.data.data;
+          _this7.suppliers = response.data.data;
         });
         this.getSearchSupp = true;
       }
@@ -6617,11 +6691,11 @@ __webpack_require__.r(__webpack_exports__);
   },
   computed: {
     filterdSupp: function filterdSupp() {
-      var _this7 = this;
+      var _this8 = this;
 
       //supllier filtered
       return this.suppliers.filter(function (val) {
-        return val.get_supplier.supplier.toLowerCase().startsWith(_this7.form.supplier.toLowerCase());
+        return val.get_supplier.supplier.toLowerCase().startsWith(_this8.form.supplier.toLowerCase());
       });
     }
   },
@@ -6631,6 +6705,7 @@ __webpack_require__.r(__webpack_exports__);
   },
   mounted: function mounted() {
     this.viewInventorySupplier();
+    this.viewSettingsData();
   }
 });
 
@@ -13416,7 +13491,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.ulstyle[data-v-6db0a08d]{\r\n    list-style: none;\r\n    padding-left: 0px;\r\n    position: absolute;\r\n    background: aliceblue;\r\n    width: 50%;\r\n    z-index: 999;\n}\n.ulstyle > li[data-v-6db0a08d]:hover {\r\n    background:#ddd;\r\n    color: blue;\r\n    border-radius: 5px;\n}\n.ulstyle > li > p[data-v-6db0a08d]{\r\n    padding: 5px;\r\n    cursor: pointer;\r\n    margin-bottom: 0px;\r\n    border-bottom: 1px solid #DCA;\n}\n.card-title[data-v-6db0a08d] {\r\n  float: left;\n}\r\n\r\n", ""]);
+exports.push([module.i, "\n.ulstyle[data-v-6db0a08d]{\n    list-style: none;\n    padding-left: 0px;\n    position: absolute;\n    background: aliceblue;\n    width: 50%;\n    z-index: 999;\n}\n.ulstyle > li[data-v-6db0a08d]:hover {\n    background:#ddd;\n    color: blue;\n    border-radius: 5px;\n}\n.ulstyle > li > p[data-v-6db0a08d]{\n    padding: 5px;\n    cursor: pointer;\n    margin-bottom: 0px;\n    border-bottom: 1px solid #DCA;\n}\n.card-title[data-v-6db0a08d] {\n  float: left;\n}\n\n", ""]);
 
 // exports
 
@@ -13435,7 +13510,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.invoice_title[data-v-75c3f0ea]{\r\n    text-align: center;\r\n    font-weight: bold;\r\n    margin-bottom: 10px;\r\n    border-bottom: 2px solid #ddd;\r\n    padding-bottom: 5px;\n}\r\n\r\n", ""]);
+exports.push([module.i, "\n.invoice_title[data-v-75c3f0ea]{\n    text-align: center;\n    font-weight: bold;\n    margin-bottom: 10px;\n    border-bottom: 2px solid #ddd;\n    padding-bottom: 5px;\n}\n\n", ""]);
 
 // exports
 
@@ -13454,7 +13529,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.ulstyle[data-v-6545489e] {\r\n  list-style: none;\r\n  padding-left: 0px;\r\n  float: left;\r\n  width: 100%;\n}\n.ulstyle > li[data-v-6545489e]:hover {\r\n  background: #ddd;\r\n  color: blue;\r\n  border-radius: 5px;\n}\n.ulstyle > li > p[data-v-6545489e] {\r\n  padding: 5px;\r\n  cursor: pointer;\r\n  margin-bottom: 4px;\r\n  float: left;\r\n  width: 100%;\n}\r\n\r\n\r\n", ""]);
+exports.push([module.i, "\n.ulstyle[data-v-6545489e] {\n  list-style: none;\n  padding-left: 0px;\n  float: left;\n  width: 100%;\n}\n.ulstyle > li[data-v-6545489e]:hover {\n  background: #ddd;\n  color: blue;\n  border-radius: 5px;\n}\n.ulstyle > li > p[data-v-6545489e] {\n  padding: 5px;\n  cursor: pointer;\n  margin-bottom: 4px;\n  float: left;\n  width: 100%;\n}\n\n\n", ""]);
 
 // exports
 
@@ -13473,7 +13548,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.ulstyle[data-v-6545489e] {\r\n  list-style: none;\r\n  padding-left: 0px;\r\n  float: left;\r\n  position: absolute;\r\n    background: aliceblue;\r\n    width: 50%;\r\n    z-index: 999;\n}\n.ulstyle > li[data-v-6545489e]:hover {\r\n  background: #ddd;\r\n  color: blue;\r\n  border-radius: 5px;\n}\n.ulstyle > li > p[data-v-6545489e] {\r\n  padding: 5px;\r\n  cursor: pointer;\r\n  margin-bottom: 4px;\r\n  float: left;\r\n  margin-bottom: 0px;\r\nborder-bottom: 1px solid #DCA;\n}\n.invoice_title[data-v-6545489e]{\r\n    text-align: center;\r\n    font-weight: bold;\r\n    margin-bottom: 10px;\r\n    border-bottom: 2px solid #ddd;\r\n    padding-bottom: 5px;\n}\r\n\r\n", ""]);
+exports.push([module.i, "\n.ulstyle[data-v-6545489e] {\n  list-style: none;\n  padding-left: 0px;\n  float: left;\n  position: absolute;\n    background: aliceblue;\n    width: 50%;\n    z-index: 999;\n}\n.ulstyle > li[data-v-6545489e]:hover {\n  background: #ddd;\n  color: blue;\n  border-radius: 5px;\n}\n.ulstyle > li > p[data-v-6545489e] {\n  padding: 5px;\n  cursor: pointer;\n  margin-bottom: 4px;\n  float: left;\n  margin-bottom: 0px;\nborder-bottom: 1px solid #DCA;\n}\n.invoice_title[data-v-6545489e]{\n    text-align: center;\n    font-weight: bold;\n    margin-bottom: 10px;\n    border-bottom: 2px solid #ddd;\n    padding-bottom: 5px;\n}\n\n", ""]);
 
 // exports
 
@@ -13511,7 +13586,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.ulstyle[data-v-249b947c]{\r\n    list-style: none;\r\n    padding-left: 0px;\r\n    position: absolute;\r\n    background: aliceblue;\r\n    width: 50%;\r\n    z-index: 999;\n}\n.ulstyle > li[data-v-249b947c]:hover {\r\n    background:#ddd;\r\n    color: blue;\r\n    border-radius: 5px;\n}\n.ulstyle > li > p[data-v-249b947c]{\r\n    padding: 5px;\r\n    cursor: pointer;\r\n    margin-bottom: 0px;\r\n    border-bottom: 1px solid #DCA;\n}\n.card-title[data-v-249b947c] {\r\n  float: left;\n}\r\n\r\n", ""]);
+exports.push([module.i, "\n.ulstyle[data-v-249b947c]{\n    list-style: none;\n    padding-left: 0px;\n    position: absolute;\n    background: aliceblue;\n    width: 50%;\n    z-index: 999;\n}\n.ulstyle > li[data-v-249b947c]:hover {\n    background:#ddd;\n    color: blue;\n    border-radius: 5px;\n}\n.ulstyle > li > p[data-v-249b947c]{\n    padding: 5px;\n    cursor: pointer;\n    margin-bottom: 0px;\n    border-bottom: 1px solid #DCA;\n}\n.card-title[data-v-249b947c] {\n  float: left;\n}\n\n", ""]);
 
 // exports
 
@@ -13530,7 +13605,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.ulstyle[data-v-8e43ef84] {\r\n  list-style: none;\r\n  padding-left: 0px;\r\n  float: left;\r\n  width: 95%;\r\n  position: absolute;\r\n  background: aliceblue;\r\n  z-index: 999;\n}\n.ulstyle > li[data-v-8e43ef84]:hover {\r\n  background: #ddd;\r\n  color: blue;\r\n  border-radius: 5px;\n}\n.ulstyle > li > p[data-v-8e43ef84] {\r\n  padding: 5px;\r\n  cursor: pointer;\r\n  margin-bottom: 4px;\r\n  float: left;\r\n  width: 100%;\r\n  margin-bottom: 0px;\r\n    border-bottom: 1px solid #DCA;\n}\n.card-title[data-v-8e43ef84] {\r\n  float: left;\n}\n.supp[data-v-8e43ef84] {\r\n  width: 100%;\r\n  float: right;\n}\r\n", ""]);
+exports.push([module.i, "\n.ulstyle[data-v-8e43ef84] {\n  list-style: none;\n  padding-left: 0px;\n  float: left;\n  width: 95%;\n  position: absolute;\n  background: aliceblue;\n  z-index: 999;\n}\n.ulstyle > li[data-v-8e43ef84]:hover {\n  background: #ddd;\n  color: blue;\n  border-radius: 5px;\n}\n.ulstyle > li > p[data-v-8e43ef84] {\n  padding: 5px;\n  cursor: pointer;\n  margin-bottom: 4px;\n  float: left;\n  width: 100%;\n  margin-bottom: 0px;\n    border-bottom: 1px solid #DCA;\n}\n.card-title[data-v-8e43ef84] {\n  float: left;\n}\n.supp[data-v-8e43ef84] {\n  width: 100%;\n  float: right;\n}\n", ""]);
 
 // exports
 
@@ -72537,12 +72612,12 @@ var staticRenderFns = [
       "div",
       { staticClass: "card-footer", staticStyle: { display: "block" } },
       [
-        _vm._v("\r\n                    Visit "),
+        _vm._v("\n                    Visit "),
         _c("a", { attrs: { href: "https://select2.github.io/" } }, [
           _vm._v("Select2 documentation")
         ]),
         _vm._v(
-          " for more examples and information about\r\n                    the plugin.\r\n                "
+          " for more examples and information about\n                    the plugin.\n                "
         )
       ]
     )
@@ -74883,10 +74958,14 @@ var render = function() {
                               "margin-top": "15px"
                             }
                           },
-                          [_vm._v("সন্ধিপাঠ লাইব্রেরি")]
+                          [_vm._v(_vm._s(_vm.settingData.title))]
                         ),
                         _vm._v(" "),
-                        _vm._m(2),
+                        _c("p", { staticStyle: { "text-align": "center" } }, [
+                          _vm._v(_vm._s(_vm.settingData.address) + " "),
+                          _c("br"),
+                          _vm._v("Contact: " + _vm._s(_vm.settingData.mobile))
+                        ]),
                         _vm._v(" "),
                         _c(
                           "div",
@@ -74901,7 +74980,7 @@ var render = function() {
                                     "thead",
                                     {
                                       key: allCust.id,
-                                      staticStyle: { "line-height": "8px" }
+                                      staticStyle: { "line-height": "15px" }
                                     },
                                     [
                                       _c("tr", [
@@ -74953,14 +75032,14 @@ var render = function() {
                                         ])
                                       ]),
                                       _vm._v(" "),
-                                      _vm._m(3, true)
+                                      _vm._m(2, true)
                                     ]
                                   )
                                 }),
                                 _vm._v(" "),
                                 _c(
                                   "tbody",
-                                  { staticStyle: { "line-height": "8px" } },
+                                  { staticStyle: { "line-height": "15px" } },
                                   _vm._l(_vm.CustInventByIdList, function(
                                     payCust
                                   ) {
@@ -75021,7 +75100,7 @@ var render = function() {
             },
             [
               _c("div", { staticClass: "modal-content" }, [
-                _vm._m(4),
+                _vm._m(3),
                 _vm._v(" "),
                 _c(
                   "form",
@@ -75340,7 +75419,7 @@ var render = function() {
                         )
                       ]),
                       _vm._v(" "),
-                      _vm._m(5)
+                      _vm._m(4)
                     ])
                   ]
                 )
@@ -75371,7 +75450,7 @@ var render = function() {
             },
             [
               _c("div", { staticClass: "modal-content" }, [
-                _vm._m(6),
+                _vm._m(5),
                 _vm._v(" "),
                 _c(
                   "form",
@@ -75415,7 +75494,7 @@ var render = function() {
                           })
                         ]),
                         _vm._v(" "),
-                        _vm._m(7)
+                        _vm._m(6)
                       ])
                     ])
                   ]
@@ -75447,7 +75526,7 @@ var render = function() {
             },
             [
               _c("div", { staticClass: "modal-content" }, [
-                _vm._m(8),
+                _vm._m(7),
                 _vm._v(" "),
                 _c("div", { staticClass: "modal-body" }, [
                   _c("div", { staticClass: "col-md-12" }, [
@@ -75727,16 +75806,6 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("p", { staticStyle: { "text-align": "center" } }, [
-      _vm._v("১৪ পূর্ব শেওড়াপাড়া, মিরপুর,ঢাকা-১২১৬ "),
-      _c("br"),
-      _vm._v("০১৮৬০৭২২৭২২")
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
     return _c("tr", [_c("th", [_vm._v("Pay History:")])])
   },
   function() {
@@ -75851,12 +75920,45 @@ var render = function() {
                                   width: "75px",
                                   "margin-left": "6.5rem"
                                 },
-                                attrs: { src: "/img/logo.png" }
+                                attrs: {
+                                  src: "/images/" + _vm.settingData.logo
+                                }
                               })
                             ]
                           ),
                           _vm._v(" "),
-                          _vm._m(0),
+                          _c(
+                            "div",
+                            {
+                              staticClass: "col-md-6",
+                              staticStyle: { float: "left" }
+                            },
+                            [
+                              _c(
+                                "h3",
+                                {
+                                  staticClass: "card-title",
+                                  staticStyle: { "text-align": "center" }
+                                },
+                                [_vm._v(_vm._s(_vm.settingData.title))]
+                              ),
+                              _vm._v(" "),
+                              _c(
+                                "p",
+                                {
+                                  staticStyle: {
+                                    "text-align": "center",
+                                    "margin-bottom": "5px"
+                                  }
+                                },
+                                [
+                                  _vm._v(_vm._s(_vm.settingData.address)),
+                                  _c("br"),
+                                  _vm._v(_vm._s(_vm.settingData.mobile))
+                                ]
+                              )
+                            ]
+                          ),
                           _vm._v(" "),
                           _c(
                             "div",
@@ -76084,7 +76186,7 @@ var render = function() {
                           { staticClass: "card-body table-responsive p-0" },
                           [
                             _c("table", { staticClass: "table table-hover" }, [
-                              _vm._m(1),
+                              _vm._m(0),
                               _vm._v(" "),
                               _c(
                                 "tbody",
@@ -76170,35 +76272,6 @@ var render = function() {
   )
 }
 var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c(
-      "div",
-      { staticClass: "col-md-6", staticStyle: { float: "left" } },
-      [
-        _c(
-          "h3",
-          {
-            staticClass: "card-title",
-            staticStyle: { "text-align": "center" }
-          },
-          [_vm._v("সন্ধিপাঠ লাইব্রেরি")]
-        ),
-        _vm._v(" "),
-        _c(
-          "p",
-          { staticStyle: { "text-align": "center", "margin-bottom": "5px" } },
-          [
-            _vm._v("১৪ পূর্ব শেওড়াপাড়া, মিরপুর,ঢাকা-১২১৬ "),
-            _c("br"),
-            _vm._v("০১৮৬০৭২২৭২২")
-          ]
-        )
-      ]
-    )
-  },
   function() {
     var _vm = this
     var _h = _vm.$createElement
@@ -80529,7 +80602,20 @@ var render = function() {
                   { staticClass: "col-md-4", staticStyle: { float: "right" } },
                   [
                     _c("div", { staticClass: "card" }, [
-                      _vm._m(1),
+                      _c(
+                        "div",
+                        {
+                          staticClass: "card-header",
+                          staticStyle: { "text-align": "center" }
+                        },
+                        [
+                          _c("h3", { staticClass: "card-title" }, [
+                            _vm._v(_vm._s(_vm.settingData.title))
+                          ]),
+                          _vm._v(" "),
+                          _c("h4", [_vm._v("Summary")])
+                        ]
+                      ),
                       _vm._v(" "),
                       _c(
                         "div",
@@ -80600,22 +80686,6 @@ var staticRenderFns = [
         _c("th", [_vm._v("Available Quantity")])
       ])
     ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c(
-      "div",
-      { staticClass: "card-header", staticStyle: { "text-align": "center" } },
-      [
-        _c("h3", { staticClass: "card-title" }, [
-          _vm._v("Prothoma Publications")
-        ]),
-        _vm._v(" "),
-        _c("h4", [_vm._v("Summary")])
-      ]
-    )
   }
 ]
 render._withStripped = true
@@ -80761,108 +80831,139 @@ var render = function() {
                   "div",
                   { staticClass: "col-md-4", staticStyle: { float: "right" } },
                   [
-                    _c("div", { staticClass: "card" }, [
-                      _c(
-                        "span",
-                        {
-                          staticStyle: {
-                            "text-align": "center",
-                            "font-size": "16px",
-                            "margin-top": "15px"
-                          }
-                        },
-                        [_vm._v("সন্ধিপাঠ লাইব্রেরি")]
-                      ),
-                      _vm._v(" "),
-                      _vm._m(2),
-                      _vm._v(" "),
-                      _c(
-                        "div",
-                        { staticClass: "card-body table-responsive p-0" },
-                        [
-                          _c(
-                            "table",
-                            { staticClass: "table table-hover" },
-                            [
-                              _vm._l(_vm.SuppInventById, function(allSupp) {
-                                return _c("thead", { key: allSupp.id }, [
-                                  _c("tr", [
-                                    _c("td", [
-                                      _vm._v(
-                                        "Consign Ref#: " +
-                                          _vm._s(allSupp.consign_ref)
-                                      )
-                                    ]),
-                                    _vm._v(" "),
-                                    _c("td")
-                                  ]),
-                                  _vm._v(" "),
-                                  _c("tr", [
-                                    _c("th", [_vm._v("Customer Name")]),
-                                    _vm._v(" "),
-                                    _c("td", [_vm._v(_vm._s(allSupp.supplier))])
-                                  ]),
-                                  _vm._v(" "),
-                                  _c("tr", [
-                                    _c("th", [_vm._v("Total Due")]),
-                                    _vm._v(" "),
-                                    _c("td", [
-                                      _vm._v(_vm._s(allSupp.total_due) + " Tk.")
-                                    ])
-                                  ]),
-                                  _vm._v(" "),
-                                  _c("tr", [
-                                    _c("th", [_vm._v("Total Paid")]),
-                                    _vm._v(" "),
-                                    _c("td", [
-                                      _vm._v(
-                                        _vm._s(allSupp.total_paid) + " Tk."
-                                      )
-                                    ])
-                                  ]),
-                                  _vm._v(" "),
-                                  _c("tr", [
-                                    _c("th", [_vm._v("Current Due")]),
-                                    _vm._v(" "),
-                                    _c("td", [
-                                      _vm._v(_vm._s(allSupp.new_due) + " Tk.")
-                                    ])
-                                  ]),
-                                  _vm._v(" "),
-                                  _vm._m(3, true)
-                                ])
-                              }),
-                              _vm._v(" "),
-                              _c(
-                                "tbody",
-                                _vm._l(_vm.SuppInventByIdList, function(
-                                  paySupp
-                                ) {
-                                  return _c("tr", { key: paySupp.id }, [
-                                    _c("td", [
-                                      _vm._v(
-                                        "Date: " +
-                                          _vm._s(
-                                            _vm._f("formatDate")(
-                                              paySupp.created_at
-                                            )
+                    _c(
+                      "button",
+                      {
+                        staticClass: "btn btn-info btn-sm",
+                        on: { click: _vm.download }
+                      },
+                      [_vm._v("Print/Download PDF")]
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "div",
+                      { staticClass: "card", attrs: { id: "printMe" } },
+                      [
+                        _c(
+                          "span",
+                          {
+                            staticStyle: {
+                              "text-align": "center",
+                              "font-size": "16px",
+                              "margin-top": "15px"
+                            }
+                          },
+                          [_vm._v(_vm._s(_vm.settingData.title))]
+                        ),
+                        _vm._v(" "),
+                        _c("p", { staticStyle: { "text-align": "center" } }, [
+                          _vm._v(_vm._s(_vm.settingData.address) + " "),
+                          _c("br"),
+                          _vm._v("Contact: " + _vm._s(_vm.settingData.mobile))
+                        ]),
+                        _vm._v(" "),
+                        _c(
+                          "div",
+                          { staticClass: "card-body table-responsive p-0" },
+                          [
+                            _c(
+                              "table",
+                              { staticClass: "table table-hover" },
+                              [
+                                _vm._l(_vm.SuppInventById, function(allSupp) {
+                                  return _c(
+                                    "thead",
+                                    {
+                                      key: allSupp.id,
+                                      staticStyle: { "line-height": "15px" }
+                                    },
+                                    [
+                                      _c("tr", [
+                                        _c("td", [
+                                          _vm._v(
+                                            "Consign Ref#: " +
+                                              _vm._s(allSupp.consign_ref)
                                           )
-                                      )
-                                    ]),
-                                    _vm._v(" "),
-                                    _c("td", [
-                                      _vm._v(_vm._s(paySupp.pay) + " Tk.")
-                                    ])
-                                  ])
+                                        ]),
+                                        _vm._v(" "),
+                                        _c("td")
+                                      ]),
+                                      _vm._v(" "),
+                                      _c("tr", [
+                                        _c("th", [_vm._v("Customer Name")]),
+                                        _vm._v(" "),
+                                        _c("td", [
+                                          _vm._v(_vm._s(allSupp.supplier))
+                                        ])
+                                      ]),
+                                      _vm._v(" "),
+                                      _c("tr", [
+                                        _c("th", [_vm._v("Total Due")]),
+                                        _vm._v(" "),
+                                        _c("td", [
+                                          _vm._v(
+                                            _vm._s(allSupp.total_due) + " Tk."
+                                          )
+                                        ])
+                                      ]),
+                                      _vm._v(" "),
+                                      _c("tr", [
+                                        _c("th", [_vm._v("Total Paid")]),
+                                        _vm._v(" "),
+                                        _c("td", [
+                                          _vm._v(
+                                            _vm._s(allSupp.total_paid) + " Tk."
+                                          )
+                                        ])
+                                      ]),
+                                      _vm._v(" "),
+                                      _c("tr", [
+                                        _c("th", [_vm._v("Current Due")]),
+                                        _vm._v(" "),
+                                        _c("td", [
+                                          _vm._v(
+                                            _vm._s(allSupp.new_due) + " Tk."
+                                          )
+                                        ])
+                                      ]),
+                                      _vm._v(" "),
+                                      _vm._m(2, true)
+                                    ]
+                                  )
                                 }),
-                                0
-                              )
-                            ],
-                            2
-                          )
-                        ]
-                      )
-                    ])
+                                _vm._v(" "),
+                                _c(
+                                  "tbody",
+                                  { staticStyle: { "line-height": "15px" } },
+                                  _vm._l(_vm.SuppInventByIdList, function(
+                                    paySupp
+                                  ) {
+                                    return _c("tr", { key: paySupp.id }, [
+                                      _c("td", [
+                                        _vm._v(
+                                          "Date: " +
+                                            _vm._s(
+                                              _vm._f("formatDate")(
+                                                paySupp.created_at
+                                              )
+                                            )
+                                        )
+                                      ]),
+                                      _vm._v(" "),
+                                      _c("td", [
+                                        _vm._v(_vm._s(paySupp.pay) + " Tk.")
+                                      ])
+                                    ])
+                                  }),
+                                  0
+                                )
+                              ],
+                              2
+                            )
+                          ]
+                        )
+                      ]
+                    )
                   ]
                 )
               ])
@@ -80894,7 +80995,7 @@ var render = function() {
             },
             [
               _c("div", { staticClass: "modal-content" }, [
-                _vm._m(4),
+                _vm._m(3),
                 _vm._v(" "),
                 _c(
                   "form",
@@ -81217,7 +81318,7 @@ var render = function() {
                         )
                       ]),
                       _vm._v(" "),
-                      _vm._m(5)
+                      _vm._m(4)
                     ])
                   ]
                 )
@@ -81248,7 +81349,7 @@ var render = function() {
             },
             [
               _c("div", { staticClass: "modal-content" }, [
-                _vm._m(6),
+                _vm._m(5),
                 _vm._v(" "),
                 _c("div", { staticClass: "modal-body" }, [
                   _c("div", { staticClass: "col-md-12" }, [
@@ -81522,16 +81623,6 @@ var staticRenderFns = [
         _vm._v(" "),
         _c("th", [_vm._v("Modify")])
       ])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("p", { staticStyle: { "text-align": "center" } }, [
-      _vm._v("১৪ পূর্ব শেওড়াপাড়া, মিরপুর,ঢাকা-১২১৬ "),
-      _c("br"),
-      _vm._v("০১৮৬০৭২২৭২২")
     ])
   },
   function() {
@@ -104076,8 +104167,8 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! D:\Office Project\Inventory\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! D:\Office Project\Inventory\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! D:\Hasinur\Inventory\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! D:\Hasinur\Inventory\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })

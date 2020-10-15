@@ -10,20 +10,25 @@
                                 <div class="card" >
 
                                     <div class="card-header" style="padding-bottom:0px">
-
                                         <div class="col-md-3" style="float:left;">
-                                            <img style="height:75px; width:75px; margin-left:6.5rem;" class="img-style" :src="`/img/logo.png`" />
+                                            <img style="height:75px; width:75px; margin-left:6.5rem;" class="img-style" :src="`/images/${settingData.logo}`"/>
                                         </div>
 
                                         <div class="col-md-6" style="float:left;">
-                                            <h3 style="text-align:center;" class="card-title">সন্ধিপাঠ লাইব্রেরি</h3>
-                                            <p style="text-align:center;margin-bottom:5px;">১৪ পূর্ব শেওড়াপাড়া, মিরপুর,ঢাকা-১২১৬ <br>০১৮৬০৭২২৭২২</p>
+
+                                            <h3 style="text-align:center;" class="card-title">{{ settingData.title }}</h3>
+                                            <p style="text-align:center;margin-bottom:5px;">{{ settingData.address }}<br>{{ settingData.mobile }}</p>
 
                                         </div>
                                         <div class="col-md-3" style="float:right;">
                                             <span style="float:left; margin-top:3.5rem;"><b>Invoice #</b> : {{ lastInvoice.invoice_ref }}</span>
                                         </div>
 
+                                        <!-- <div class="col-md-6" style="float:left;">
+                                            <h3 style="text-align:center;" class="card-title">সন্ধিপাঠ লাইব্রেরি</h3>
+                                            <p style="text-align:center;margin-bottom:5px;">১৪ পূর্ব শেওড়াপাড়া, মিরপুর,ঢাকা-১২১৬ <br>০১৮৬০৭২২৭২২</p>
+
+                                        </div> -->
 
                                     </div>
                                     <div class="card-body">
@@ -169,6 +174,13 @@ export default {
             lastInvoice:'',
             lastInvoiceDetails:'',
             totalQty:'',
+            dataList:'',
+            settingData:{
+                logo:"",
+                mobile:"",
+                address:"",
+                title:"",
+            },
 
         }
     },
@@ -192,6 +204,20 @@ export default {
     download(){
         this.$htmlToPaper('printMe');
     },
+    viewSettingsData(){
+        axios.get('/getSettingData')
+            .then((response)=>{
+                this.dataList = response.data.data;
+
+                this.dataList.forEach(el => {
+                    this.settingData.title = el.title;
+                    this.settingData.mobile = el.mobile;
+                    this.settingData.address = el.address;
+                    this.settingData.logo = el.logo;
+
+                });
+            })
+        },
 
 
 
@@ -212,6 +238,8 @@ export default {
             this.totalQty = response.data.totalqty;
             this.lastInvoiceDetails = response.data.data2;
         });
+
+    this.viewSettingsData();
   },
 
 };

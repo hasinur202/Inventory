@@ -63,12 +63,13 @@
 
 
               <div class="col-md-4" style="float:right;">
-                  <div class="card">
-                      <span style="text-align:center;font-size:16px; margin-top:15px;">সন্ধিপাঠ লাইব্রেরি</span>
-                      <p style="text-align:center;">১৪ পূর্ব শেওড়াপাড়া, মিরপুর,ঢাকা-১২১৬ <br>০১৮৬০৭২২৭২২</p>
+                  <button class="btn btn-info btn-sm" @click="download" style="">Print/Download PDF</button>
+                  <div id="printMe" class="card">
+                      <span style="text-align:center;font-size:16px; margin-top:15px;">{{ settingData.title }}</span>
+                      <p style="text-align:center;">{{ settingData.address }} <br>Contact: {{ settingData.mobile }}</p>
                   <div class="card-body table-responsive p-0">
                     <table class="table table-hover">
-                        <thead v-for="allSupp in SuppInventById" :key="allSupp.id">
+                        <thead style="line-height: 15px;" v-for="allSupp in SuppInventById" :key="allSupp.id">
                             <tr>
                                 <td>Consign Ref#: {{ allSupp.consign_ref }}</td>
                                 <td></td>
@@ -93,7 +94,7 @@
                                 <th>Pay History:</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody style="line-height: 15px;">
                             <tr v-for="paySupp in SuppInventByIdList" :key="paySupp.id">
                                 <td>Date: {{ paySupp.created_at | formatDate }}</td>
                                 <td>{{ paySupp.pay }} Tk.</td>
@@ -332,6 +333,7 @@ export default {
         SuppInventById:'',
         suppliers: [],
         inventoryList: "",
+        dataList:'',
 
         form: new Form({
             supplier: "",
@@ -341,6 +343,12 @@ export default {
             pay: "",
             consign_ref:"",
         }),
+        settingData:{
+          logo:"",
+          mobile:"",
+          address:"",
+          title:"",
+      },
 
       editInventory: {
           'supplier':'', 'total_due':'', 'total_paid':'', 'pay':'', 'new_due':'', 'created_at':'', 'updated_at':'', 'id' :'',
@@ -427,6 +435,25 @@ export default {
 
     },
 
+    viewSettingsData(){
+          axios.get('/getSettingData')
+            .then((response)=>{
+                this.dataList = response.data.data;
+
+                this.dataList.forEach(el => {
+                    this.settingData.title = el.title;
+                    this.settingData.mobile = el.mobile;
+                    this.settingData.address = el.address;
+                    this.settingData.logo = el.logo;
+
+                });
+            })
+      },
+
+      download(){
+        this.$htmlToPaper('printMe');
+        },
+
 
 
 
@@ -469,6 +496,7 @@ export default {
 
   mounted() {
       this.viewInventorySupplier();
+      this.viewSettingsData();
   }
 };
 </script>

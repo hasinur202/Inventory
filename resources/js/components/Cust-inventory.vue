@@ -67,11 +67,11 @@
                     <button class="btn btn-info btn-sm" @click="download" style="">Print/Download PDF</button>
 
                   <div id="printMe" class="card">
-                      <span style="text-align:center;font-size:16px; margin-top:15px;">সন্ধিপাঠ লাইব্রেরি</span>
-                      <p style="text-align:center;">১৪ পূর্ব শেওড়াপাড়া, মিরপুর,ঢাকা-১২১৬ <br>০১৮৬০৭২২৭২২</p>
+                      <span style="text-align:center;font-size:16px; margin-top:15px;">{{ settingData.title }}</span>
+                      <p style="text-align:center;">{{ settingData.address }} <br>Contact: {{ settingData.mobile }}</p>
                   <div class="card-body table-responsive p-0">
                     <table class="table table-hover">
-                        <thead style="line-height:8px;" v-for="allCust in CustInventById" :key="allCust.id">
+                        <thead style="line-height:15px;" v-for="allCust in CustInventById" :key="allCust.id">
                             <tr>
                                 <td>Invoice No: {{ allCust.invoice_ref }}</td>
                                 <td></td>
@@ -96,7 +96,7 @@
                                 <th>Pay History:</th>
                             </tr>
                         </thead>
-                        <tbody style="line-height:8px;">
+                        <tbody style="line-height:15px;">
                             <tr v-for="payCust in CustInventByIdList" :key="payCust.id">
                                 <td>Date: {{ payCust.created_at | formatDate }}</td>
                                 <td>{{ payCust.pay }} Tk.</td>
@@ -390,6 +390,7 @@ export default {
         CustInventByIdList: [],
         CustInventById: '',
         inventoryList: "",
+        dataList:'',
 
         form: new Form({
             cus_name: "",
@@ -399,6 +400,13 @@ export default {
             pay: "",
             invoice_ref:"",
         }),
+
+        settingData:{
+          logo:"",
+          mobile:"",
+          address:"",
+          title:"",
+      },
 
       editInventory: {
           'cus_name':'', 'total_due':'', 'total_paid':'', 'pay':'', 'new_due':'', 'updated_at':'', 'created_at':'', 'id' :'',
@@ -491,6 +499,23 @@ export default {
 
     },
 
+    viewSettingsData(){
+          axios.get('/getSettingData')
+            .then((response)=>{
+                this.dataList = response.data.data;
+
+                this.dataList.forEach(el => {
+                    this.settingData.title = el.title;
+                    this.settingData.mobile = el.mobile;
+                    this.settingData.address = el.address;
+                    this.settingData.logo = el.logo;
+
+                });
+            })
+      },
+
+
+
 
     getCus(val) {
         this.form.cus_name = val.cus_name;
@@ -532,6 +557,7 @@ export default {
 
   mounted() {
       this.viewInventoryCustomer();
+      this.viewSettingsData();
   }
 };
 </script>
