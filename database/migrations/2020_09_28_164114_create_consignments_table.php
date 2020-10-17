@@ -19,6 +19,8 @@ class CreateConsignmentsTable extends Migration
             $table->unsignedBigInteger('supplier_id');
             $table->foreign('supplier_id')->references('id')->on('suppliers');
             $table->string('total_price');
+            $table->string('pay_mode');
+            $table->integer('status')->default(1);
             $table->integer('consign_serial')->nullable();
             $table->timestamps();
         });

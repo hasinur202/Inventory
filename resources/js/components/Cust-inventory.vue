@@ -12,12 +12,12 @@
                   <div class="card-header">
                     <h3 class="card-title">Inventory for Customer</h3>
 
-                    <div class="card-tools">
+                    <!-- <div class="card-tools">
                       <button class="btn btn-success" data-toggle="modal" data-target="#addNew">
                         Add New
                         <i class="fas fa-user-plus fa-fw"></i>
                       </button>
-                    </div>
+                    </div> -->
                   </div>
                   <!-- /.card-header -->
                   <div class="card-body table-responsive p-0">
@@ -35,7 +35,7 @@
                           <tr v-for="inventory in inventoryList" :key="inventory.id">
                           <td>{{ inventory.invoice_ref }}</td>
                           <td>{{ inventory.cus_name }}</td>
-                          <td v-if="inventory.new_due > 0">
+                          <td v-if="inventory.total_due > inventory.total_paid">
                               <button @click="editCusById(inventory)" data-toggle="modal" data-target="#editNew" class="btn btn-info btn-sm">Due</button>
                           </td>
                           <td v-else><p class="btn btn-success btn-sm">Paid</p></td>
@@ -98,7 +98,7 @@
                         </thead>
                         <tbody style="line-height:15px;">
                             <tr v-for="payCust in CustInventByIdList" :key="payCust.id">
-                                <td>Date: {{ payCust.created_at | formatDate }}</td>
+                                <td>Date: {{ payCust.updated_at | formatDate }}</td>
                                 <td>{{ payCust.pay }} Tk.</td>
                             </tr>
 
@@ -116,12 +116,6 @@
               </div>
 
 
-
-
-
-
-
-
             </div>
 
           </div>
@@ -131,7 +125,7 @@
     <footerComponent></footerComponent>
 
 
-<!-- Add inventory -->
+<!--
                 <div
                     class="modal fade"
                     id="addNew"
@@ -141,7 +135,7 @@
                     aria-hidden="true"
                     >
                     <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-                  <!-- /.card-header -->
+
                   <div class="modal-content">
                     <div class="modal-header">
                       <h5 class="modal-title" id="addNewLabel">Add Inventory</h5>
@@ -234,58 +228,7 @@
                   </div>
                 </div>
                 </div>
-                  <!--- end col md-12 -->
-
-
-
-
-<!-- edit inventory -->
-                <div
-                    class="modal fade"
-                    id=""
-                    tabindex="-1"
-                    role="dialog"
-                    aria-labelledby="exampleModalLabel"
-                    aria-hidden="true"
-                    >
-                    <div class="modal-dialog modal-dialog-centered" role="document">
-                  <!-- /.card-header -->
-                  <div class="modal-content">
-                    <div class="modal-header">
-                      <h5 class="modal-title" id="addNewLabel">Edit Inventory</h5>
-                    </div>
-                    <form @submit.prevent="">
-                    <div class="modal-body">
-                      <div class="col-md-12">
-
-                            <div class="form-group">
-                                <label>Pay Now</label>
-                                <input
-                                v-model="editInventory.pay"
-                                type="text"
-                                placeholder="Pay Now"
-                                class="form-control"
-                                />
-                            </div>
-
-                        <div class="modal-footer">
-                            <button
-                          type="submit"
-                          class="btn btn-primary"
-                        >Update</button>
-
-                        </div>
-
-                      </div>
-                    </div>
-                    </form>
-                  </div>
-                </div>
-                </div>
-                <!--- end col md-12 -->
-
-
-
+ -->
 
 
 <!-- view inventory -->
@@ -415,17 +358,17 @@ export default {
   },
 
   methods: {
-       createCusInventory() {
       // Submit the form via a POST request
-      this.form.post("/storeCusInventory").then(() => {
-        this.viewInventoryCustomer();
-        this.form.reset();
-        Toast.fire({
-          icon: "success",
-          title: "Customer Inventory Added Successfully"
-        });
-      });
-    },
+    //    createCusInventory() {
+    //   this.form.post("/storeCusInventory").then(() => {
+    //     this.viewInventoryCustomer();
+    //     this.form.reset();
+    //     Toast.fire({
+    //       icon: "success",
+    //       title: "Customer Inventory Added Successfully"
+    //     });
+    //   });
+    // },
 
     viewInventoryCustomer() {
       axios.get("/getCusInventory").then(response => {
@@ -487,17 +430,17 @@ export default {
       this.form.pay = event.target.value;
     },
 
-    costBd() {
-        if(parseFloat(this.form.total_due) > 0 && parseFloat(this.form.pay) > 0){
-            this.form.new_due = parseFloat(this.form.total_due) - parseFloat(this.form.pay);
-        }
+    // costBd() {
+    //     if(parseFloat(this.form.total_due) > 0 && parseFloat(this.form.pay) > 0){
+    //         this.form.new_due = parseFloat(this.form.total_due) - parseFloat(this.form.pay);
+    //     }
 
-        if(parseFloat(this.form.pay) > 0){
+    //     if(parseFloat(this.form.pay) > 0){
 
-            this.form.total_paid = parseFloat(this.form.pay);
-        }
+    //         this.form.total_paid = parseFloat(this.form.pay);
+    //     }
 
-    },
+    // },
 
     viewSettingsData(){
           axios.get('/getSettingData')

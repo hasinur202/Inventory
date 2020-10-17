@@ -48,17 +48,21 @@
                           <td>{{ consignment.consign_ref }}</td>
                           <td>{{ consignment.created_at | formatDate }}</td>
                           <td>{{ consignment.get_supplier.supplier }}</td>
-                          <td>Cash</td>
+                          <td>{{ consignment.pay_mode }}</td>
                           <td>
-                            <!-- <router-link to="/viewconsignment" @click="consignmentByid(consignment)" class="nav-link" style="padding:0; float:left;padding-right:5px;">
-                                        <button class="btn btn-info btn-sm"><i class="fa fa-eye"></i></button>
-                            </router-link>-->
+                              <button v-if="consignment.pay_mode == 'Due' && consignment.status == 1" @click="addInventoryByid(consignment)"
+                                    class="btn btn-primary btn-sm">
+                                    Add to Inventory
+                                </button>
+
                               <button @click="consignmentByid(consignment)" class="btn btn-info btn-sm">
                                 <i class="fa fa-eye"></i>
                               </button>
-                            <a href="#">
-                              <!-- <button class="btn btn-danger btn-sm"><i class="fa fa-trash"></i></button> -->
-                            </a>
+
+                            <button @click="deleteConsignHistory(consignment)" class="btn btn-danger btn-sm">
+                                <i class="fa fa-trash"></i>
+                              </button>
+
                           </td>
                         </tr>
                       </tbody>
@@ -290,6 +294,36 @@ export default {
     },
 
   methods: {
+      deleteConsignHistory(consignment){
+        axios
+        .post(`/deleteConsignById/`,consignment)
+        .then(response => {
+            this.viewConsignment();
+            if(response.data.message){
+                Toast.fire({
+                    icon: "warning",
+                    title: "Consignment Details Delete First"
+                });
+            }else{
+                Toast.fire({
+                    icon: "success",
+                    title: "Deleted Successfully"
+                });
+            }
+        });
+    },
+
+    addInventoryByid(consignment){
+        axios.post(`/storeSuppInventory?id=${consignment.id}`).then(response => {
+            this.viewConsignment();
+            Toast.fire({
+                icon: 'success',
+                title: 'Added Successfully'
+            })
+        });
+    },
+
+
     showEditModal(item) {
       this.editDetails = item;
       console.log(item);

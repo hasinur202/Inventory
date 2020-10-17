@@ -150,5 +150,25 @@ class InvoiceController extends Controller
     }
 
 
+    public function delSalesById(Request $request){
+
+        $custsales = Invoice::findOrFail($request->id);
+        if($custsales->total_price == 0){
+            InvoiceDetails::where('invoice_id',$request->id)->delete();
+            $custsales->delete();
+
+            return response()->json([
+                'message1'=> 'success'
+            ],200);
+
+        }else{
+            return response()->json([
+                'message'=> 'fail'
+            ],200);
+        }
+
+    }
+
+
 
 }

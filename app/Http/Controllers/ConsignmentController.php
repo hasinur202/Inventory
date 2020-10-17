@@ -49,6 +49,7 @@ class ConsignmentController extends Controller
 
             $consignment = Consignment::create(['consign_ref' => $request->consign_ref,
                 'supplier_id' => $request->supplier_id,
+                'pay_mode' => $request->pay_mode,
                 'total_price' => $request->total_price,
                 'consign_serial' => $lastConsign]);
 
@@ -180,6 +181,30 @@ class ConsignmentController extends Controller
         $lastConsign = Consignment::whereDate('created_at', date('Y-m-d'))->orderBy('id', 'desc')->first();
         return  $lastConsign ? $lastConsign->consign_serial ? $lastConsign->consign_serial + 1 : 1 : 1;
     }
+
+
+
+    public function delConsignmentById(Request $request){
+
+        $custsales = Consignment::findOrFail($request->id);
+
+        if($custsales->total_price == 0){
+            ConsignmentDetails::where('consignment_id',$request->id)->delete();
+            $custsales->delete();
+
+            return response()->json([
+                'message1'=> 'success'
+            ],200);
+
+        }else{
+            return response()->json([
+                'message'=> 'fail'
+            ],200);
+        }
+
+    }
+
+
 
 
 }

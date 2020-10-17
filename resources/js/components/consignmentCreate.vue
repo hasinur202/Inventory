@@ -444,11 +444,21 @@
                   </div>
                   <!-- /.card-body -->
                   <div class="card-body" style="border: 2px solid cadetblue; border-radius:6px">
-                    <div class="col-md-6" style="float:left;">
-                      <p style="float:right; margin-bottom:0;">Total Publishers Price: {{ dataArray.total_pub_price }} TK.</p><br>
-                      <p style="float:right; margin-bottom:0;">Total Cost Price: {{ dataArray.total_price }} TK.</p>
+                        <div class="col-md-4" style="padding-left:0; float:left;">
+                        <label>Pay Mode</label>
+                            <select v-model="dataArray.pay_mode" id="type">
+                                <option value="Cash">Cash</option>
+                                <option value="Cheque">Cheque</option></option>
+                                <option value="Card">Card</option>
+                                <option value="Due">Credit to Supplier</option>
+                            </select>
+                        </div>
+
+                    <div class="col-md-5" style="float:left;">
+                      <p style="margin-bottom:0;">Total Publishers Price: {{ dataArray.total_pub_price }} TK.</p><br>
+                      <p style="margin-bottom:0;">Total Cost Price: {{ dataArray.total_price }} TK.</p>
                     </div>
-                    <div class="col-md-6" style="float:right;">
+                    <div class="col-md-3" style="float:right;">
                       <button
                         @click.prevent="finalUpdate()"
                         class="btn btn-success"
@@ -509,6 +519,7 @@ export default {
         total_pub_price:"",
         details: [],
         supplier: "",
+        pay_mode:'Cash'
       },
       editingData :{
         book_id: "",

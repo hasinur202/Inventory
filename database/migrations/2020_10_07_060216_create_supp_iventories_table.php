@@ -18,8 +18,8 @@ class CreateSuppIventoriesTable extends Migration
             $table->string('supplier');
             $table->string('consign_ref');
             $table->float('total_due');
-            $table->float('total_paid')->default(0.00);
-            $table->float('new_due')->default(0.00);
+            $table->float('total_paid')->nullable();
+            $table->float('new_due')->nullable();
             $table->timestamps();
         });
     }

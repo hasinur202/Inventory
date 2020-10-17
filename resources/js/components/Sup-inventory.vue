@@ -12,12 +12,12 @@
                   <div class="card-header">
                     <h3 class="card-title">Inventory for Supplier</h3>
 
-                    <div class="card-tools">
+                    <!-- <div class="card-tools">
                       <button class="btn btn-success" data-toggle="modal" data-target="#addNew">
                         Add New
                         <i class="fas fa-user-plus fa-fw"></i>
                       </button>
-                    </div>
+                    </div> -->
                   </div>
                   <!-- /.card-header -->
                   <div class="card-body table-responsive p-0">
@@ -35,7 +35,7 @@
                           <tr v-for="inventory in inventoryList" :key="inventory.id">
                           <td>{{ inventory.consign_ref }}</td>
                           <td>{{ inventory.supplier }}</td>
-                          <td v-if="inventory.new_due > 0">
+                          <td v-if="inventory.total_due > inventory.total_paid">
                               <button @click="editSupById(inventory)" data-toggle="modal" data-target="#editNew" class="btn btn-info btn-sm">Due</button>
                           </td>
                           <td v-else><p class="btn btn-success btn-sm">Paid</p></td>
@@ -123,7 +123,7 @@
 
 
 <!-- Add inventory -->
-                <div
+                <!-- <div
                     class="modal fade"
                     id="addNew"
                     tabindex="-1"
@@ -132,7 +132,7 @@
                     aria-hidden="true"
                     >
                     <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-                  <!-- /.card-header -->
+
                   <div class="modal-content">
                     <div class="modal-header">
                       <h5 class="modal-title" id="addNewLabel">Add Inventory</h5>
@@ -225,7 +225,7 @@
                     </form>
                   </div>
                 </div>
-                </div>
+                </div> -->
                   <!--- end col md-12 -->
 
 
@@ -304,8 +304,8 @@
                         </div>
                       </div>
                       <div class="modal-footer">
-                          <button type="submit" @click="updateSupInventory"  class="btn btn-primary">Update</button>
                           <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                          <button type="submit" @click="updateSupInventory"  class="btn btn-primary">Update</button>
                       </div>
                     </div>
                   </div>

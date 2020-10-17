@@ -17,7 +17,7 @@ class CreateSuppIventoryDetailsTable extends Migration
             $table->id();
             $table->unsignedBigInteger('supp_id');
             $table->foreign('supp_id')->references('id')->on('supp_iventories');
-            $table->float('pay')->default(0.00);
+            $table->float('pay')->nullable();
             $table->timestamps();
         });
     }

@@ -107,6 +107,12 @@ Route::post('/update-supinventory-details', 'InventoryController@updateSuppInven
 //update customer Inventory details
 Route::post('/update-cusinventory-details', 'InventoryController@updateCusInventory');
 
+//Delete sales history By Id
+Route::post('/deleteSalesById', 'InvoiceController@delSalesById');
+
+//Delete consignment history By Id
+Route::post('/deleteConsignById', 'ConsignmentController@delConsignmentById');
+
 
 //Delete Supplier By Id
 Route::post('/deleteSuppById', 'SupplierController@updateSuppById');

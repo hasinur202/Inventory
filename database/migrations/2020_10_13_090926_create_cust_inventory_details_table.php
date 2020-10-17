@@ -17,7 +17,7 @@ class CreateCustInventoryDetailsTable extends Migration
             $table->id();
             $table->unsignedBigInteger('cust_id');
             $table->foreign('cust_id')->references('id')->on('cust_inventories');
-            $table->float('pay')->default(0.00);
+            $table->float('pay')->nullable();
             $table->timestamps();
         });
     }

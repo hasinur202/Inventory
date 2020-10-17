@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Consignment extends Model
 {
 
-    protected $fillable = ['supplier_id','consign_ref','total_price', 'consign_serial'];
+    protected $guarded = [];
 
     public function get_book()
     {

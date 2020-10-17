@@ -6,7 +6,9 @@ use App\CustInventory;
 use App\SuppIventory;
 use App\Consignment;
 use App\CustInventoryDetails;
+use App\Invoice;
 use App\SuppIventoryDetails;
+use App\Supplier;
 use Illuminate\Http\Request;
 
 class InventoryController extends Controller
@@ -22,32 +24,61 @@ class InventoryController extends Controller
         ], 200);
     }
 
+    // public function storeIventorySup(Request $request){
+
+    //     $suppInvent = SuppIventory::create(['consign_ref' => $request->consign_ref,
+    //             'supplier' => $request->supplier,
+    //             'total_due' => $request->total_due,
+    //             'total_paid' => $request->total_paid,
+    //             'new_due' => $request->new_due]);
+
+    //     SuppIventoryDetails::create(['pay' => $request->pay, 'supp_id' => $suppInvent->id]);
+
+    //     return response()->json([
+    //         'message'=> 'success'
+    //     ],200);
+
+    // }
+
+
     public function storeIventorySup(Request $request){
 
-        $suppInvent = SuppIventory::create(['consign_ref' => $request->consign_ref,
-                'supplier' => $request->supplier,
-                'total_due' => $request->total_due,
-                'total_paid' => $request->total_paid,
-                'new_due' => $request->new_due]);
+        Consignment::find($request->id)->update(['status' => 0]);
 
-        SuppIventoryDetails::create(['pay' => $request->pay, 'supp_id' => $suppInvent->id]);
+
+        $consign = Consignment::find($request->id);
+        $supplier = Supplier::find($consign->supplier_id);
+
+        $new_pay=0.00;
+
+        $custInvent = SuppIventory::create(['consign_ref' => $consign->consign_ref,
+                'supplier' => $supplier->supplier,
+                'total_due' => $consign->total_price,
+                ]);
+
+        SuppIventoryDetails::create(['pay' => $new_pay, 'supp_id' => $custInvent->id]);
 
         return response()->json([
             'message'=> 'success'
         ],200);
-
     }
+
+
 
 
     public function storeIventoryCus(Request $request){
 
-        $custInvent = CustInventory::create(['invoice_ref' => $request->invoice_ref,
-                'cus_name' => $request->cus_name,
-                'total_due' => $request->total_due,
-                'total_paid' => $request->total_paid,
-                'new_due' => $request->new_due]);
+        Invoice::find($request->id)->update(['status' => 0]);
 
-        CustInventoryDetails::create(['pay' => $request->pay, 'cust_id' => $custInvent->id]);
+        $invoice = Invoice::find($request->id);
+        $new_pay=0.00;
+
+        $custInvent = CustInventory::create(['invoice_ref' => $invoice->invoice_ref,
+                'cus_name' => $invoice->cus_name,
+                'total_due' => $invoice->total_price,
+                ]);
+
+        CustInventoryDetails::create(['pay' => $new_pay, 'cust_id' => $custInvent->id]);
 
         return response()->json([
             'message'=> 'success'
@@ -74,6 +105,10 @@ class InventoryController extends Controller
         ],200);
 
     }
+
+
+
+
 
     public function updateCusInventory(Request $request){
 
@@ -127,7 +162,7 @@ class InventoryController extends Controller
 
     public function deleteCusInventoryById(Request $request){
 
-        $custinven = CustInventoryDetails::where('supp_id',$request->id)->delete();
+        $custinven = CustInventoryDetails::where('cust_id',$request->id)->delete();
         CustInventory::findOrFail($request->id)->delete();
 
         return response()->json([

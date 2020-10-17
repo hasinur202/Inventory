@@ -34,16 +34,23 @@
                                                     <td>{{ invoice.cus_name }}</td>
                                                     <td>{{ invoice.pay_mode }}</td>
                                                     <td>
-                                                        <!-- <router-link to="/viewconsignment" @click="consignmentByid(consignment)" class="nav-link" style="padding:0; float:left;padding-right:5px;">
-                                        <button class="btn btn-info btn-sm"><i class="fa fa-eye"></i></button>
-                            </router-link>-->
+                                                         <button v-if="invoice.pay_mode == 'Due' && invoice.status == 1" @click="addInventoryByid(invoice)"
+                                                            class="btn btn-primary btn-sm">
+                                                            Add to Inventory
+                                                        </button>
                                                         <button @click="invoiceByid(invoice)"
                                                             class="btn btn-info btn-sm">
                                                             <i class="fa fa-eye"></i>
                                                         </button>
-                                                        <a href="#">
-                                                            <!-- <button class="btn btn-danger btn-sm"><i class="fa fa-trash"></i></button> -->
-                                                        </a>
+
+                                                        <button @click="deleteSalesHistory(invoice)"
+                                                            class="btn btn-danger btn-sm">
+                                                            <i class="fa fa-trash"></i>
+                                                        </button>
+
+                                                        <!-- <a href="#">
+                                                           <button class="btn btn-danger btn-sm"><i class="fa fa-trash"></i></button>
+                                                        </a> -->
                                                     </td>
                                                 </tr>
                                             </tbody>
@@ -256,7 +263,27 @@
             }
         },
 
+
         methods: {
+
+            deleteSalesHistory(invoice){
+                axios
+                .post(`/deleteSalesById/`,invoice)
+                .then(response => {
+                    this.viewInvoice();
+                    if(response.data.message){
+                        Toast.fire({
+                            icon: "warning",
+                            title: "Invoice Details Delete First"
+                        });
+                    }else{
+                        Toast.fire({
+                            icon: "success",
+                            title: "Deleted Successfully"
+                        });
+                    }
+                });
+            },
 
             showEditModal(item) {
                 this.editDetails = item;
@@ -275,6 +302,17 @@
                 // console.log(consignment.consign_ref)
                 axios.get(`/getInvoiceId?id=${invoice.id}`).then(response => {
                     this.invoiceDetails = response.data;
+
+                });
+            },
+
+            addInventoryByid(invoice){
+                axios.post(`/storeCusInventory?id=${invoice.id}`).then(response => {
+                    this.viewInvoice();
+                    Toast.fire({
+                        icon: 'success',
+                        title: 'Added Successfully'
+                    })
                 });
             },
 
@@ -282,7 +320,6 @@
                 axios.post(`/delete-invoice`, {
                     id: id
                 }).then(response => {
-
                     Toast.fire({
                         icon: 'success',
                         title: 'Invoice Item Deleted Successfully'

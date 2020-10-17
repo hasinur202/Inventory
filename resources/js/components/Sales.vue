@@ -76,8 +76,9 @@
                                                         <div class="col-md-7" style="padding-left:0;">
                                                                 <select v-model="dataArray.pay_mode" id="type" style="width:97%;">
                                                                     <option value="Cash">Cash</option>
-                                                                    <option value="Credit">Credit</option>
-                                                                    <option value="Card">Credit Card</option>
+                                                                    <option value="Cheque">Cheque</option></option>
+                                                                    <option value="Card">Card</option>
+                                                                    <option value="Due">Credit to Customer</option>
                                                                 </select>
 
                                                         </div>
