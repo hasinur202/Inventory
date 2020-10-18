@@ -118,13 +118,35 @@
                                     <td>3.</td>
                                     <td>Paid To Supplier:</td>
                                     <td>
-                                    <span class="badge bg-primary">{{consignmentData.totalPrice}} Tk.</span>
                                     </td>
                                 </tr>
                                 <tr>
+                                    <td></td>
+                                    <td>.....Cash</td>
+                                    <td>
+                                        <span class="badge bg-primary">{{ cashData.totalCash }} Tk.</span>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td></td>
+                                    <td>.....Card</td>
+                                    <td>
+                                        <span class="badge bg-primary">{{ cardData.totalCard }} Tk.</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td>.....Cheque</td>
+                                    <td>
+                                        <span class="badge bg-primary">{{ chequeData.totalCheque }} Tk.</span>
+                                    </td>
+                                </tr>
+
+                                <tr>
                                     <td>4.</td>
                                     <td>Credit To Supplier:</td>
-                                    <td><span class="badge bg-primary">0.00 Tk.</span></td>
+                                    <td><span class="badge bg-primary">{{ dueData.totalDue }} Tk.</span></td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -169,14 +191,35 @@
                             <td>4.</td>
                             <td>Net Sales:</td>
                             <td>
-                              <span class="badge bg-info">{{ salesData.totalPrice }} Tk.</span>
                             </td>
                           </tr>
+                          <tr>
+                                <td></td>
+                                <td>.....Cash</td>
+                                <td>
+                                    <span class="badge bg-primary">{{ cashSale.totalCash }} Tk.</span>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td></td>
+                                <td>.....Card</td>
+                                <td>
+                                    <span class="badge bg-primary">{{ cardSale.totalCard }} Tk.</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td>.....Cheque</td>
+                                <td>
+                                    <span class="badge bg-primary">{{ chequeSale.totalCheque }} Tk.</span>
+                                </td>
+                            </tr>
                           <tr>
                             <td>5.</td>
                             <td>Credit to Customer:</td>
                             <td>
-                              <span class="badge bg-info">0.00</span>
+                              <span class="badge bg-info">{{ dueSale.totalDue }} Tk.</span>
                             </td>
                           </tr>
                         </tbody>
@@ -321,6 +364,17 @@ export default {
       },
       consignmentData: {},
       salesData: {},
+
+      cashData:'',
+      chequeData:'',
+      cardData:'',
+      dueData:'',
+
+      cashSale:'',
+      chequeSale:'',
+      cardSale:'',
+      dueSale:'',
+
       supplierData: {},
       customerData:{},
     };
@@ -342,6 +396,18 @@ export default {
           this.salesData = response.data.salesData;
           this.supplierData = response.data.supplierData;
           this.customerData = response.data.customerData;
+
+          this.cashData = response.data.totalCash;
+          this.cardData = response.data.totalCard;
+          this.chequeData = response.data.totalCheque;
+          this.dueData = response.data.totalDue;
+
+          this.cashSale = response.data.totalCashSale;
+          this.cardSale = response.data.totalCardSale;
+          this.chequeSale = response.data.totalChequeSale;
+          this.dueSale = response.data.totalDueSale;
+
+
         })
         .catch(err => {
           if (err.response.status == 422) {

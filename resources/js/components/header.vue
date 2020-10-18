@@ -473,6 +473,7 @@ export default {
       quickIsbnRest(){
         this.detailsFormData = [];
       },
+
       logout(){
         axios.get('/logout')
         .then(()=>{

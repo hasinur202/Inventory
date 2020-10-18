@@ -5783,6 +5783,49 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -5805,6 +5848,14 @@ __webpack_require__.r(__webpack_exports__);
       },
       consignmentData: {},
       salesData: {},
+      cashData: '',
+      chequeData: '',
+      cardData: '',
+      dueData: '',
+      cashSale: '',
+      chequeSale: '',
+      cardSale: '',
+      dueSale: '',
       supplierData: {},
       customerData: {}
     };
@@ -5822,6 +5873,14 @@ __webpack_require__.r(__webpack_exports__);
         _this.salesData = response.data.salesData;
         _this.supplierData = response.data.supplierData;
         _this.customerData = response.data.customerData;
+        _this.cashData = response.data.totalCash;
+        _this.cardData = response.data.totalCard;
+        _this.chequeData = response.data.totalCheque;
+        _this.dueData = response.data.totalDue;
+        _this.cashSale = response.data.totalCashSale;
+        _this.cardSale = response.data.totalCardSale;
+        _this.chequeSale = response.data.totalChequeSale;
+        _this.dueSale = response.data.totalDueSale;
       })["catch"](function (err) {
         if (err.response.status == 422) {
           _this.errors = err.response.data.errors;
@@ -13647,7 +13706,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.head_menu{\r\n        border-radius: 10px;\r\n        border: 1px solid #fff;\r\n        background: #494E54;\r\n        color: #fff !important;\r\n        margin-left: 14px;\n}\n.head_menu:hover {\r\n          background: gray !important;\r\n          color: black !important;\r\n          border:1px solid #ddd;transition-delay: 0.2s;\n}\n.fixed_position{\r\n          left:0;\r\n          right:0; top: 0;\r\n          position: fixed;\n}\r\n", ""]);
+exports.push([module.i, "\n.head_menu{\n        border-radius: 10px;\n        border: 1px solid #fff;\n        background: #494E54;\n        color: #fff !important;\n        margin-left: 14px;\n}\n.head_menu:hover {\n          background: gray !important;\n          color: black !important;\n          border:1px solid #ddd;transition-delay: 0.2s;\n}\n.fixed_position{\n          left:0;\n          right:0; top: 0;\n          position: fixed;\n}\n", ""]);
 
 // exports
 
@@ -79400,10 +79459,50 @@ var render = function() {
                                       ])
                                     ]),
                                     _vm._v(" "),
+                                    _vm._m(2),
+                                    _vm._v(" "),
                                     _c("tr", [
-                                      _c("td", [_vm._v("3.")]),
+                                      _c("td"),
                                       _vm._v(" "),
-                                      _c("td", [_vm._v("Paid To Supplier:")]),
+                                      _c("td", [_vm._v(".....Cash")]),
+                                      _vm._v(" "),
+                                      _c("td", [
+                                        _c(
+                                          "span",
+                                          { staticClass: "badge bg-primary" },
+                                          [
+                                            _vm._v(
+                                              _vm._s(_vm.cashData.totalCash) +
+                                                " Tk."
+                                            )
+                                          ]
+                                        )
+                                      ])
+                                    ]),
+                                    _vm._v(" "),
+                                    _c("tr", [
+                                      _c("td"),
+                                      _vm._v(" "),
+                                      _c("td", [_vm._v(".....Card")]),
+                                      _vm._v(" "),
+                                      _c("td", [
+                                        _c(
+                                          "span",
+                                          { staticClass: "badge bg-primary" },
+                                          [
+                                            _vm._v(
+                                              _vm._s(_vm.cardData.totalCard) +
+                                                " Tk."
+                                            )
+                                          ]
+                                        )
+                                      ])
+                                    ]),
+                                    _vm._v(" "),
+                                    _c("tr", [
+                                      _c("td"),
+                                      _vm._v(" "),
+                                      _c("td", [_vm._v(".....Cheque")]),
                                       _vm._v(" "),
                                       _c("td", [
                                         _c(
@@ -79412,7 +79511,7 @@ var render = function() {
                                           [
                                             _vm._v(
                                               _vm._s(
-                                                _vm.consignmentData.totalPrice
+                                                _vm.chequeData.totalCheque
                                               ) + " Tk."
                                             )
                                           ]
@@ -79420,7 +79519,24 @@ var render = function() {
                                       ])
                                     ]),
                                     _vm._v(" "),
-                                    _vm._m(2)
+                                    _c("tr", [
+                                      _c("td", [_vm._v("4.")]),
+                                      _vm._v(" "),
+                                      _c("td", [_vm._v("Credit To Supplier:")]),
+                                      _vm._v(" "),
+                                      _c("td", [
+                                        _c(
+                                          "span",
+                                          { staticClass: "badge bg-primary" },
+                                          [
+                                            _vm._v(
+                                              _vm._s(_vm.dueData.totalDue) +
+                                                " Tk."
+                                            )
+                                          ]
+                                        )
+                                      ])
+                                    ])
                                   ])
                                 ])
                               ])
@@ -79498,18 +79614,20 @@ var render = function() {
                                       ])
                                     ]),
                                     _vm._v(" "),
+                                    _vm._m(5),
+                                    _vm._v(" "),
                                     _c("tr", [
-                                      _c("td", [_vm._v("4.")]),
+                                      _c("td"),
                                       _vm._v(" "),
-                                      _c("td", [_vm._v("Net Sales:")]),
+                                      _c("td", [_vm._v(".....Cash")]),
                                       _vm._v(" "),
                                       _c("td", [
                                         _c(
                                           "span",
-                                          { staticClass: "badge bg-info" },
+                                          { staticClass: "badge bg-primary" },
                                           [
                                             _vm._v(
-                                              _vm._s(_vm.salesData.totalPrice) +
+                                              _vm._s(_vm.cashSale.totalCash) +
                                                 " Tk."
                                             )
                                           ]
@@ -79517,7 +79635,63 @@ var render = function() {
                                       ])
                                     ]),
                                     _vm._v(" "),
-                                    _vm._m(5)
+                                    _c("tr", [
+                                      _c("td"),
+                                      _vm._v(" "),
+                                      _c("td", [_vm._v(".....Card")]),
+                                      _vm._v(" "),
+                                      _c("td", [
+                                        _c(
+                                          "span",
+                                          { staticClass: "badge bg-primary" },
+                                          [
+                                            _vm._v(
+                                              _vm._s(_vm.cardSale.totalCard) +
+                                                " Tk."
+                                            )
+                                          ]
+                                        )
+                                      ])
+                                    ]),
+                                    _vm._v(" "),
+                                    _c("tr", [
+                                      _c("td"),
+                                      _vm._v(" "),
+                                      _c("td", [_vm._v(".....Cheque")]),
+                                      _vm._v(" "),
+                                      _c("td", [
+                                        _c(
+                                          "span",
+                                          { staticClass: "badge bg-primary" },
+                                          [
+                                            _vm._v(
+                                              _vm._s(
+                                                _vm.chequeSale.totalCheque
+                                              ) + " Tk."
+                                            )
+                                          ]
+                                        )
+                                      ])
+                                    ]),
+                                    _vm._v(" "),
+                                    _c("tr", [
+                                      _c("td", [_vm._v("5.")]),
+                                      _vm._v(" "),
+                                      _c("td", [_vm._v("Credit to Customer:")]),
+                                      _vm._v(" "),
+                                      _c("td", [
+                                        _c(
+                                          "span",
+                                          { staticClass: "badge bg-info" },
+                                          [
+                                            _vm._v(
+                                              _vm._s(_vm.dueSale.totalDue) +
+                                                " Tk."
+                                            )
+                                          ]
+                                        )
+                                      ])
+                                    ])
                                   ])
                                 ])
                               ])
@@ -79715,13 +79889,11 @@ var staticRenderFns = [
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
     return _c("tr", [
-      _c("td", [_vm._v("4.")]),
+      _c("td", [_vm._v("3.")]),
       _vm._v(" "),
-      _c("td", [_vm._v("Credit To Supplier:")]),
+      _c("td", [_vm._v("Paid To Supplier:")]),
       _vm._v(" "),
-      _c("td", [
-        _c("span", { staticClass: "badge bg-primary" }, [_vm._v("0.00 Tk.")])
-      ])
+      _c("td")
     ])
   },
   function() {
@@ -79749,11 +79921,11 @@ var staticRenderFns = [
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
     return _c("tr", [
-      _c("td", [_vm._v("5.")]),
+      _c("td", [_vm._v("4.")]),
       _vm._v(" "),
-      _c("td", [_vm._v("Credit to Customer:")]),
+      _c("td", [_vm._v("Net Sales:")]),
       _vm._v(" "),
-      _c("td", [_c("span", { staticClass: "badge bg-info" }, [_vm._v("0.00")])])
+      _c("td")
     ])
   },
   function() {
