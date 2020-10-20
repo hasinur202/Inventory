@@ -213,10 +213,17 @@
                                     <div class="modal-body">
                                         <div class="col-md-12">
                                             <div>
-                                                <div class="form-group">
+
+                                            <div class="form-group">
+                                                <select v-model="detailsFormData.consign_ref" id="type" class="form-control">
+                                                    <option :closeOnSelect="false">{{ batchList }} </option>
+                                                </select>
+                                            </div>
+
+                                                <!-- <div class="form-group">
                                                     <input  v-model="detailsFormData.consign_ref" readonly type="text" placeholder="Select Batch by ISBN "
                                                         class="form-control">
-                                                </div>
+                                                </div> -->
                                             </div>
 
                                             <div>
@@ -311,7 +318,7 @@
                             <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
                                 <div class="modal-content">
                                     <div class="modal-header" style="padding-bottom:5px !important;">
-                                        <h5 class="modal-title" id="addNewLabel">Add Invoice</h5>
+                                        <h5 class="modal-title" id="addNewLabel">Edit Invoice</h5>
 
                                         <div style="margin-left:6rem;">
                                             <div class="form-group" style="float:left; margin-bottom:0 !important;">
@@ -441,16 +448,15 @@ export default {
 
   data(){
         return{
-            // editmode: true,
-            // item:{},
             errors: {},
+            batchList:[],
             editingIndex:0,
             getSearchValue: false,
             getSearchSupp: false,
             allBook:[],
             detailsFormData: {
                 book_id: "",
-                consign_ref: "",
+                consign_ref: '',
                 pub_price: "",
                 balance: "",
                 copies: "1",
@@ -506,9 +512,9 @@ export default {
     computed:{
         //isbn filtered from allbook
         filterd() {
-        return this.allBook.filter(val =>
-            val.book.isbn.startsWith(this.detailsFormData.isbn)
-        );
+            return this.allBook.filter(val =>
+                val.book.isbn.startsWith(this.detailsFormData.isbn)
+            );
         },
 
 
@@ -644,7 +650,7 @@ export default {
 
             }else{
                 Toast.fire({
-                    icon: 'danger',
+                    icon: 'warning',
                     title: 'Stock Empty'
                 })
             }
@@ -676,14 +682,21 @@ export default {
             //get value isbn and bookname from booktable
         getVal(val) {
             this.detailsFormData.isbn = val.book.isbn;
+
             this.allBook.forEach(el => {
                 if (this.detailsFormData.isbn == el.book.isbn) {
-                this.detailsFormData.book_id = el.book.id;
-                this.detailsFormData.book_name = el.book.book_name;
-                this.detailsFormData.balance = el.book.available_quantity;
-                this.detailsFormData.consign_ref = el.consignment.consign_ref;
-                this.detailsFormData.pub_price = el.pub_price;
-                this.getSearchValue = false;
+                    this.detailsFormData.book_id = el.book.id;
+                    this.detailsFormData.book_name = el.book.book_name;
+                    this.detailsFormData.balance = el.book.available_quantity;
+                    // this.detailsFormData.consign_ref = el.consignment.consign_ref;
+                    // this.batchList = el.consignment.consign_ref;
+                    this.batchList.push(el.consignment.consign_ref);
+
+
+                    console.log(this.detailsFormData.consign_ref)
+
+                    this.detailsFormData.pub_price = el.pub_price;
+                    this.getSearchValue = false;
                 }
             });
         },

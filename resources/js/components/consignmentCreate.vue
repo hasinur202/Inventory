@@ -51,7 +51,6 @@
                             <input
                               @keyup.prevent="searchVal()"
                               v-model="detailsFormData.isbn"
-                              :class="errors.hasOwnProperty('isbn') ? 'is-invalid' : ''"
                               type="text"
                               placeholder="Search ISBN"
                               class="form-control"
@@ -63,7 +62,7 @@
 
                             <ul v-show="getSearchValue" class="ulstyle">
                               <li v-for="val in filterd" :key="val.id">
-                                <p v-show="load?getVal(val):''">{{ val.isbn }}</p>
+                                <p @click.prevent="getVal(val)">{{ val.isbn }}</p>
                               </li>
                             </ul>
 
@@ -427,16 +426,14 @@
                           <td>{{ item.copies }}</td>
                           <td>{{ item.cost_price }}</td>
                           <td>{{ item.sales_price }}</td>
-                          <td>{{ item.pub_price }} {{ dataArray.currency }}</td>
+                          <td>{{ item.pub_price }} {{ item.currency }}</td>
                           <td>{{ item.total_price }}</td>
                           <td>
-                            <a href="#">
                               <button @click="deleteItem(index)" class="btn btn-danger btn-sm">
                                 <i class="fa fa-trash"></i>
                               </button>
                                 <button data-toggle="modal" data-target="#itemEdit" @click="editItem(item,index)" class="btn btn-primary btn-sm"><i
                                                                     class="fa fa-edit"></i></button>
-                            </a>
                           </td>
                         </tr>
                       </tbody>
@@ -488,7 +485,7 @@ export default {
 
   data() {
     return {
-      load:false,
+      ratelist:{},
       errors: {},
       editingIndex:0,
       total_consign_price: "",
@@ -542,10 +539,10 @@ export default {
     axios.get("/getBook").then(response => {
       this.allBook = response.data.data;
     });
+
   },
 
   computed: {
-
     //isbn filtered from allbook
     filterd() {
       return this.allBook.filter(val =>
@@ -594,62 +591,68 @@ export default {
     },
 
     finalUpdate() {
-        if(this.dataArray.supplier == ""){
-                Toast.fire({
-                    icon: 'danger',
-                    title: 'Supplier name must not be empty!'
-                })
-        }else{
-            axios.post("/storeConsignment", this.dataArray).then(() => {
-                console.log("success");
-                this.dataArray.details = [];
-                this.getConsignRef();
-                this.dataArray= {
-                    supplier_id: "",
-                    consign_ref: "",
-                    total_price: 0,
-                    total_pub_price:"",
-                    details: [],
-                    supplier: "",
-                }
+        axios.post("/storeConsignment", this.dataArray).then(() => {
+            this.rateGet();
+            this.dataArray.details = [];
+            this.getConsignRef();
+            this.dataArray= {
+                supplier_id: "",
+                consign_ref: "",
+                total_price: 0,
+                total_pub_price:"",
+                details: [],
+                supplier: "",
+            }
 
-                Toast.fire({
-                    icon: 'success',
-                    title: 'Consignments Saved Successfully'
-                })
-            });
+            Toast.fire({
+                icon: 'success',
+                title: 'Consignments Saved Successfully'
+            })
+        });
+    },
+    createConsignment() {
+        if(this.dataArray.supplier == ""){
+            Toast.fire({
+                icon: 'warning',
+                title: 'Supplier name must not be empty!'
+            })
+        }else{
+            this.dataArray.details.push(this.detailsFormData);
+            this.detailsFormData = {
+              book_id: "",
+              copies: "",
+              pub_price: "",
+              cost_price: "",
+              sales_price: "",
+              isbn: "",
+              conv_rate:this.detailsFormData.conv_rate,
+              st_rate:this.detailsFormData.st_rate,
+              book_name: "",
+              currency: "TK",
+              my_ratem: "",
+              total_price: "",
+              total_pub_price: ""
+            };
+
+            this.dataArray.total_price = this.dataArray.details.reduce(function(acc, curr){
+              return parseFloat(acc) + parseFloat(curr.total_price)
+            }, 0);
+
+          this.dataArray.total_pub_price = this.dataArray.details.reduce(function(acc, curr){
+              return parseFloat(acc) + parseFloat(curr.total_pub_price)
+            }, 0);
 
         }
 
-
     },
-    createConsignment() {
-      this.dataArray.details.push(this.detailsFormData);
-      this.detailsFormData = {
-        book_id: "",
-        copies: "",
-        pub_price: "",
-        cost_price: "",
-        sales_price: "",
-        isbn: "",
-        book_name: "",
-        currency: "TK",
-        conv_rate: "0.65",
-        st_rate: "0.8",
-        my_ratem: "",
-        total_price: "",
-        total_pub_price: ""
-      };
 
-      this.dataArray.total_price = this.dataArray.details.reduce(function(acc, curr){
-        return parseFloat(acc) + parseFloat(curr.total_price)
-      }, 0);
+    rateGet(){
+        axios.get("/getRate").then(response => {
 
-    this.dataArray.total_pub_price = this.dataArray.details.reduce(function(acc, curr){
-        return parseFloat(acc) + parseFloat(curr.total_pub_price)
-      }, 0);
-
-
+        this.ratelist = response.data.data;
+        this.detailsFormData.st_rate = this.ratelist.st_rate;
+        this.detailsFormData.conv_rate = this.ratelist.conv_rate;
+    });
     },
 
     viewConsignment() {
@@ -670,10 +673,8 @@ export default {
     //search value for isbn
     searchVal() {
       if (this.detailsFormData.isbn == "") {
-        this.load = false;
         this.getSearchValue = false;
       } else {
-        this.load = true;
         this.getSearchValue = true;
       }
     },
@@ -767,10 +768,6 @@ export default {
 
 
 
-
-
-
-
     },
     sidebarClose() {
       $("body").addClass("sidebar-collapse");
@@ -810,6 +807,8 @@ export default {
     this.viewConsignment();
     this.sidebarClose();
     this.getConsignRef();
+    this.rateGet();
+
   },
   destroyed() {
     this.sidebarOpen();

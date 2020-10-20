@@ -15,7 +15,7 @@
                       </router-link>
                 </div>
 
-              <div class="col-md-8" style="float:left;">
+              <div class="col-md-12" style="float:left;">
                 <div class="card">
                   <div class="card-header">
                     <h3 class="card-title">Consignment History</h3>
@@ -55,7 +55,7 @@
                                     Add to Inventory
                                 </button>
 
-                              <button @click="consignmentByid(consignment)" class="btn btn-info btn-sm">
+                              <button @click="consignmentByid(consignment)" class="btn btn-info btn-sm" data-toggle="modal" data-target="#editConsign">
                                 <i class="fa fa-eye"></i>
                               </button>
 
@@ -73,38 +73,107 @@
                 <!-- /.card -->
               </div>
 
-              <div class="col-md-4" style="float:right;">
-                  <div class="card">
-                  <div class="card-body table-responsive p-0">
-                    <table class="table table-hover">
-                      <thead>
-                        <tr>
-                          <th>Quantity</th>
-                          <th>Total Price</th>
-                          <th>Modify</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr v-for="(item, index) in consignmentDetails" :key="index">
-                          <td>{{ item.qty }}</td>
-                          <td>{{ item.total_price }}</td>
-                          <td>
-                              <button
-                                @click="showEditModal(item)"
-                                class="float-left btn btn-primary btn-sm"
-                                ><i class="fa fa-edit"></i></button>
-                                <button
-                                @click="deleteSingleDetails(item.id)"
-                                class="float-left btn btn-danger btn-sm"
-                                ><i class="fa fa-trash"></i></button>
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-              </div>
 
-              </div>
+
+
+              <!-- <div class="col-md-4" style="float:right;">
+                  <div class="card">
+                    <div class="card-body table-responsive p-0">
+                        <table class="table table-hover">
+                        <thead>
+                            <tr>
+                            <th>Quantity</th>
+                            <th>Total Price</th>
+                            <th>Modify</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="(item, index) in consignmentDetails" :key="index">
+                            <td>{{ item.qty }}</td>
+                            <td>{{ item.total_price }}</td>
+                            <td>
+                                <button
+                                    @click="showEditModal(item)"
+                                    class="float-left btn btn-primary btn-sm"
+                                    ><i class="fa fa-edit"></i></button>
+                                    <button
+                                    @click="deleteSingleDetails(item.id)"
+                                    class="float-left btn btn-danger btn-sm"
+                                    ><i class="fa fa-trash"></i></button>
+                            </td>
+                            </tr>
+                        </tbody>
+                        </table>
+                    </div>
+                </div>
+              </div> -->
+
+
+
+             <div class="modal fade" id="editConsign" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+                            aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                    <!-- /.card-header -->
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="addNewLabel">Edit Invoice</h5>
+                        </div>
+                            <div class="modal-body">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                        <th>ISBN/Code</th>
+                                        <th>Title</th>
+                                        <th>Copies</th>
+                                        <th>Cost Price</th>
+                                        <th>Sales Price</th>
+                                        <th>Publisher Price</th>
+                                        <th>Total Price</th>
+                                        <th>Modify</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody v-for="(item, index) in consignmentDetails" :key="index">
+                                        <tr>
+                                        <td>{{ item.book.isbn }}</td>
+                                        <td>{{ item.book.book_name }}</td>
+                                        <td>{{ item.qty }}</td>
+                                        <td>{{ item.cost_price }}</td>
+                                        <td>{{ item.sales_price }}</td>
+                                        <td>{{ item.pub_price }} {{ item.currency }}</td>
+                                        <td>{{ item.total_price }}</td>
+                                        <td>
+                                            <button
+                                                @click="showEditModal(item)"
+                                                class="float-left btn btn-primary btn-sm"
+                                                ><i class="fa fa-edit"></i></button>
+                                                <button
+                                                @click="deleteSingleDetails(item.id)"
+                                                class="float-left btn btn-danger btn-sm"
+                                                ><i class="fa fa-trash"></i></button>
+                                        </td>
+                                        </tr>
+                                    </tbody>
+                                    </table>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                            </div>
+                    </div>
+                </div>
+            </div>
+            <!--- end col md-12 -->
+
+
+
+
+
+
+
+
+
+
+
+
 
             </div>
 

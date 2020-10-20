@@ -63,6 +63,8 @@ Route::get('/getCategory', 'CategoryController@index');
 Route::get('/getSupplier', 'SupplierController@index');
 //get Consignment
 Route::get('/getConsignment', 'ConsignmentController@index');
+//get Consignment static rate and conv. rate
+Route::get('/getRate', 'ConsignmentController@getConsignRate');
 
 //get supplier from consignemtn
 Route::get('/getSuppConsign', 'InventoryController@SupplierGetConsign');

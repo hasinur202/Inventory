@@ -21,6 +21,15 @@ class ConsignmentController extends Controller
         ], 200);
     }
 
+    public function getConsignRate()
+    {
+        $data = ConsignmentDetails::latest()->first();
+        return response()->json([
+            'data' => $data,
+            'message' => "success"
+        ], 200);
+    }
+
 
     public function detailsForInvoice(){
         // $data = ConsignmentDetails::with('book:isbn,book_name,available_quantity', 'consignment:consign_ref')->get();

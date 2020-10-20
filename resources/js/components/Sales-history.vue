@@ -7,7 +7,7 @@
                     <div class="container">
                         <div class="row mt-5">
 
-                            <div class="col-md-8" style="float:left;">
+                            <div class="col-md-12" style="float:left;">
                                 <div class="card">
                                     <div class="card-header">
                                         <h3 class="card-title">Invoice History</h3>
@@ -38,7 +38,7 @@
                                                             class="btn btn-primary btn-sm">
                                                             Add to Inventory
                                                         </button>
-                                                        <button @click="invoiceByid(invoice)"
+                                                        <button @click="invoiceByid(invoice)" data-toggle="modal" data-target="#editInvoice"
                                                             class="btn btn-info btn-sm">
                                                             <i class="fa fa-eye"></i>
                                                         </button>
@@ -61,7 +61,8 @@
                                 <!-- /.card -->
                             </div>
 
-                            <div class="col-md-4" style="float:right;">
+
+                            <!-- <div class="col-md-4" style="float:right;">
                                 <div class="card">
                                     <div class="card-body table-responsive p-0">
                                         <table class="table table-hover">
@@ -90,7 +91,62 @@
                                     </div>
                                 </div>
 
+                            </div> -->
+
+
+
+                        <div class="modal fade" id="editInvoice" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+                            aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                                <!-- /.card-header -->
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="addNewLabel">Edit Invoice</h5>
+                                    </div>
+                                        <div class="modal-body">
+                                            <table class="table table-hover">
+                                                <thead>
+                                                    <tr>
+                                                        <th>ISBN/Code</th>
+                                                        <th>Title</th>
+                                                        <th>Copies</th>
+                                                        <th>Unit Price</th>
+                                                        <th>Sales Price</th>
+                                                        <th>Total Price</th>
+                                                        <th>Discount</th>
+                                                        <th>Modify</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody v-for="(item, index) in invoiceDetails" :key="index">
+
+                                                    <tr>
+                                                        <td>{{ item.book.isbn }}</td>
+                                                        <td>{{ item.book.book_name }}</td>
+                                                        <td>{{ item.qty }}</td>
+                                                        <td>{{ item.unit_price }} Tk.</td>
+                                                        <td>{{ item.unit_price }} Tk.</td>
+                                                        <td>{{ item.total_price }} Tk.</td>
+                                                        <td>{{ item.total_dis }} Tk.</td>
+                                                        <td>
+                                                            <button @click="showEditModal(item)"
+                                                                class="float-left btn btn-primary btn-sm"><i
+                                                                    class="fa fa-edit"></i></button>
+                                                            <button @click="deleteSingleDetails(item.id)"
+                                                                class="float-left btn btn-danger btn-sm"><i
+                                                                    class="fa fa-trash"></i></button>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                                        </div>
+                                </div>
                             </div>
+                        </div>
+                        <!--- end col md-12 -->
+
 
                         </div>
 

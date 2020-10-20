@@ -28,7 +28,6 @@ class CreateConsignmentDetailsTable extends Migration
             $table->float('st_rate');
             $table->string('currency');
             $table->timestamps();
-            $table->integer('consign_serial')->nullable();
         });
     }
 

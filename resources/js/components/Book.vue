@@ -31,6 +31,7 @@
                             <has-error :form="form" field="isbn"></has-error>
                         </div>
 
+
                         <div class="form-group">
                             <input @keyup="searchVal()" v-model="form.author" :class="{ 'is-invalid': form.errors.has('author') }"
                             type="text" placeholder="Book Author *" class="form-control select2 select2-hidden-accessible" tabindex="-1" aria-hidden="true">
@@ -43,6 +44,14 @@
                                 </li>
                             </ul>
                         </div>
+
+
+
+
+                        <div class="form-group">
+                            <v-select :options="option" multiple :closeOnSelect="false" v-model="selected"/><br>
+                        </div>
+
 
                         <div class="form-group">
                             <input v-model="form.copyright" :class="{ 'is-invalid': form.errors.has('copyright') }"
@@ -191,17 +200,21 @@
 </template>
 
 <script>
+import vSelect from 'vue-select'
 import headerComponent from "./header";
 import footerComponent from "./footer";
     export default {
         name: "Book",
         components: {
             headerComponent,
-            footerComponent
+            footerComponent,
         },
 
         data(){
             return{
+                selected: [],
+                option: [],
+
                 errors:{},
                 getSesrchValue: false,
                 getSesrchPub: false,
@@ -236,7 +249,11 @@ import footerComponent from "./footer";
             axios.get('/getAuthor')
             .then((response)=>{
                 this.authors = response.data.data;
+                    this.authors.forEach((value, index) => {
+                        this.option.push(value.author);
+                    });
             });
+
             axios.get('/getPublisher')
             .then((response)=>{
                 this.publishers = response.data.data;
@@ -245,6 +262,12 @@ import footerComponent from "./footer";
             .then((response)=>{
                 this.categories = response.data.data;
             })
+
+            getLocationsForEvent: (state) => (id) => {
+                return state.loadedLocations.filter(function (location) {
+                    return location.eventId === id;
+                });
+                }
 
         },
         computed:{

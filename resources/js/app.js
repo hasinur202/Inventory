@@ -2,6 +2,16 @@ require('./bootstrap');
 
 window.Vue = require('vue');
 
+// v select
+import vSelect from 'vue-select'
+
+Vue.component('v-select', vSelect)
+
+//end v-select
+
+
+
+
 //for print
 import VueHtmlToPaper from 'vue-html-to-paper';
 const options = {
