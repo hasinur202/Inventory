@@ -12,6 +12,7 @@ Vue.component('v-select', vSelect)
 
 
 
+
 //for print
 import VueHtmlToPaper from 'vue-html-to-paper';
 const options = {

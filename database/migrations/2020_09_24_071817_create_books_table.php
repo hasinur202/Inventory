@@ -16,7 +16,6 @@ class CreateBooksTable extends Migration
         Schema::create('books', function (Blueprint $table) {
             $table->id();
             $table->string('isbn')->unique();
-            $table->string('author');
             $table->string('copyright')->nullable();
             $table->smallInteger('year')->nullable();
             $table->string('country')->nullable();

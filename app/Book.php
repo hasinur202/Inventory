@@ -17,4 +17,9 @@ class Book extends Model
     {
         return $this->hasMany('App\Invoice','book_id');
     }
+
+    public function authors()
+    {
+        return $this->belongsToMany('App\Author','author_books')->withTimestamps();
+    }
 }
