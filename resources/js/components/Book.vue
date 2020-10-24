@@ -45,10 +45,16 @@
                             </ul>
                         </div> -->
 
-
                         <div class="form-group">
-                            <v-select :options="option" multiple :closeOnSelect="false"/><br>
+                            <select v-model="form.author" class="select2 select2-hidden-accessible" multiple="" data-placeholder="Select a State" style="width: 100%;" data-select2-id="7" tabindex="-1" aria-hidden="true">
+                                <option v-for="item in authors" :key="item.id" :value="item.id">{{ item.author }}</option>                        
+                            </select>
                         </div>
+<!-- 
+                        <div class="form-group">
+                            <v-select :options="option" multiple v-model="selected" :closeOnSelect="true"/>
+                            <br>
+                        </div> -->
 
 
                         <div class="form-group">
@@ -147,15 +153,6 @@
                         <has-error :form="form" field="status"></has-error>
                         </div>
 
-                        <!-- <div class="col-md-6" style="float: left; padding-left:0px;">
-                        <div class="form-group">
-                            <input name="status" type="checkbox" id="exampleCheck1">
-                            <label class="form-check-label" for="exampleCheck1"> New</label>
-                            <input v-model="form.status" :class="{ 'is-invalid': form.errors.has('status') }" name="status" style="margin-left:20px;" type="checkbox" id="exampleCheck2">
-                            <label class="form-check-labe2" for="exampleCheck2"> Upcoming</label>
-                            <has-error :form="form" field="status"></has-error>
-                        </div>
-                        </div> -->
                         <div class="form-group">
                             <textarea v-model="form.summary" :class="{ 'is-invalid': form.errors.has('summary') }"
                             type="text" name="summary" placeholder="Summary" class="form-control"></textarea>
@@ -209,7 +206,6 @@ import footerComponent from "./footer";
 
         data(){
             return{
-                
                 selected: [],
                 option: [],
 
@@ -225,7 +221,7 @@ import footerComponent from "./footer";
                 form: new Form({
                     isbn:'',
                     checkisbn:'',
-                    // author:'',
+                    author:[],
                     copyright:'',
                     year:'',
                     country:'',
@@ -289,7 +285,7 @@ import footerComponent from "./footer";
             createBook(){
                     // Submit the form via a POST request
                     if(this.form.isbn != "" || this.form.checkisbn != ""){
-                        this.form.post('/storeBook/',this.selected)
+                        this.form.post('/storeBook/')
                         .then(() => {
                             this.form.reset();
                             Toast.fire({

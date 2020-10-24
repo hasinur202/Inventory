@@ -65,10 +65,10 @@ class BookController extends Controller
         $book->summary      = $request->summary;
         $book->year         = $request->year;
         $book->save();
-        $book->authors()->sync($request->selected);
+        $book->authors()->sync($request->author);
 
         return response()->json([
-            'message'=>$request->selected
+            'message'=>$request->author
         ],200);
 
     }

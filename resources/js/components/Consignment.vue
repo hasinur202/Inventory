@@ -75,41 +75,6 @@
 
 
 
-
-              <!-- <div class="col-md-4" style="float:right;">
-                  <div class="card">
-                    <div class="card-body table-responsive p-0">
-                        <table class="table table-hover">
-                        <thead>
-                            <tr>
-                            <th>Quantity</th>
-                            <th>Total Price</th>
-                            <th>Modify</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr v-for="(item, index) in consignmentDetails" :key="index">
-                            <td>{{ item.qty }}</td>
-                            <td>{{ item.total_price }}</td>
-                            <td>
-                                <button
-                                    @click="showEditModal(item)"
-                                    class="float-left btn btn-primary btn-sm"
-                                    ><i class="fa fa-edit"></i></button>
-                                    <button
-                                    @click="deleteSingleDetails(item.id)"
-                                    class="float-left btn btn-danger btn-sm"
-                                    ><i class="fa fa-trash"></i></button>
-                            </td>
-                            </tr>
-                        </tbody>
-                        </table>
-                    </div>
-                </div>
-              </div> -->
-
-
-
              <div class="modal fade" id="editConsign" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
                             aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
