@@ -6,10 +6,7 @@ window.Vue = require('vue');
 import vSelect from 'vue-select'
 
 Vue.component('v-select', vSelect)
-
-//end v-select
-
-
+    //end v-select
 
 
 //for print

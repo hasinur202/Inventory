@@ -390,10 +390,9 @@
                         class="text-danger"
                         v-if="errors.hasOwnProperty('isbn')"
                     >{{errors.isbn[0]}}</span>
-
                     <ul v-show="getSearchValue" class="ulstyle">
                         <li v-for="val in filterd" :key="val.id">
-                        <p v-show="load?getVal(val):''">{{ val.isbn }}</p>
+                            <p @click.prevent="getVal(val)">{{ val.isbn }}</p>
                         </li>
                     </ul>
              </div>
@@ -436,7 +435,6 @@ export default {
     data(){
         return{
             getSearchValue: false,
-            load:false,
             errors: {},
             allBook:[],
             form: new Form({
@@ -527,10 +525,8 @@ export default {
 
       searchVal() {
       if (this.detailsFormData.isbn == "") {
-        this.load = false;
         this.getSearchValue = false;
       } else {
-        this.load = true;
         this.getSearchValue = true;
       }
     },
@@ -547,9 +543,6 @@ export default {
         }
       });
     },
-
-
-
 
     }
 }
@@ -573,4 +566,28 @@ export default {
           right:0; top: 0;
           position: fixed;
       }
+
+
+
+
+.ulstyle{
+    list-style: none;
+    padding-left: 0px;
+    position: absolute;
+    background: aliceblue;
+    width: 50%;
+    z-index: 999;
+}
+.ulstyle > li:hover {
+    background:#ddd;
+    color: blue;
+    border-radius: 5px;
+}
+
+.ulstyle > li > p{
+    padding: 5px;
+    cursor: pointer;
+    margin-bottom: 0px;
+    border-bottom: 1px solid #DCA;
+}
 </style>

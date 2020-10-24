@@ -2210,8 +2210,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
-//
-//
 
 
 
@@ -8855,13 +8853,11 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'app',
   data: function data() {
     return {
       getSearchValue: false,
-      load: false,
       errors: {},
       allBook: [],
       form: new Form({
@@ -8957,10 +8953,8 @@ __webpack_require__.r(__webpack_exports__);
     },
     searchVal: function searchVal() {
       if (this.detailsFormData.isbn == "") {
-        this.load = false;
         this.getSearchValue = false;
       } else {
-        this.load = true;
         this.getSearchValue = true;
       }
     },
@@ -13873,7 +13867,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.head_menu{\n        border-radius: 10px;\n        border: 1px solid #fff;\n        background: #494E54;\n        color: #fff !important;\n        margin-left: 14px;\n}\n.head_menu:hover {\n          background: gray !important;\n          color: black !important;\n          border:1px solid #ddd;transition-delay: 0.2s;\n}\n.fixed_position{\n          left:0;\n          right:0; top: 0;\n          position: fixed;\n}\n", ""]);
+exports.push([module.i, "\n.head_menu{\n        border-radius: 10px;\n        border: 1px solid #fff;\n        background: #494E54;\n        color: #fff !important;\n        margin-left: 14px;\n}\n.head_menu:hover {\n          background: gray !important;\n          color: black !important;\n          border:1px solid #ddd;transition-delay: 0.2s;\n}\n.fixed_position{\n          left:0;\n          right:0; top: 0;\n          position: fixed;\n}\n.ulstyle{\n    list-style: none;\n    padding-left: 0px;\n    position: absolute;\n    background: aliceblue;\n    width: 50%;\n    z-index: 999;\n}\n.ulstyle > li:hover {\n    background:#ddd;\n    color: blue;\n    border-radius: 5px;\n}\n.ulstyle > li > p{\n    padding: 5px;\n    cursor: pointer;\n    margin-bottom: 0px;\n    border-bottom: 1px solid #DCA;\n}\n", ""]);
 
 // exports
 
@@ -72087,13 +72081,6 @@ var render = function() {
                                     options: _vm.option,
                                     multiple: "",
                                     closeOnSelect: false
-                                  },
-                                  model: {
-                                    value: _vm.selected,
-                                    callback: function($$v) {
-                                      _vm.selected = $$v
-                                    },
-                                    expression: "selected"
                                   }
                                 }),
                                 _c("br")
@@ -85723,14 +85710,12 @@ var render = function() {
                         _c(
                           "p",
                           {
-                            directives: [
-                              {
-                                name: "show",
-                                rawName: "v-show",
-                                value: _vm.load ? _vm.getVal(val) : "",
-                                expression: "load?getVal(val):''"
+                            on: {
+                              click: function($event) {
+                                $event.preventDefault()
+                                return _vm.getVal(val)
                               }
-                            ]
+                            }
                           },
                           [_vm._v(_vm._s(val.isbn))]
                         )

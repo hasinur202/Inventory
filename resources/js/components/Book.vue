@@ -46,10 +46,8 @@
                         </div>
 
 
-
-
                         <div class="form-group">
-                            <v-select :options="option" multiple :closeOnSelect="false" v-model="selected"/><br>
+                            <v-select :options="option" multiple :closeOnSelect="false"/><br>
                         </div>
 
 
