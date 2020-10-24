@@ -25,9 +25,7 @@ class BookController extends Controller
     public function store(Request $request){
 
         $this->validate($request, [
-            'author'    => 'required',
             'book_name' => 'required',
-            'category'  => 'required',
             'publisher' => 'required',
         ]);
 
@@ -55,9 +53,9 @@ class BookController extends Controller
             $book->isbn = $request->isbn;
         }
         $book->book_name    = $request->book_name;
-        $book->author       = $request->author;
+        // $book->author       = $request->author;
         $book->copyright    = $request->copyright;
-        $book->category     = $request->category;
+        // $book->category     = $request->category;
         $book->publisher    = $request->publisher;
         $book->edition      = $request->edition;
         $book->language     = $request->language;
@@ -67,9 +65,10 @@ class BookController extends Controller
         $book->summary      = $request->summary;
         $book->year         = $request->year;
         $book->save();
+        $book->authors()->sync($request->selected);
 
         return response()->json([
-            'message'=>'success'
+            'message'=>$request->selected
         ],200);
 
     }
@@ -113,7 +112,7 @@ class BookController extends Controller
 
     }
 
-    
+
     public function deleteBook(Request $request){
         $book = Book::findOrFail($request->id)->delete();
 

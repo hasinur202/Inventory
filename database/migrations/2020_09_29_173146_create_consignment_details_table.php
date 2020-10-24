@@ -18,7 +18,7 @@ class CreateConsignmentDetailsTable extends Migration
             $table->unsignedBigInteger('consignment_id');
             $table->foreign('consignment_id')->references('id')->on('consignments');
             $table->unsignedBigInteger('book_id');
-            $table->foreign('book_id')->references('book_id')->references('id')->on('books');
+            $table->foreign('book_id')->references('id')->on('books');
             $table->float('cost_price');
             $table->float('pub_price');
             $table->float('sales_price');

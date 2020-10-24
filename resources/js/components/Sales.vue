@@ -198,7 +198,7 @@
 
                                                 <ul v-show="getSearchValue" class="ulstyle">
                                                     <li v-for="val in filterd" :key="val.id">
-                                                        <p @click.prevent="getVal(val)">{{ val.book.isbn }}</p>
+                                                        <p @click.prevent="getVal(val)">{{ val.book.isbn | unique }}</p>
                                                     </li>
                                                 </ul>
                                             </div>
@@ -216,7 +216,7 @@
 
                                             <div class="form-group">
                                                 <select v-model="detailsFormData.consign_ref" id="type" class="form-control">
-                                                    <option :closeOnSelect="false">{{ batchList }} </option>
+                                                    <option :closeOnSelect="false">{{ detailsFormData.consign_ref }} </option>
                                                 </select>
                                             </div>
 
@@ -446,6 +446,8 @@ import moment from 'moment'
 export default {
   name: "Sales",
 
+  
+
   data(){
         return{
             errors: {},
@@ -510,13 +512,11 @@ export default {
     },
 
     computed:{
-        //isbn filtered from allbook
         filterd() {
             return this.allBook.filter(val =>
                 val.book.isbn.startsWith(this.detailsFormData.isbn)
             );
         },
-
 
     },
 
@@ -688,13 +688,12 @@ export default {
                     this.detailsFormData.book_id = el.book.id;
                     this.detailsFormData.book_name = el.book.book_name;
                     this.detailsFormData.balance = el.book.available_quantity;
-                    // this.detailsFormData.consign_ref = el.consignment.consign_ref;
+                    this.detailsFormData.consign_ref = el.consignment.consign_ref;
                     // this.batchList = el.consignment.consign_ref;
-                    this.batchList.push(el.consignment.consign_ref);
-
+                    // this.batchList.push(el.consignment.consign_ref);
 
                     console.log(this.detailsFormData.consign_ref)
-
+                    
                     this.detailsFormData.pub_price = el.pub_price;
                     this.getSearchValue = false;
                 }

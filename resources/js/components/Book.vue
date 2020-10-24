@@ -31,7 +31,7 @@
                             <has-error :form="form" field="isbn"></has-error>
                         </div>
 
-
+<!-- 
                         <div class="form-group">
                             <input @keyup="searchVal()" v-model="form.author" :class="{ 'is-invalid': form.errors.has('author') }"
                             type="text" placeholder="Book Author *" class="form-control select2 select2-hidden-accessible" tabindex="-1" aria-hidden="true">
@@ -43,7 +43,7 @@
 
                                 </li>
                             </ul>
-                        </div>
+                        </div> -->
 
 
                         <div class="form-group">
@@ -179,8 +179,7 @@
                 </div>
                 <!-- /.card-body -->
                 <div class="card-footer" style="display: block;">
-                    Visit <a href="https://select2.github.io/">Select2 documentation</a> for more examples and information about
-                    the plugin.
+                    Visit <a target="_blank" href="https://www.ideatechsolution.com/">www.ideatechsolution.com</a> for more information.
                 </div>
                 </div>
 
@@ -210,6 +209,7 @@ import footerComponent from "./footer";
 
         data(){
             return{
+                
                 selected: [],
                 option: [],
 
@@ -225,7 +225,7 @@ import footerComponent from "./footer";
                 form: new Form({
                     isbn:'',
                     checkisbn:'',
-                    author:'',
+                    // author:'',
                     copyright:'',
                     year:'',
                     country:'',
@@ -289,7 +289,7 @@ import footerComponent from "./footer";
             createBook(){
                     // Submit the form via a POST request
                     if(this.form.isbn != "" || this.form.checkisbn != ""){
-                        this.form.post('/storeBook')
+                        this.form.post('/storeBook/',this.selected)
                         .then(() => {
                             this.form.reset();
                             Toast.fire({
