@@ -13,7 +13,7 @@ class BookController extends Controller
 {
 
     public function index(){
-        $data = Book::all();
+        $data = Book::with('authors','categories')->get();
 
         return response()->json([
             'data'=>$data,

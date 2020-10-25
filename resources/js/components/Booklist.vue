@@ -33,7 +33,8 @@
                             <tr v-for="books, key in temp">
                                 <td>{{ books.isbn }}</td>
                                 <td>{{ books.book_name }}</td>
-                                <td>{{ books.author }}</td>
+                                
+                                <td>{{ books.authors[0].author }}</td>
                                 <td>{{ books.copyright }}</td>
                                 <td>{{ books.category }}</td>
                                 <td>{{ books.edition }}</td>
@@ -357,7 +358,7 @@ export default {
     data(){
         return{
             editMode:false,
-            booklist: "",
+            booklist: [],
             searchQuery:'',
             temp:[],
             // booklistId: "",
