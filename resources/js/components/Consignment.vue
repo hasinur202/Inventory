@@ -7,7 +7,7 @@
           <div class="container">
             <div class="row">
                 <div class="col-md-12">
-                    <router-link to="/newConsignment" class="nav-link" style="float: right; margin-right: 21rem;">
+                    <router-link to="/newConsignment" class="nav-link" style="float: right;">
                         <button class="btn btn-success">
                           New Consignment
                           <i class="fas fa-user-plus fa-fw"></i>

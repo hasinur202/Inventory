@@ -824,6 +824,9 @@ export default {
   position: absolute;
   background: aliceblue;
   z-index: 999;
+  overflow-y:scroll;
+    min-height: 5rem;
+    max-height: 12rem;
 }
 .ulstyle > li:hover {
   background: #ddd;

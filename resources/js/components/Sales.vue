@@ -446,7 +446,7 @@ import moment from 'moment'
 export default {
   name: "Sales",
 
-  
+
 
   data(){
         return{
@@ -693,7 +693,7 @@ export default {
                     // this.batchList.push(el.consignment.consign_ref);
 
                     console.log(this.detailsFormData.consign_ref)
-                    
+
                     this.detailsFormData.pub_price = el.pub_price;
                     this.getSearchValue = false;
                 }
@@ -863,6 +863,9 @@ export default {
     background: aliceblue;
     width: 50%;
     z-index: 999;
+    overflow-y:scroll;
+    min-height: 5rem;
+    max-height: 12rem;
 
 }
 .ulstyle > li:hover {

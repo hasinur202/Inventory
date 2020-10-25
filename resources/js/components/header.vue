@@ -488,7 +488,6 @@ export default {
         // Submit the form via a POST request
         this.form.post('/storeAuthor')
         .then(() => {
-
             this.form.reset();
             Toast.fire({
             icon: 'success',
@@ -548,35 +547,35 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .head_menu{
-        border-radius: 10px;
-        border: 1px solid #fff;
-        background: #494E54;
-        color: #fff !important;
-        margin-left: 14px;
-      }
-      .head_menu:hover {
-          background: gray !important;
-          color: black !important;
-          border:1px solid #ddd;transition-delay: 0.2s;
-      }
-      .fixed_position{
-          left:0;
-          right:0; top: 0;
-          position: fixed;
-      }
-
-
-
+    border-radius: 10px;
+    border: 1px solid #fff;
+    background: #494E54;
+    color: #fff !important;
+    margin-left: 14px;
+    }
+.head_menu:hover {
+    background: gray !important;
+    color: black !important;
+    border:1px solid #ddd;transition-delay: 0.2s;
+}
+.fixed_position{
+    left:0;
+    right:0; top: 0;
+    position: fixed;
+}
 
 .ulstyle{
     list-style: none;
     padding-left: 0px;
     position: absolute;
     background: aliceblue;
-    width: 50%;
+    width: 80%;
     z-index: 999;
+    overflow-y:scroll;
+    min-height: 5rem;
+    max-height: 12rem;
 }
 .ulstyle > li:hover {
     background:#ddd;

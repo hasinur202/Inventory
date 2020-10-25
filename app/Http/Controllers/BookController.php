@@ -23,22 +23,18 @@ class BookController extends Controller
 
 
     public function store(Request $request){
-
         $this->validate($request, [
             'book_name' => 'required',
             'publisher' => 'required',
         ]);
 
-
         $book = new Book;
-
         if ($request->get('cover')) {
             $cover = $request->get('cover');
             $name = Str::random(5).'.' . explode('/', explode(':', substr($cover, 0, strpos($cover, ';')))[1])[1];
             $img = Image::make($request->cover);
             $upload_path = public_path()."/images/";
             $img->save($upload_path.$name);
-
             $book->cover        = $name;
         }
 
@@ -48,14 +44,11 @@ class BookController extends Controller
 
             $lastIsbn = $lastIsbn ? $lastIsbn->isbn_serial ? $lastIsbn->isbn_serial + 1 : 1 : 1;
             $book->isbn_serial = $lastIsbn;
-
         }else{
             $book->isbn = $request->isbn;
         }
         $book->book_name    = $request->book_name;
-        // $book->author       = $request->author;
         $book->copyright    = $request->copyright;
-        // $book->category     = $request->category;
         $book->publisher    = $request->publisher;
         $book->edition      = $request->edition;
         $book->language     = $request->language;
@@ -65,10 +58,22 @@ class BookController extends Controller
         $book->summary      = $request->summary;
         $book->year         = $request->year;
         $book->save();
-        $book->authors()->sync($request->author);
+
+        $arrAuth = array();
+        foreach ($request->author as $item) {
+            array_push($arrAuth,$item['id']);
+        }
+
+        $arrCat = array();
+        foreach ($request->category as $item) {
+            array_push($arrCat,$item['id']);
+        }
+
+        $book->authors()->sync($arrAuth);
+        $book->categories()->sync($arrCat);
 
         return response()->json([
-            'message'=>$request->author
+            'message'=>'success'
         ],200);
 
     }

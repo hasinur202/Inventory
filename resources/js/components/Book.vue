@@ -27,34 +27,23 @@
                     <div class="col-md-6">
                         <div class="form-group" v-show="visible">
                             <input v-model="form.isbn" :class="{ 'is-invalid': form.errors.has('isbn') }"
-                            type="text" placeholder="ISBN No." class="form-control" minlength="13" maxlength="13" >
+                            type="text" placeholder="ISBN No. *" class="form-control" minlength="13" maxlength="13" >
                             <has-error :form="form" field="isbn"></has-error>
                         </div>
 
-<!-- 
                         <div class="form-group">
-                            <input @keyup="searchVal()" v-model="form.author" :class="{ 'is-invalid': form.errors.has('author') }"
-                            type="text" placeholder="Book Author *" class="form-control select2 select2-hidden-accessible" tabindex="-1" aria-hidden="true">
-                            <has-error :form="form" field="author"></has-error>
-
-                            <ul v-show="getSesrchValue" class="ulstyle">
-                                <li v-for="val in filterd" :key="val.id">
-                                    <p @click.prevent="getVal(val)">{{ val.author }}</p>
-
-                                </li>
-                            </ul>
-                        </div> -->
-
-                        <div class="form-group">
-                            <select v-model="form.author" class="select2 select2-hidden-accessible" multiple="" data-placeholder="Select a State" style="width: 100%;" data-select2-id="7" tabindex="-1" aria-hidden="true">
-                                <option v-for="item in authors" :key="item.id" :value="item.id">{{ item.author }}</option>                        
-                            </select>
-                        </div>
-<!-- 
-                        <div class="form-group">
-                            <v-select :options="option" multiple v-model="selected" :closeOnSelect="true"/>
+                            <v-select
+                                @search="fetchAuth"
+                                placeholder="Search or add Author *"
+                                :options="authors"
+                                track-by="id"
+                                label="author"
+                                multiple
+                                :taggable="false"
+                                v-model="form.author"
+                                :closeOnSelect="true"/>
                             <br>
-                        </div> -->
+                        </div>
 
 
                         <div class="form-group">
@@ -98,19 +87,22 @@
                         </div>
 
                         <div class="form-group">
-                            <input @keyup="searchCat()" v-model="form.category" :class="{ 'is-invalid': form.errors.has('category') }"
-                            type="text" placeholder="Subject/Category *" class="form-control">
-                            <has-error :form="form" field="category"></has-error>
-                            <ul v-show="getSesrchCat" class="ulstyle">
-                                <li v-for="val in filterdCat" :key="val.id">
-                                    <p @click.prevent="getCat(val)">{{ val.category }}</p>
-
-                                </li>
-                            </ul>
+                            <v-select
+                                @search="fetchCat"
+                                placeholder="Search or add Category *"
+                                :options="categories"
+                                track-by="id"
+                                label="category"
+                                multiple
+                                :taggable="false"
+                                v-model="form.category"
+                                :closeOnSelect="true"/>
+                            <br>
                         </div>
+
                         <div class="form-group">
                             <input @keyup="searchPub()" v-model="form.publisher" :class="{ 'is-invalid': form.errors.has('publisher') }"
-                            type="text" placeholder="Publisher *" class="form-control">
+                            type="text" placeholder="Search Publisher *" class="form-control">
                             <has-error :form="form" field="publisher"></has-error>
                             <ul v-show="getSesrchPub" class="ulstyle">
                                 <li v-for="val in filterdPub" :key="val.id">
@@ -206,9 +198,6 @@ import footerComponent from "./footer";
 
         data(){
             return{
-                selected: [],
-                option: [],
-
                 errors:{},
                 getSesrchValue: false,
                 getSesrchPub: false,
@@ -228,7 +217,7 @@ import footerComponent from "./footer";
                     cover:'',
                     summary:'',
                     book_name:'',
-                    category:'',
+                    category:[],
                     publisher:'',
                     edition:'',
                     language:'',
@@ -240,48 +229,48 @@ import footerComponent from "./footer";
         },
 
         created(){
-            axios.get('/getAuthor')
-            .then((response)=>{
-                this.authors = response.data.data;
-                    this.authors.forEach((value, index) => {
-                        this.option.push(value.author);
-                    });
-            });
-
             axios.get('/getPublisher')
             .then((response)=>{
                 this.publishers = response.data.data;
             });
+
+            axios.get('/getAuthor')
+                .then((response)=>{
+                    this.authors = response.data.data;
+            });
+
             axios.get('/getCategory')
-            .then((response)=>{
-                this.categories = response.data.data;
-            })
+                .then((response)=>{
+                    this.categories = response.data.data;
+            });
 
             getLocationsForEvent: (state) => (id) => {
                 return state.loadedLocations.filter(function (location) {
                     return location.eventId === id;
                 });
-                }
+            }
 
         },
         computed:{
-
-            filterd(){
-                return this.authors.filter(val =>
-                val.author.toLowerCase().startsWith(this.form.author.toLowerCase()))
-            },
             filterdPub(){
                 return this.publishers.filter(val =>
                 val.publisher.toLowerCase().startsWith(this.form.publisher.toLowerCase()))
             },
-            filterdCat(){
-                return this.categories.filter(val =>
-                val.category.toLowerCase().startsWith(this.form.category.toLowerCase()))
-            }
-
         },
 
         methods:{
+            fetchCat (search, loading) {
+                axios.get('/getCategory')
+                .then((response)=>{
+                    this.categories = response.data.data;
+                })
+            },
+            fetchAuth (search, loading) {
+                axios.get('/getAuthor')
+                .then((response)=>{
+                    this.authors = response.data.data;
+                });
+            },
             createBook(){
                     // Submit the form via a POST request
                     if(this.form.isbn != "" || this.form.checkisbn != ""){
@@ -302,24 +291,6 @@ import footerComponent from "./footer";
                     }
             },
 
-        //authors search
-            getVal(val){
-                this.form.author = val.author;
-                this.getSesrchValue = false;
-            },
-            searchVal(){
-
-                if (this.form.author == '') {
-                    this.getSesrchValue = false;
-                }else{
-                    axios.get('/getAuthor')
-                    .then((response)=>{
-                        this.authors = response.data.data;
-                    });
-                    this.getSesrchValue = true;
-                }
-            },
-
             //publishers search
             getPub(val){
                 this.form.publisher = val.publisher;
@@ -338,24 +309,6 @@ import footerComponent from "./footer";
                 }
             },
 
-            //categories search
-            getCat(val){
-                this.form.category = val.category;
-                this.getSesrchCat = false;
-            },
-            searchCat(){
-
-                if (this.form.category == '') {
-                    this.getSesrchCat = false;
-                }else{
-                    axios.get('/getCategory')
-                    .then((response)=>{
-                        this.categories = response.data.data;
-                    });
-                    this.getSesrchCat = true;
-                }
-            },
-
             ourImage(img) {
                 return "/images/" + img;
             },
@@ -370,23 +323,6 @@ import footerComponent from "./footer";
 
             },
 
-            getVal(val){
-                this.form.author = val.author;
-                this.getSesrchValue = false;
-            },
-            searchVal(){
-                if (this.form.author == '') {
-                    this.getSesrchValue = false;
-                }else{
-                    axios.get('/getAuthor')
-                    .then((response)=>{
-                        this.authors = response.data.data;
-                    });
-                    this.getSesrchValue = true;
-
-                }
-            },
-
             // myFunction: function (min, max) {
             //     if(this.form.checkisbn == ''){
             //         this.form.checkisbn = Math.floor(Math.random() * (max - min)) + min;
@@ -395,13 +331,6 @@ import footerComponent from "./footer";
             //     }
             // },
 
-            // myFunction: function () {
-            //     if(this.form.checkisbn == ""){
-            //         this.getBookIsbnSerial();
-            //     }else{
-            //         this.form.checkisbn = "";
-            //     }
-            // },
 
             myFunction: function(){
                 if(this.form.checkisbn == ""){
@@ -433,7 +362,7 @@ import footerComponent from "./footer";
         },
 
         mounted() {
-            console.log('Component mounted.')
+            console.log('Component mounted.');
             // this.getBookIsbnSerial();
         },
     }
@@ -479,8 +408,14 @@ import footerComponent from "./footer";
     padding-left: 0px;
     position: absolute;
     background: aliceblue;
-    width: 50%;
+    width: 80%;
     z-index: 999;
+    overflow-y:scroll;
+    min-height: 5rem;
+    max-height: 12rem;
+}
+.selectstyle{
+    overflow-y:scroll;
 }
 .ulstyle > li:hover {
     background:#ddd;
