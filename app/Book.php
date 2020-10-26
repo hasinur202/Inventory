@@ -27,4 +27,9 @@ class Book extends Model
     {
         return $this->belongsToMany('App\Category','category_books')->withTimestamps();
     }
+
+    public function consignmentDetails()
+    {
+        return $this->hasMany(ConsignmentDetails::class);
+    }
 }

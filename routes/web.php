@@ -85,9 +85,11 @@ Route::get('/getInvoiceId', 'InvoiceController@getIdInvoice');
 Route::get('/getConsignId', 'ConsignmentController@getIdConsign');
 
 //get consignment Ref by id
-Route::post('/getConsignRef/{id}', 'ConsignmentController@getConsignRefbyId');
+Route::post('/getConsignRef', 'ConsignmentController@getConsignRefbyId');
 //get consignment by id
 Route::get('/getUserDetails', 'UserController@index');
+
+Route::get('get-consignment-data', 'ConsignmentController@getConsignmentData');
 
 
 //delete Book

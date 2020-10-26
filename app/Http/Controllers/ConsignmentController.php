@@ -22,7 +22,7 @@ class ConsignmentController extends Controller
     }
 
     public function uniqueISBN(){
-        $data = ConsignmentDetails::with('book')->distinct()->get(['book_id']);
+        $data = Book::whereHas('consignmentDetails.consignment')->selectRaw('distinct(isbn)')->get();
 
         // $data = ConsignmentDetails::with('book')->distinct()->get(['isbn']);
         return response()->json([
@@ -31,9 +31,11 @@ class ConsignmentController extends Controller
         ], 200);
     }
 
-    public function getConsignRefbyId(Request $request, $id){
+    public function getConsignRefbyId(Request $request){
 
-        $data = ConsignmentDetails::with('consignment')->where('book_id', $id)->get();
+        $data = Consignment::whereHas('consignmentDetails.book', function($query) use ($request){
+            $query->where('isbn', $request->isbn);
+        })->selectRaw('distinct(consign_ref)')->get();
 
         return response()->json([
             'data' => $data,
@@ -233,6 +235,16 @@ class ConsignmentController extends Controller
             ],200);
         }
 
+    }
+
+    public function getConsignmentData(Request $request)
+    {
+        return ConsignmentDetails::with('book')->whereHas('consignment', function($query) use ($request){
+            $query->where('consign_ref', $request->consign_ref);
+        })
+        ->whereHas('book', function ($q1) use ($request){
+            $q1->where('isbn', $request->isbn);
+        })->first();
     }
 
 

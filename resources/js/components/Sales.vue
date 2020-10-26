@@ -197,8 +197,8 @@
 
 
                                                 <ul v-show="getSearchValue" class="ulstyle">
-                                                    <li v-for="val in unique(filterd)" :key="val.id">
-                                                        <p @click.prevent="getVal(val)">{{ val.book.isbn }}</p>
+                                                    <li v-for="val in allUniqueIsbn" :key="val.isbn">
+                                                        <p @click.prevent="getVal(val)">{{ val.isbn }}</p>
                                                     </li>
                                                 </ul>
 
@@ -214,18 +214,11 @@
 
                                     <div class="modal-body">
                                         <div class="col-md-12">
-                                            <div>
 
-                                            <!-- <div class="form-group">
-                                                <select v-model="detailsFormData.consign_ref" id="type" class="form-control">
-                                                    <option v-for="item in detailsFormData.consign_ref" :closeOnSelect="false">{{ item }} </option>
+                                            <div class="form-group">
+                                                <select @change="getConsignmentData" v-model="selected_consign_ref" id="type" class="form-control">
+                                                    <option v-for="(item, index) in allConsignRef" :key="index">{{ item.consign_ref }} </option>
                                                 </select>
-                                            </div> -->
-
-                                                <div class="form-group">
-                                                    <input  v-model="detailsFormData.consign_ref" readonly type="text" placeholder="Select Batch by ISBN "
-                                                        class="form-control">
-                                                </div>
                                             </div>
 
                                             <div>
@@ -459,7 +452,9 @@ export default {
             getSearchValue: false,
             getSearchSupp: false,
             allBook:[],
+            selected_consign_ref: '',
             allUniqueIsbn:[],
+            selected_isbn : '',
             detailsFormData: {
                 book_id: "",
                 isbn: "",
@@ -551,6 +546,12 @@ export default {
     },
 
     methods:{
+        getConsignmentData(){
+            axios.get('get-consignment-data?consign_ref='+this.selected_consign_ref+'&isbn='+this.selected_isbn)
+            .then(response=>{
+                this.detailsFormData = response.data
+            })
+        },
         createEditInvoice(){
             if(this.editingData.balance >= 1){
                 this.dataArray.details[this.editingIndex]= this.editingData;
@@ -711,36 +712,12 @@ export default {
             },
             //get value isbn and bookname from booktable
         getVal(val) {
-            this.detailsFormData.isbn = val.book.isbn;
-            this.allBook.forEach(el => {
-                if (this.detailsFormData.isbn == el.book.isbn) {
-                    this.detailsFormData.book_id = el.book.id;
-                    this.detailsFormData.book_name = el.book.book_name;
-                    this.detailsFormData.balance = el.book.available_quantity;
-                    this.detailsFormData.consign_ref = el.consignment.consign_ref;
-                    // this.batchList = el.consignment.consign_ref;
-                    // this.batchList.push(el.consignment.consign_ref);
-                    console.log(this.detailsFormData.consign_ref)
-                    this.detailsFormData.pub_price = el.pub_price;
-                    this.getSearchValue = false;
-                }
-            });
-        },
-
-
-        getValISBN(val) {
-            this.detailsFormData.isbn = val.book.isbn;
-
-            axios.post("/getConsignRef/"+val.book_id).then(response =>{
+            this.selected_isbn = val.isbn
+            axios.post(`getConsignRef`, {isbn : val.isbn})
+            .then(response=>{
                 this.allConsignRef = response.data.data;
-            });
-
-            this.allConsignRef.forEach(el => {
-                    this.detailsFormData.consign_ref.push(el.consignment.consign_ref);
-                    // this.detailsFormData.book_id = el.book.id;
-                console.log(el.consignment.consign_ref);
-                    this.getSearchValue = false;
-            });
+                this.getSearchValue = false;
+            })
         },
 
 

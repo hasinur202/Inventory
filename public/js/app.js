@@ -4944,13 +4944,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
 
 
 
@@ -4965,7 +4958,9 @@ __webpack_require__.r(__webpack_exports__);
       getSearchValue: false,
       getSearchSupp: false,
       allBook: [],
+      selected_consign_ref: '',
       allUniqueIsbn: [],
+      selected_isbn: '',
       detailsFormData: {
         book_id: "",
         isbn: "",
@@ -5055,6 +5050,13 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   methods: {
+    getConsignmentData: function getConsignmentData() {
+      var _this4 = this;
+
+      axios.get('get-consignment-data?consign_ref=' + this.selected_consign_ref + '&isbn=' + this.selected_isbn).then(function (response) {
+        _this4.detailsFormData = response.data;
+      });
+    },
     createEditInvoice: function createEditInvoice() {
       if (this.editingData.balance >= 1) {
         this.dataArray.details[this.editingIndex] = this.editingData;
@@ -5098,7 +5100,7 @@ __webpack_require__.r(__webpack_exports__);
       this.editingData = item;
     },
     invoiceStore: function invoiceStore() {
-      var _this4 = this;
+      var _this5 = this;
 
       if (this.dataArray.cus_name == "") {
         Toast.fire({
@@ -5107,11 +5109,11 @@ __webpack_require__.r(__webpack_exports__);
         });
       } else {
         axios.post("/storeInvoice", this.dataArray).then(function () {
-          _this4.getInvoiceRef();
+          _this5.getInvoiceRef();
 
-          _this4.$router.push('invoiceprint');
+          _this5.$router.push('invoiceprint');
 
-          _this4.dataArray = {
+          _this5.dataArray = {
             cus_name: "",
             email: "",
             phone: "",
@@ -5197,35 +5199,13 @@ __webpack_require__.r(__webpack_exports__);
     },
     //get value isbn and bookname from booktable
     getVal: function getVal(val) {
-      var _this5 = this;
-
-      this.detailsFormData.isbn = val.book.isbn;
-      this.allBook.forEach(function (el) {
-        if (_this5.detailsFormData.isbn == el.book.isbn) {
-          _this5.detailsFormData.book_id = el.book.id;
-          _this5.detailsFormData.book_name = el.book.book_name;
-          _this5.detailsFormData.balance = el.book.available_quantity;
-          _this5.detailsFormData.consign_ref = el.consignment.consign_ref; // this.batchList = el.consignment.consign_ref;
-          // this.batchList.push(el.consignment.consign_ref);
-
-          console.log(_this5.detailsFormData.consign_ref);
-          _this5.detailsFormData.pub_price = el.pub_price;
-          _this5.getSearchValue = false;
-        }
-      });
-    },
-    getValISBN: function getValISBN(val) {
       var _this6 = this;
 
-      this.detailsFormData.isbn = val.book.isbn;
-      axios.post("/getConsignRef/" + val.book_id).then(function (response) {
+      this.selected_isbn = val.isbn;
+      axios.post("getConsignRef", {
+        isbn: val.isbn
+      }).then(function (response) {
         _this6.allConsignRef = response.data.data;
-      });
-      this.allConsignRef.forEach(function (el) {
-        _this6.detailsFormData.consign_ref.push(el.consignment.consign_ref); // this.detailsFormData.book_id = el.book.id;
-
-
-        console.log(el.consignment.consign_ref);
         _this6.getSearchValue = false;
       });
     },
@@ -13673,7 +13653,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.ulstyle[data-v-6db0a08d]{\n    list-style: none;\n    padding-left: 0px;\n    position: absolute;\n    background: aliceblue;\n    width: 50%;\n    z-index: 999;\n}\n.ulstyle > li[data-v-6db0a08d]:hover {\n    background:#ddd;\n    color: blue;\n    border-radius: 5px;\n}\n.ulstyle > li > p[data-v-6db0a08d]{\n    padding: 5px;\n    cursor: pointer;\n    margin-bottom: 0px;\n    border-bottom: 1px solid #DCA;\n}\n.card-title[data-v-6db0a08d] {\n  float: left;\n}\n\n", ""]);
+exports.push([module.i, "\n.ulstyle[data-v-6db0a08d]{\r\n    list-style: none;\r\n    padding-left: 0px;\r\n    position: absolute;\r\n    background: aliceblue;\r\n    width: 50%;\r\n    z-index: 999;\n}\n.ulstyle > li[data-v-6db0a08d]:hover {\r\n    background:#ddd;\r\n    color: blue;\r\n    border-radius: 5px;\n}\n.ulstyle > li > p[data-v-6db0a08d]{\r\n    padding: 5px;\r\n    cursor: pointer;\r\n    margin-bottom: 0px;\r\n    border-bottom: 1px solid #DCA;\n}\n.card-title[data-v-6db0a08d] {\r\n  float: left;\n}\r\n\r\n", ""]);
 
 // exports
 
@@ -13692,7 +13672,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.invoice_title[data-v-75c3f0ea]{\n    text-align: center;\n    font-weight: bold;\n    margin-bottom: 10px;\n    border-bottom: 2px solid #ddd;\n    padding-bottom: 5px;\n}\n\n", ""]);
+exports.push([module.i, "\n.invoice_title[data-v-75c3f0ea]{\r\n    text-align: center;\r\n    font-weight: bold;\r\n    margin-bottom: 10px;\r\n    border-bottom: 2px solid #ddd;\r\n    padding-bottom: 5px;\n}\r\n\r\n", ""]);
 
 // exports
 
@@ -13711,7 +13691,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.ulstyle[data-v-6545489e] {\n  list-style: none;\n  padding-left: 0px;\n  float: left;\n  width: 100%;\n}\n.ulstyle > li[data-v-6545489e]:hover {\n  background: #ddd;\n  color: blue;\n  border-radius: 5px;\n}\n.ulstyle > li > p[data-v-6545489e] {\n  padding: 5px;\n  cursor: pointer;\n  margin-bottom: 4px;\n  float: left;\n  width: 100%;\n}\n\n\n", ""]);
+exports.push([module.i, "\n.ulstyle[data-v-6545489e] {\r\n  list-style: none;\r\n  padding-left: 0px;\r\n  float: left;\r\n  width: 100%;\n}\n.ulstyle > li[data-v-6545489e]:hover {\r\n  background: #ddd;\r\n  color: blue;\r\n  border-radius: 5px;\n}\n.ulstyle > li > p[data-v-6545489e] {\r\n  padding: 5px;\r\n  cursor: pointer;\r\n  margin-bottom: 4px;\r\n  float: left;\r\n  width: 100%;\n}\r\n\r\n\r\n", ""]);
 
 // exports
 
@@ -13730,7 +13710,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.ulstyle[data-v-6545489e] {\n  list-style: none;\n  padding-left: 0px;\n  float: left;\n  position: absolute;\n    background: aliceblue;\n    width: 50%;\n    z-index: 999;\n    overflow-y:scroll;\n    min-height: 5rem;\n    max-height: 12rem;\n}\n.ulstyle > li[data-v-6545489e]:hover {\n  background: #ddd;\n  color: blue;\n  border-radius: 5px;\n}\n.ulstyle > li > p[data-v-6545489e] {\n  padding: 5px;\n  cursor: pointer;\n  margin-bottom: 4px;\n  float: left;\n  margin-bottom: 0px;\nborder-bottom: 1px solid #DCA;\n}\n.invoice_title[data-v-6545489e]{\n    text-align: center;\n    font-weight: bold;\n    margin-bottom: 10px;\n    border-bottom: 2px solid #ddd;\n    padding-bottom: 5px;\n}\n\n", ""]);
+exports.push([module.i, "\n.ulstyle[data-v-6545489e] {\r\n  list-style: none;\r\n  padding-left: 0px;\r\n  float: left;\r\n  position: absolute;\r\n    background: aliceblue;\r\n    width: 50%;\r\n    z-index: 999;\r\n    overflow-y:scroll;\r\n    min-height: 5rem;\r\n    max-height: 12rem;\n}\n.ulstyle > li[data-v-6545489e]:hover {\r\n  background: #ddd;\r\n  color: blue;\r\n  border-radius: 5px;\n}\n.ulstyle > li > p[data-v-6545489e] {\r\n  padding: 5px;\r\n  cursor: pointer;\r\n  margin-bottom: 4px;\r\n  float: left;\r\n  margin-bottom: 0px;\r\nborder-bottom: 1px solid #DCA;\n}\n.invoice_title[data-v-6545489e]{\r\n    text-align: center;\r\n    font-weight: bold;\r\n    margin-bottom: 10px;\r\n    border-bottom: 2px solid #ddd;\r\n    padding-bottom: 5px;\n}\r\n\r\n", ""]);
 
 // exports
 
@@ -13768,7 +13748,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.ulstyle[data-v-249b947c]{\n    list-style: none;\n    padding-left: 0px;\n    position: absolute;\n    background: aliceblue;\n    width: 50%;\n    z-index: 999;\n}\n.ulstyle > li[data-v-249b947c]:hover {\n    background:#ddd;\n    color: blue;\n    border-radius: 5px;\n}\n.ulstyle > li > p[data-v-249b947c]{\n    padding: 5px;\n    cursor: pointer;\n    margin-bottom: 0px;\n    border-bottom: 1px solid #DCA;\n}\n.card-title[data-v-249b947c] {\n  float: left;\n}\n\n", ""]);
+exports.push([module.i, "\n.ulstyle[data-v-249b947c]{\r\n    list-style: none;\r\n    padding-left: 0px;\r\n    position: absolute;\r\n    background: aliceblue;\r\n    width: 50%;\r\n    z-index: 999;\n}\n.ulstyle > li[data-v-249b947c]:hover {\r\n    background:#ddd;\r\n    color: blue;\r\n    border-radius: 5px;\n}\n.ulstyle > li > p[data-v-249b947c]{\r\n    padding: 5px;\r\n    cursor: pointer;\r\n    margin-bottom: 0px;\r\n    border-bottom: 1px solid #DCA;\n}\n.card-title[data-v-249b947c] {\r\n  float: left;\n}\r\n\r\n", ""]);
 
 // exports
 
@@ -13787,7 +13767,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.ulstyle[data-v-8e43ef84] {\n  list-style: none;\n  padding-left: 0px;\n  float: left;\n  width: 95%;\n  position: absolute;\n  background: aliceblue;\n  z-index: 999;\n  overflow-y:scroll;\n    min-height: 5rem;\n    max-height: 12rem;\n}\n.ulstyle > li[data-v-8e43ef84]:hover {\n  background: #ddd;\n  color: blue;\n  border-radius: 5px;\n}\n.ulstyle > li > p[data-v-8e43ef84] {\n  padding: 5px;\n  cursor: pointer;\n  margin-bottom: 4px;\n  float: left;\n  width: 100%;\n  margin-bottom: 0px;\n    border-bottom: 1px solid #DCA;\n}\n.card-title[data-v-8e43ef84] {\n  float: left;\n}\n.supp[data-v-8e43ef84] {\n  width: 100%;\n  float: right;\n}\n", ""]);
+exports.push([module.i, "\n.ulstyle[data-v-8e43ef84] {\r\n  list-style: none;\r\n  padding-left: 0px;\r\n  float: left;\r\n  width: 95%;\r\n  position: absolute;\r\n  background: aliceblue;\r\n  z-index: 999;\r\n  overflow-y:scroll;\r\n    min-height: 5rem;\r\n    max-height: 12rem;\n}\n.ulstyle > li[data-v-8e43ef84]:hover {\r\n  background: #ddd;\r\n  color: blue;\r\n  border-radius: 5px;\n}\n.ulstyle > li > p[data-v-8e43ef84] {\r\n  padding: 5px;\r\n  cursor: pointer;\r\n  margin-bottom: 4px;\r\n  float: left;\r\n  width: 100%;\r\n  margin-bottom: 0px;\r\n    border-bottom: 1px solid #DCA;\n}\n.card-title[data-v-8e43ef84] {\r\n  float: left;\n}\n.supp[data-v-8e43ef84] {\r\n  width: 100%;\r\n  float: right;\n}\r\n", ""]);
 
 // exports
 
@@ -13806,7 +13786,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.head_menu[data-v-798ca618]{\n    border-radius: 10px;\n    border: 1px solid #fff;\n    background: #494E54;\n    color: #fff !important;\n    margin-left: 14px;\n}\n.head_menu[data-v-798ca618]:hover {\n    background: gray !important;\n    color: black !important;\n    border:1px solid #ddd;transition-delay: 0.2s;\n}\n.fixed_position[data-v-798ca618]{\n    left:0;\n    right:0; top: 0;\n    position: fixed;\n}\n.ulstyle[data-v-798ca618]{\n    list-style: none;\n    padding-left: 0px;\n    position: absolute;\n    background: aliceblue;\n    width: 80%;\n    z-index: 999;\n    overflow-y:scroll;\n    min-height: 5rem;\n    max-height: 12rem;\n}\n.ulstyle > li[data-v-798ca618]:hover {\n    background:#ddd;\n    color: blue;\n    border-radius: 5px;\n}\n.ulstyle > li > p[data-v-798ca618]{\n    padding: 5px;\n    cursor: pointer;\n    margin-bottom: 0px;\n    border-bottom: 1px solid #DCA;\n}\n", ""]);
+exports.push([module.i, "\n.head_menu[data-v-798ca618]{\r\n    border-radius: 10px;\r\n    border: 1px solid #fff;\r\n    background: #494E54;\r\n    color: #fff !important;\r\n    margin-left: 14px;\n}\n.head_menu[data-v-798ca618]:hover {\r\n    background: gray !important;\r\n    color: black !important;\r\n    border:1px solid #ddd;transition-delay: 0.2s;\n}\n.fixed_position[data-v-798ca618]{\r\n    left:0;\r\n    right:0; top: 0;\r\n    position: fixed;\n}\n.ulstyle[data-v-798ca618]{\r\n    list-style: none;\r\n    padding-left: 0px;\r\n    position: absolute;\r\n    background: aliceblue;\r\n    width: 80%;\r\n    z-index: 999;\r\n    overflow-y:scroll;\r\n    min-height: 5rem;\r\n    max-height: 12rem;\n}\n.ulstyle > li[data-v-798ca618]:hover {\r\n    background:#ddd;\r\n    color: blue;\r\n    border-radius: 5px;\n}\n.ulstyle > li > p[data-v-798ca618]{\r\n    padding: 5px;\r\n    cursor: pointer;\r\n    margin-bottom: 0px;\r\n    border-bottom: 1px solid #DCA;\n}\r\n", ""]);
 
 // exports
 
@@ -72691,7 +72671,7 @@ var staticRenderFns = [
       "div",
       { staticClass: "card-footer", staticStyle: { display: "block" } },
       [
-        _vm._v("\n                    Visit "),
+        _vm._v("\r\n                    Visit "),
         _c(
           "a",
           {
@@ -72702,7 +72682,7 @@ var staticRenderFns = [
           },
           [_vm._v("www.ideatechsolution.com")]
         ),
-        _vm._v(" for more information.\n                ")
+        _vm._v(" for more information.\r\n                ")
       ]
     )
   }
@@ -77686,10 +77666,8 @@ var render = function() {
                                         ],
                                         staticClass: "ulstyle"
                                       },
-                                      _vm._l(_vm.unique(_vm.filterd), function(
-                                        val
-                                      ) {
-                                        return _c("li", { key: val.id }, [
+                                      _vm._l(_vm.allUniqueIsbn, function(val) {
+                                        return _c("li", { key: val.isbn }, [
                                           _c(
                                             "p",
                                             {
@@ -77700,7 +77678,7 @@ var render = function() {
                                                 }
                                               }
                                             },
-                                            [_vm._v(_vm._s(val.book.isbn))]
+                                            [_vm._v(_vm._s(val.isbn))]
                                           )
                                         ])
                                       }),
@@ -77717,40 +77695,53 @@ var render = function() {
                         _vm._v(" "),
                         _c("div", { staticClass: "modal-body" }, [
                           _c("div", { staticClass: "col-md-12" }, [
-                            _c("div", [
-                              _c("div", { staticClass: "form-group" }, [
-                                _c("input", {
+                            _c("div", { staticClass: "form-group" }, [
+                              _c(
+                                "select",
+                                {
                                   directives: [
                                     {
                                       name: "model",
                                       rawName: "v-model",
-                                      value: _vm.detailsFormData.consign_ref,
-                                      expression: "detailsFormData.consign_ref"
+                                      value: _vm.selected_consign_ref,
+                                      expression: "selected_consign_ref"
                                     }
                                   ],
                                   staticClass: "form-control",
-                                  attrs: {
-                                    readonly: "",
-                                    type: "text",
-                                    placeholder: "Select Batch by ISBN "
-                                  },
-                                  domProps: {
-                                    value: _vm.detailsFormData.consign_ref
-                                  },
+                                  attrs: { id: "type" },
                                   on: {
-                                    input: function($event) {
-                                      if ($event.target.composing) {
-                                        return
-                                      }
-                                      _vm.$set(
-                                        _vm.detailsFormData,
-                                        "consign_ref",
-                                        $event.target.value
-                                      )
-                                    }
+                                    change: [
+                                      function($event) {
+                                        var $$selectedVal = Array.prototype.filter
+                                          .call($event.target.options, function(
+                                            o
+                                          ) {
+                                            return o.selected
+                                          })
+                                          .map(function(o) {
+                                            var val =
+                                              "_value" in o ? o._value : o.value
+                                            return val
+                                          })
+                                        _vm.selected_consign_ref = $event.target
+                                          .multiple
+                                          ? $$selectedVal
+                                          : $$selectedVal[0]
+                                      },
+                                      _vm.getConsignmentData
+                                    ]
                                   }
-                                })
-                              ])
+                                },
+                                _vm._l(_vm.allConsignRef, function(
+                                  item,
+                                  index
+                                ) {
+                                  return _c("option", { key: index }, [
+                                    _vm._v(_vm._s(item.consign_ref) + " ")
+                                  ])
+                                }),
+                                0
+                              )
                             ]),
                             _vm._v(" "),
                             _c("div", [
@@ -103788,8 +103779,8 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! D:\Hasinur\Inventory\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! D:\Hasinur\Inventory\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! D:\Office Project\Inventory\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! D:\Office Project\Inventory\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })
