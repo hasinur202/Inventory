@@ -21,6 +21,28 @@ class ConsignmentController extends Controller
         ], 200);
     }
 
+    public function uniqueISBN(){
+        $data = ConsignmentDetails::with('book')->distinct()->get(['book_id']);
+
+        // $data = ConsignmentDetails::with('book')->distinct()->get(['isbn']);
+        return response()->json([
+            'data' => $data,
+            'message' => "success"
+        ], 200);
+    }
+
+    public function getConsignRefbyId(Request $request, $id){
+
+        $data = ConsignmentDetails::with('consignment')->where('book_id', $id)->get();
+
+        return response()->json([
+            'data' => $data,
+            'message' => "success"
+        ], 200);
+    }
+
+
+
     public function getConsignRate()
     {
         $data = ConsignmentDetails::latest()->first();

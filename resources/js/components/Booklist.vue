@@ -22,10 +22,10 @@
                                     <th>ISBN No.</th>
                                     <th>Book Name</th>
                                     <th>Author</th>
-                                    <th>Copyright</th>
                                     <th>Subject/Category</th>
+                                    <th>Publisher</th>
+                                    <th>Publish Year</th>
                                     <th>Edition</th>
-                                    <th>Language</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -33,16 +33,18 @@
                             <tr v-for="books, key in temp">
                                 <td>{{ books.isbn }}</td>
                                 <td>{{ books.book_name }}</td>
-                                
-                                <td>{{ books.authors[0].author }}</td>
-                                <td>{{ books.copyright }}</td>
-                                <td>{{ books.category }}</td>
+                                <td>
+                                    <span style="margin-right:3px;" class="badge badge-success" v-for="item in books.authors">{{ item.author }}</span>
+                                </td>
+                                <td>
+                                    <span style="margin-right:3px;" class="badge badge-success" v-for="item in books.categories">{{ item.category }}</span>
+                                </td>
+                                <td>{{ books.publisher }}</td>
+                                <td>{{ books.year }}</td>
                                 <td>{{ books.edition }}</td>
-                                <td>{{ books.language }}</td>
                                 <td>
                                     <button @click="bookByid(books)" data-toggle="modal" data-target="#editBook" class="btn btn-info btn-sm"><i class="fa fa-edit"></i></button>
-                                    
-                                    
+
                                     <button @click="bookByid(books)" data-toggle="modal" data-target="#viewBook" class="btn btn-primary btn-sm"><i class="fa fa-eye"></i></button>
                                     <!-- <button data-toggle="modal" data-target="#viewBook" class="btn btn-primary btn-sm"><i class="fa fa-eye"></i></button> -->
                                     <button v-if="books.available_quantity == 0" @click="deleteBookId(books)" class="btn btn-danger btn-sm"><i class="fa fa-trash"></i></button>
@@ -97,18 +99,10 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-md-4">
-                                        <label>Author</label>
+                                        <label>Book Name</label>
                                     </div>
                                     <div class="col-md-8">
-                                        <input v-model="singleBookDetails.author" readonly>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <label>Subject/Category</label>
-                                    </div>
-                                    <div class="col-md-8">
-                                        <input v-model="singleBookDetails.category" readonly>
+                                        <input v-model="singleBookDetails.book_name" readonly>
                                     </div>
                                 </div>
                                 <div class="row">
@@ -364,6 +358,7 @@ export default {
             // booklistId: "",
             singleBookDetails : {
                 isbn:'',
+                book_name:'',
                 author:'',
                 copyright:'',
                 year:'',

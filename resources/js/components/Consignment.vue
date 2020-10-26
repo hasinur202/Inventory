@@ -77,7 +77,7 @@
 
              <div class="modal fade" id="editConsign" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
                             aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                <div class="modal-dialog modal-dialog-centered modal-lg" style="margin-left: 20rem;" role="document">
                     <!-- /.card-header -->
                     <div class="modal-content">
                         <div class="modal-header">
@@ -157,7 +157,7 @@
                     aria-labelledby="exampleModalLabel"
                     aria-hidden="true"
                     >
-                    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                    <div class="modal-dialog modal-dialog-centered modal-lg" style="margin-left: 20rem;" role="document">
                   <!-- /.card-header -->
                   <div class="modal-content">
                     <div class="modal-header">

@@ -197,10 +197,12 @@
 
 
                                                 <ul v-show="getSearchValue" class="ulstyle">
-                                                    <li v-for="val in filterd" :key="val.id">
-                                                        <p @click.prevent="getVal(val)">{{ val.book.isbn | unique }}</p>
+                                                    <li v-for="val in unique(filterd)" :key="val.id">
+                                                        <p @click.prevent="getVal(val)">{{ val.book.isbn }}</p>
                                                     </li>
                                                 </ul>
+
+                                                <!-- https://laracasts.com/discuss/channels/vue/unique-list-values -->
                                             </div>
                                         </div>
 
@@ -214,16 +216,16 @@
                                         <div class="col-md-12">
                                             <div>
 
-                                            <div class="form-group">
+                                            <!-- <div class="form-group">
                                                 <select v-model="detailsFormData.consign_ref" id="type" class="form-control">
-                                                    <option :closeOnSelect="false">{{ detailsFormData.consign_ref }} </option>
+                                                    <option v-for="item in detailsFormData.consign_ref" :closeOnSelect="false">{{ item }} </option>
                                                 </select>
-                                            </div>
+                                            </div> -->
 
-                                                <!-- <div class="form-group">
+                                                <div class="form-group">
                                                     <input  v-model="detailsFormData.consign_ref" readonly type="text" placeholder="Select Batch by ISBN "
                                                         class="form-control">
-                                                </div> -->
+                                                </div>
                                             </div>
 
                                             <div>
@@ -452,20 +454,22 @@ export default {
         return{
             errors: {},
             batchList:[],
+            allConsignRef:[],
             editingIndex:0,
             getSearchValue: false,
             getSearchSupp: false,
             allBook:[],
+            allUniqueIsbn:[],
             detailsFormData: {
                 book_id: "",
-                consign_ref: '',
+                isbn: "",
+                book_name: "",
+                consign_ref: [],
                 pub_price: "",
                 balance: "",
                 copies: "1",
                 rate: "",
                 unit_price: "0",
-                isbn: "",
-                book_name: "",
                 total_price: "0",
                 discount:"",
                 discount_p:"",
@@ -509,6 +513,11 @@ export default {
             this.allBook = response.data.data;
             // console.log(response.data.data)
         });
+
+        axios.get("/uniqueConsignIsbn").then(response =>{
+            this.allUniqueIsbn = response.data.data;
+            // console.log(this.allUniqueIsbn)
+        });
     },
 
     computed:{
@@ -517,6 +526,27 @@ export default {
                 val.book.isbn.startsWith(this.detailsFormData.isbn)
             );
         },
+
+        filterdUnique() {
+            return this.allUniqueIsbn.filter(val =>
+                val.book.isbn.startsWith(this.detailsFormData.isbn)
+            );
+        },
+
+        unique () {
+            return function (arr, key) {
+                var output = []
+                var usedKeys = {}
+                for (var i = 0; i < arr.length; i++) {
+                if (!usedKeys[arr[i][key]]) {
+                    usedKeys[arr[i][key]] = true
+                    output.push(arr[i])
+                }
+                }
+                return output
+            }
+            }
+
 
     },
 
@@ -682,7 +712,6 @@ export default {
             //get value isbn and bookname from booktable
         getVal(val) {
             this.detailsFormData.isbn = val.book.isbn;
-
             this.allBook.forEach(el => {
                 if (this.detailsFormData.isbn == el.book.isbn) {
                     this.detailsFormData.book_id = el.book.id;
@@ -691,14 +720,40 @@ export default {
                     this.detailsFormData.consign_ref = el.consignment.consign_ref;
                     // this.batchList = el.consignment.consign_ref;
                     // this.batchList.push(el.consignment.consign_ref);
-
                     console.log(this.detailsFormData.consign_ref)
-
                     this.detailsFormData.pub_price = el.pub_price;
                     this.getSearchValue = false;
                 }
             });
         },
+
+
+        getValISBN(val) {
+            this.detailsFormData.isbn = val.book.isbn;
+
+            axios.post("/getConsignRef/"+val.book_id).then(response =>{
+                this.allConsignRef = response.data.data;
+            });
+
+            this.allConsignRef.forEach(el => {
+                    this.detailsFormData.consign_ref.push(el.consignment.consign_ref);
+                    // this.detailsFormData.book_id = el.book.id;
+                console.log(el.consignment.consign_ref);
+                    this.getSearchValue = false;
+            });
+        },
+
+
+
+
+
+
+
+
+
+
+
+
         //this method for generate random number
         // myFunction: function(min, max) {
         //     if (this.dataArray.invoice_ref == "") {

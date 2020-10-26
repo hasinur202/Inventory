@@ -77,12 +77,15 @@ Route::get('/getInvoices', 'InvoiceController@index');
 
 //get details for invoice/sale
 Route::get('/getDetailsForInvoice', 'ConsignmentController@detailsForInvoice');
-
+//get unique consign isbn
+Route::get('/uniqueConsignIsbn', 'ConsignmentController@uniqueISBN');
 //get Invoice details by id
 Route::get('/getInvoiceId', 'InvoiceController@getIdInvoice');
 //get consignment by id
 Route::get('/getConsignId', 'ConsignmentController@getIdConsign');
 
+//get consignment Ref by id
+Route::post('/getConsignRef/{id}', 'ConsignmentController@getConsignRefbyId');
 //get consignment by id
 Route::get('/getUserDetails', 'UserController@index');
 
