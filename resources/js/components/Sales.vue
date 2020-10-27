@@ -216,13 +216,14 @@
 
                                             <div class="form-group">
                                                 <select @change="getConsignmentData" v-model="detailsFormData.consign_ref" id="type" class="form-control">
+                                                    <option selected="selected" value="" hidden>Select Batch</option>
                                                     <option v-for="(item, index) in allConsignRef" :key="index">{{ item.consign_ref }} </option>
                                                 </select>
                                             </div>
 
                                             <div>
                                                 <div class="form-group">
-                                                    <input  v-model="detailsFormData.book_name" readonly type="text" placeholder="Select Book by ISBN "
+                                                    <input  v-model="detailsFormData.book_name" readonly type="text" placeholder="Book Name "
                                                         class="form-control">
                                                 </div>
                                             </div>
@@ -782,7 +783,7 @@ export default {
                     this.detailsFormData.total_price = most_unit * parseInt(this.detailsFormData.copies);
 
                     if(parseFloat(this.detailsFormData.discount) > 0){
-                        this.detailsFormData.total_dis = b_unit_price + parseFloat(this.detailsFormData.discount);
+                        this.detailsFormData.total_dis = this.detailsFormData.total_dis + parseFloat(this.detailsFormData.discount);
 
                          this.detailsFormData.total_price = parseFloat(this.detailsFormData.total_price) - parseFloat(this.detailsFormData.discount);
                     }
@@ -822,7 +823,7 @@ export default {
                     this.editingData.total_price = most_unit * parseInt(this.editingData.copies);
 
                     if(parseFloat(this.editingData.discount) > 0){
-                        this.editingData.total_dis = b_unit_price + parseFloat(this.editingData.discount);
+                        this.editingData.total_dis = this.editingData.total_dis + parseFloat(this.editingData.discount);
 
                          this.editingData.total_price = parseFloat(this.editingData.total_price) - parseFloat(this.editingData.discount);
                     }
@@ -839,7 +840,7 @@ export default {
           })
         },
         formatInvoiceRef(serial){
-            let invoiceRef = `${moment().format('DD/MM/YY')}/${this.padString(serial)}`
+            let invoiceRef = `Invoice/${moment().format('DD/MM/YY')}/${this.padString(serial)}`
             return invoiceRef
         },
         padString(serial){

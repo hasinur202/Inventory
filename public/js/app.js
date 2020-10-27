@@ -4408,7 +4408,9 @@ __webpack_require__.r(__webpack_exports__);
           title: 'Does not exist 0. You can delete this item from item-list'
         });
       } else {
-        if (this.editDetails.book.available_quantity < this.editDetails.qty) {
+        var balance = this.editDetails.book.available_quantity + this.editDetails.qty;
+
+        if (balance < this.editDetails.qty) {
           Toast.fire({
             icon: 'warning',
             title: 'Your required Qty is not available in Stock!'
@@ -4468,12 +4470,12 @@ __webpack_require__.r(__webpack_exports__);
           var uunit_price = parseFloat(this.editDetails.pub_price);
           var b_unit_price = parseFloat(this.editDetails.pub_price) * parseFloat(this.editDetails.discount_p) / 100;
           var most_unit = uunit_price - b_unit_price;
-          this.editDetails.total_dis = b_unit_price;
+          this.editDetails.total_dis = b_unit_price * parseInt(this.editDetails.qty);
           this.editDetails.unit_price = most_unit;
           this.editDetails.total_price = most_unit * parseInt(this.editDetails.qty);
 
           if (parseFloat(this.editDetails.discount) > 0) {
-            this.editDetails.total_dis = b_unit_price + parseFloat(this.editDetails.discount);
+            this.editDetails.total_dis = this.editDetails.total_dis + parseFloat(this.editDetails.discount);
             this.editDetails.total_price = parseFloat(this.editDetails.total_price) - parseFloat(this.editDetails.discount);
           }
         }
@@ -4504,6 +4506,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _footer__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./footer */ "./resources/js/components/footer.vue");
 /* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
 /* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(moment__WEBPACK_IMPORTED_MODULE_2__);
+//
 //
 //
 //
@@ -5264,7 +5267,7 @@ __webpack_require__.r(__webpack_exports__);
           this.detailsFormData.total_price = most_unit * parseInt(this.detailsFormData.copies);
 
           if (parseFloat(this.detailsFormData.discount) > 0) {
-            this.detailsFormData.total_dis = b_unit_price + parseFloat(this.detailsFormData.discount);
+            this.detailsFormData.total_dis = this.detailsFormData.total_dis + parseFloat(this.detailsFormData.discount);
             this.detailsFormData.total_price = parseFloat(this.detailsFormData.total_price) - parseFloat(this.detailsFormData.discount);
           }
         }
@@ -5301,7 +5304,7 @@ __webpack_require__.r(__webpack_exports__);
           this.editingData.total_price = most_unit * parseInt(this.editingData.copies);
 
           if (parseFloat(this.editingData.discount) > 0) {
-            this.editingData.total_dis = b_unit_price + parseFloat(this.editingData.discount);
+            this.editingData.total_dis = this.editingData.total_dis + parseFloat(this.editingData.discount);
             this.editingData.total_price = parseFloat(this.editingData.total_price) - parseFloat(this.editingData.discount);
           }
         }
@@ -5315,7 +5318,7 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     formatInvoiceRef: function formatInvoiceRef(serial) {
-      var invoiceRef = "".concat(moment__WEBPACK_IMPORTED_MODULE_2___default()().format('DD/MM/YY'), "/").concat(this.padString(serial));
+      var invoiceRef = "Invoice/".concat(moment__WEBPACK_IMPORTED_MODULE_2___default()().format('DD/MM/YY'), "/").concat(this.padString(serial));
       return invoiceRef;
     },
     padString: function padString(serial) {
@@ -8103,17 +8106,17 @@ __webpack_require__.r(__webpack_exports__);
       axios.post("/storeConsignment", this.dataArray).then(function () {
         _this4.rateGet();
 
-        _this4.dataArray.details = [];
-
         _this4.getConsignRef();
 
+        _this4.dataArray.details = [];
         _this4.dataArray = {
           supplier_id: "",
           consign_ref: "",
           total_price: 0,
-          total_pub_price: "",
+          total_pub_price: 0,
           details: [],
-          supplier: ""
+          supplier: "",
+          pay_mode: "Cash"
         };
         Toast.fire({
           icon: 'success',
@@ -8290,7 +8293,7 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     formatConsignRef: function formatConsignRef(serial) {
-      var consignRef = "".concat(moment__WEBPACK_IMPORTED_MODULE_2___default()().format('DD/MM/YY'), "/").concat(this.padString(serial));
+      var consignRef = "Consignment/".concat(moment__WEBPACK_IMPORTED_MODULE_2___default()().format('DD/MM/YY'), "/").concat(this.padString(serial));
       return consignRef;
     },
     padString: function padString(serial) {
@@ -13662,7 +13665,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.ulstyle[data-v-6db0a08d]{\n    list-style: none;\n    padding-left: 0px;\n    position: absolute;\n    background: aliceblue;\n    width: 50%;\n    z-index: 999;\n}\n.ulstyle > li[data-v-6db0a08d]:hover {\n    background:#ddd;\n    color: blue;\n    border-radius: 5px;\n}\n.ulstyle > li > p[data-v-6db0a08d]{\n    padding: 5px;\n    cursor: pointer;\n    margin-bottom: 0px;\n    border-bottom: 1px solid #DCA;\n}\n.card-title[data-v-6db0a08d] {\n  float: left;\n}\n\n", ""]);
+exports.push([module.i, "\n.ulstyle[data-v-6db0a08d]{\r\n    list-style: none;\r\n    padding-left: 0px;\r\n    position: absolute;\r\n    background: aliceblue;\r\n    width: 50%;\r\n    z-index: 999;\n}\n.ulstyle > li[data-v-6db0a08d]:hover {\r\n    background:#ddd;\r\n    color: blue;\r\n    border-radius: 5px;\n}\n.ulstyle > li > p[data-v-6db0a08d]{\r\n    padding: 5px;\r\n    cursor: pointer;\r\n    margin-bottom: 0px;\r\n    border-bottom: 1px solid #DCA;\n}\n.card-title[data-v-6db0a08d] {\r\n  float: left;\n}\r\n\r\n", ""]);
 
 // exports
 
@@ -13681,7 +13684,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.invoice_title[data-v-75c3f0ea]{\n    text-align: center;\n    font-weight: bold;\n    margin-bottom: 10px;\n    border-bottom: 2px solid #ddd;\n    padding-bottom: 5px;\n}\n\n", ""]);
+exports.push([module.i, "\n.invoice_title[data-v-75c3f0ea]{\r\n    text-align: center;\r\n    font-weight: bold;\r\n    margin-bottom: 10px;\r\n    border-bottom: 2px solid #ddd;\r\n    padding-bottom: 5px;\n}\r\n\r\n", ""]);
 
 // exports
 
@@ -13700,7 +13703,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.ulstyle[data-v-6545489e] {\n  list-style: none;\n  padding-left: 0px;\n  float: left;\n  width: 100%;\n}\n.ulstyle > li[data-v-6545489e]:hover {\n  background: #ddd;\n  color: blue;\n  border-radius: 5px;\n}\n.ulstyle > li > p[data-v-6545489e] {\n  padding: 5px;\n  cursor: pointer;\n  margin-bottom: 4px;\n  float: left;\n  width: 100%;\n}\n\n\n", ""]);
+exports.push([module.i, "\n.ulstyle[data-v-6545489e] {\r\n  list-style: none;\r\n  padding-left: 0px;\r\n  float: left;\r\n  width: 100%;\n}\n.ulstyle > li[data-v-6545489e]:hover {\r\n  background: #ddd;\r\n  color: blue;\r\n  border-radius: 5px;\n}\n.ulstyle > li > p[data-v-6545489e] {\r\n  padding: 5px;\r\n  cursor: pointer;\r\n  margin-bottom: 4px;\r\n  float: left;\r\n  width: 100%;\n}\r\n\r\n\r\n", ""]);
 
 // exports
 
@@ -13719,7 +13722,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.ulstyle[data-v-6545489e] {\n  list-style: none;\n  padding-left: 0px;\n  float: left;\n  position: absolute;\n    background: aliceblue;\n    width: 50%;\n    z-index: 999;\n    overflow-y:scroll;\n    min-height: 5rem;\n    max-height: 12rem;\n}\n.ulstyle > li[data-v-6545489e]:hover {\n  background: #ddd;\n  color: blue;\n  border-radius: 5px;\n}\n.ulstyle > li > p[data-v-6545489e] {\n  padding: 5px;\n  cursor: pointer;\n  margin-bottom: 4px;\n  float: left;\n  margin-bottom: 0px;\nborder-bottom: 1px solid #DCA;\n}\n.invoice_title[data-v-6545489e]{\n    text-align: center;\n    font-weight: bold;\n    margin-bottom: 10px;\n    border-bottom: 2px solid #ddd;\n    padding-bottom: 5px;\n}\n\n", ""]);
+exports.push([module.i, "\n.ulstyle[data-v-6545489e] {\r\n  list-style: none;\r\n  padding-left: 0px;\r\n  float: left;\r\n  position: absolute;\r\n    background: aliceblue;\r\n    width: 50%;\r\n    z-index: 999;\r\n    overflow-y:scroll;\r\n    min-height: 5rem;\r\n    max-height: 12rem;\n}\n.ulstyle > li[data-v-6545489e]:hover {\r\n  background: #ddd;\r\n  color: blue;\r\n  border-radius: 5px;\n}\n.ulstyle > li > p[data-v-6545489e] {\r\n  padding: 5px;\r\n  cursor: pointer;\r\n  margin-bottom: 4px;\r\n  float: left;\r\n  margin-bottom: 0px;\r\nborder-bottom: 1px solid #DCA;\n}\n.invoice_title[data-v-6545489e]{\r\n    text-align: center;\r\n    font-weight: bold;\r\n    margin-bottom: 10px;\r\n    border-bottom: 2px solid #ddd;\r\n    padding-bottom: 5px;\n}\r\n\r\n", ""]);
 
 // exports
 
@@ -13757,7 +13760,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.ulstyle[data-v-249b947c]{\n    list-style: none;\n    padding-left: 0px;\n    position: absolute;\n    background: aliceblue;\n    width: 50%;\n    z-index: 999;\n}\n.ulstyle > li[data-v-249b947c]:hover {\n    background:#ddd;\n    color: blue;\n    border-radius: 5px;\n}\n.ulstyle > li > p[data-v-249b947c]{\n    padding: 5px;\n    cursor: pointer;\n    margin-bottom: 0px;\n    border-bottom: 1px solid #DCA;\n}\n.card-title[data-v-249b947c] {\n  float: left;\n}\n\n", ""]);
+exports.push([module.i, "\n.ulstyle[data-v-249b947c]{\r\n    list-style: none;\r\n    padding-left: 0px;\r\n    position: absolute;\r\n    background: aliceblue;\r\n    width: 50%;\r\n    z-index: 999;\n}\n.ulstyle > li[data-v-249b947c]:hover {\r\n    background:#ddd;\r\n    color: blue;\r\n    border-radius: 5px;\n}\n.ulstyle > li > p[data-v-249b947c]{\r\n    padding: 5px;\r\n    cursor: pointer;\r\n    margin-bottom: 0px;\r\n    border-bottom: 1px solid #DCA;\n}\n.card-title[data-v-249b947c] {\r\n  float: left;\n}\r\n\r\n", ""]);
 
 // exports
 
@@ -13776,7 +13779,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.ulstyle[data-v-8e43ef84] {\n  list-style: none;\n  padding-left: 0px;\n  float: left;\n  width: 95%;\n  position: absolute;\n  background: aliceblue;\n  z-index: 999;\n  overflow-y:scroll;\n    min-height: 5rem;\n    max-height: 12rem;\n}\n.ulstyle > li[data-v-8e43ef84]:hover {\n  background: #ddd;\n  color: blue;\n  border-radius: 5px;\n}\n.ulstyle > li > p[data-v-8e43ef84] {\n  padding: 5px;\n  cursor: pointer;\n  margin-bottom: 4px;\n  float: left;\n  width: 100%;\n  margin-bottom: 0px;\n    border-bottom: 1px solid #DCA;\n}\n.card-title[data-v-8e43ef84] {\n  float: left;\n}\n.supp[data-v-8e43ef84] {\n  width: 100%;\n  float: right;\n}\n", ""]);
+exports.push([module.i, "\n.ulstyle[data-v-8e43ef84] {\r\n  list-style: none;\r\n  padding-left: 0px;\r\n  float: left;\r\n  width: 95%;\r\n  position: absolute;\r\n  background: aliceblue;\r\n  z-index: 999;\r\n  overflow-y:scroll;\r\n    min-height: 5rem;\r\n    max-height: 12rem;\n}\n.ulstyle > li[data-v-8e43ef84]:hover {\r\n  background: #ddd;\r\n  color: blue;\r\n  border-radius: 5px;\n}\n.ulstyle > li > p[data-v-8e43ef84] {\r\n  padding: 5px;\r\n  cursor: pointer;\r\n  margin-bottom: 4px;\r\n  float: left;\r\n  width: 100%;\r\n  margin-bottom: 0px;\r\n    border-bottom: 1px solid #DCA;\n}\n.card-title[data-v-8e43ef84] {\r\n  float: left;\n}\n.supp[data-v-8e43ef84] {\r\n  width: 100%;\r\n  float: right;\n}\r\n", ""]);
 
 // exports
 
@@ -13795,7 +13798,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.head_menu[data-v-798ca618]{\n    border-radius: 10px;\n    border: 1px solid #fff;\n    background: #494E54;\n    color: #fff !important;\n    margin-left: 14px;\n}\n.head_menu[data-v-798ca618]:hover {\n    background: gray !important;\n    color: black !important;\n    border:1px solid #ddd;transition-delay: 0.2s;\n}\n.fixed_position[data-v-798ca618]{\n    left:0;\n    right:0; top: 0;\n    position: fixed;\n}\n.ulstyle[data-v-798ca618]{\n    list-style: none;\n    padding-left: 0px;\n    position: absolute;\n    background: aliceblue;\n    width: 80%;\n    z-index: 999;\n    overflow-y:scroll;\n    min-height: 5rem;\n    max-height: 12rem;\n}\n.ulstyle > li[data-v-798ca618]:hover {\n    background:#ddd;\n    color: blue;\n    border-radius: 5px;\n}\n.ulstyle > li > p[data-v-798ca618]{\n    padding: 5px;\n    cursor: pointer;\n    margin-bottom: 0px;\n    border-bottom: 1px solid #DCA;\n}\n", ""]);
+exports.push([module.i, "\n.head_menu[data-v-798ca618]{\r\n    border-radius: 10px;\r\n    border: 1px solid #fff;\r\n    background: #494E54;\r\n    color: #fff !important;\r\n    margin-left: 14px;\n}\n.head_menu[data-v-798ca618]:hover {\r\n    background: gray !important;\r\n    color: black !important;\r\n    border:1px solid #ddd;transition-delay: 0.2s;\n}\n.fixed_position[data-v-798ca618]{\r\n    left:0;\r\n    right:0; top: 0;\r\n    position: fixed;\n}\n.ulstyle[data-v-798ca618]{\r\n    list-style: none;\r\n    padding-left: 0px;\r\n    position: absolute;\r\n    background: aliceblue;\r\n    width: 80%;\r\n    z-index: 999;\r\n    overflow-y:scroll;\r\n    min-height: 5rem;\r\n    max-height: 12rem;\n}\n.ulstyle > li[data-v-798ca618]:hover {\r\n    background:#ddd;\r\n    color: blue;\r\n    border-radius: 5px;\n}\n.ulstyle > li > p[data-v-798ca618]{\r\n    padding: 5px;\r\n    cursor: pointer;\r\n    margin-bottom: 0px;\r\n    border-bottom: 1px solid #DCA;\n}\r\n", ""]);
 
 // exports
 
@@ -72680,7 +72683,7 @@ var staticRenderFns = [
       "div",
       { staticClass: "card-footer", staticStyle: { display: "block" } },
       [
-        _vm._v("\n                    Visit "),
+        _vm._v("\r\n                    Visit "),
         _c(
           "a",
           {
@@ -72691,7 +72694,7 @@ var staticRenderFns = [
           },
           [_vm._v("www.ideatechsolution.com")]
         ),
-        _vm._v(" for more information.\n                ")
+        _vm._v(" for more information.\r\n                ")
       ]
     )
   }
@@ -77810,15 +77813,29 @@ var render = function() {
                                     ]
                                   }
                                 },
-                                _vm._l(_vm.allConsignRef, function(
-                                  item,
-                                  index
-                                ) {
-                                  return _c("option", { key: index }, [
-                                    _vm._v(_vm._s(item.consign_ref) + " ")
-                                  ])
-                                }),
-                                0
+                                [
+                                  _c(
+                                    "option",
+                                    {
+                                      attrs: {
+                                        selected: "selected",
+                                        value: "",
+                                        hidden: ""
+                                      }
+                                    },
+                                    [_vm._v("Select Batch")]
+                                  ),
+                                  _vm._v(" "),
+                                  _vm._l(_vm.allConsignRef, function(
+                                    item,
+                                    index
+                                  ) {
+                                    return _c("option", { key: index }, [
+                                      _vm._v(_vm._s(item.consign_ref) + " ")
+                                    ])
+                                  })
+                                ],
+                                2
                               )
                             ]),
                             _vm._v(" "),
@@ -77837,7 +77854,7 @@ var render = function() {
                                   attrs: {
                                     readonly: "",
                                     type: "text",
-                                    placeholder: "Select Book by ISBN "
+                                    placeholder: "Book Name "
                                   },
                                   domProps: {
                                     value: _vm.detailsFormData.book_name
@@ -103972,8 +103989,8 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! D:\Hasinur\Inventory\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! D:\Hasinur\Inventory\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! D:\Office Project\Inventory\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! D:\Office Project\Inventory\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })

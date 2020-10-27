@@ -140,16 +140,20 @@ class ConsignmentController extends Controller
         $consignmentDetails = ConsignmentDetails::findOrFail($request->id);
 
         $consignment = $consignmentDetails->consignment;
+        $book = $consignmentDetails->book;
 
         DB::beginTransaction();
 
         try{
 
             $reducePrice = $consignmentDetails->total_price;
+            $reduceQty = $consignmentDetails->qty;
 
             $consignmentDetails->delete();
 
             $consignment->update(['total_price' => $consignment->total_price -= $reducePrice]);
+
+            $book->update(['available_quantity' => $book->available_quantity -= $reduceQty]);
 
             DB::commit();
 

@@ -363,7 +363,8 @@
                         title: 'Does not exist 0. You can delete this item from item-list'
                     })
                 }else{
-                    if(this.editDetails.book.available_quantity < this.editDetails.qty){
+                    let balance = this.editDetails.book.available_quantity+this.editDetails.qty;
+                    if(balance < this.editDetails.qty){
                         Toast.fire({
                             icon: 'warning',
                             title: 'Your required Qty is not available in Stock!'
@@ -428,12 +429,12 @@
                         var b_unit_price = ((parseFloat(this.editDetails.pub_price) * parseFloat(this.editDetails.discount_p))/100);
                         var most_unit = uunit_price - b_unit_price;
 
-                        this.editDetails.total_dis = b_unit_price;
+                        this.editDetails.total_dis = b_unit_price * parseInt(this.editDetails.qty);
                         this.editDetails.unit_price = most_unit;
                         this.editDetails.total_price = most_unit * parseInt(this.editDetails.qty);
 
                         if(parseFloat(this.editDetails.discount) > 0){
-                            this.editDetails.total_dis = b_unit_price + parseFloat(this.editDetails.discount);
+                            this.editDetails.total_dis = this.editDetails.total_dis + parseFloat(this.editDetails.discount);
 
                             this.editDetails.total_price = parseFloat(this.editDetails.total_price) - parseFloat(this.editDetails.discount);
                         }

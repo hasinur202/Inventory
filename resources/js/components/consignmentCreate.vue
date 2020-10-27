@@ -591,24 +591,24 @@ export default {
     },
 
     finalUpdate() {
-        axios.post("/storeConsignment", this.dataArray).then(() => {
-            this.rateGet();
-            this.dataArray.details = [];
-            this.getConsignRef();
-            this.dataArray= {
-                supplier_id: "",
-                consign_ref: "",
-                total_price: 0,
-                total_pub_price:"",
-                details: [],
-                supplier: "",
-            }
-
-            Toast.fire({
-                icon: 'success',
-                title: 'Consignments Saved Successfully'
-            })
-        });
+          axios.post("/storeConsignment", this.dataArray).then(() => {
+              this.rateGet();
+              this.getConsignRef();
+              this.dataArray.details = [];
+              this.dataArray= {
+                  supplier_id: "",
+                  consign_ref: "",
+                  total_price: 0,
+                  total_pub_price:0,
+                  details: [],
+                  supplier: "",
+                  pay_mode:"Cash"
+              }
+              Toast.fire({
+                  icon: 'success',
+                  title: 'Consignments Saved Successfully'
+              })
+          });
     },
     createConsignment() {
         if(this.dataArray.supplier == ""){
@@ -786,7 +786,7 @@ export default {
           })
         },
         formatConsignRef(serial){
-            let consignRef = `${moment().format('DD/MM/YY')}/${this.padString(serial)}`
+            let consignRef = `Consignment/${moment().format('DD/MM/YY')}/${this.padString(serial)}`
             return consignRef
         },
         padString(serial){
