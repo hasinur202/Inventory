@@ -3129,16 +3129,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -3228,7 +3218,6 @@ __webpack_require__.r(__webpack_exports__);
     consignmentByid: function consignmentByid(consignment) {
       var _this5 = this;
 
-      // console.log(consignment.consign_ref)
       axios.get("/getConsignId?id=".concat(consignment.id)).then(function (response) {
         _this5.consignmentDetails = response.data;
       });
@@ -3244,13 +3233,23 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     updateSingleDetails: function updateSingleDetails() {
-      axios.post("/update-consignment-details", this.editDetails).then(function (response) {
-        console.log(response.data);
+      var _this6 = this;
+
+      if (this.editDetails.qty <= 0) {
         Toast.fire({
-          icon: 'success',
-          title: 'Item Updated Successfully'
+          icon: 'warning',
+          title: 'Does not exist 0. You can delete this item from item-list'
         });
-      });
+      } else {
+        axios.post("/update-consignment-details", this.editDetails).then(function (response) {
+          _this6.viewConsignment();
+
+          Toast.fire({
+            icon: 'success',
+            title: 'Item Updated Successfully'
+          });
+        });
+      }
     },
     pub_price: function pub_price(event) {
       this.editDetails.pub_price = event.target.value;
@@ -4292,35 +4291,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -4340,10 +4310,12 @@ __webpack_require__.r(__webpack_exports__);
         'qty': '',
         'consign_ref': '',
         'pub_price': '',
+        'cost_price': '',
         'unit_price': '',
         'discount_p': '',
         'rate': '',
         'total_price': '',
+        'total_costprice': '',
         'discount': ''
       }
     };
@@ -4428,16 +4400,36 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     updateIvoiceSingleDetails: function updateIvoiceSingleDetails() {
-      axios.post("/update-invoice-details", this.editDetails).then(function (response) {
-        console.log(response.data);
+      var _this6 = this;
+
+      if (this.editDetails.qty <= 0) {
         Toast.fire({
-          icon: 'success',
-          title: 'Item Updated Successfully'
+          icon: 'warning',
+          title: 'Does not exist 0. You can delete this item from item-list'
         });
-      });
+      } else {
+        if (this.editDetails.book.available_quantity < this.editDetails.qty) {
+          Toast.fire({
+            icon: 'warning',
+            title: 'Your required Qty is not available in Stock!'
+          });
+        } else {
+          axios.post("/update-invoice-details", this.editDetails).then(function (response) {
+            _this6.viewInvoice();
+
+            Toast.fire({
+              icon: 'success',
+              title: 'Item Updated Successfully'
+            });
+          });
+        }
+      }
     },
     pub_price: function pub_price(event) {
       this.editDetails.pub_price = event.target.value;
+    },
+    cost_price: function cost_price(event) {
+      this.editDetails.cost_price = event.target.value;
     },
     rate: function rate(event) {
       this.editDetails.rate = event.target.value;
@@ -4452,6 +4444,10 @@ __webpack_require__.r(__webpack_exports__);
       this.editDetails.qty = event.target.value;
     },
     costBd: function costBd() {
+      if (parseInt(this.editDetails.qty) > 0) {
+        this.editDetails.total_costprice = parseFloat(this.editDetails.cost_price) * parseInt(this.editDetails.qty);
+      }
+
       if (parseFloat(this.editDetails.pub_price) > 0 && parseFloat(this.editDetails.rate) > 0) {
         this.editDetails.unit_price = parseFloat(this.editDetails.pub_price) * parseFloat(this.editDetails.rate);
       }
@@ -4944,6 +4940,10 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
 
 
 
@@ -4954,6 +4954,7 @@ __webpack_require__.r(__webpack_exports__);
       errors: {},
       batchList: [],
       allConsignRef: [],
+      allConsignData: {},
       editingIndex: 0,
       getSearchValue: false,
       getSearchSupp: false,
@@ -4963,15 +4964,18 @@ __webpack_require__.r(__webpack_exports__);
       selected_isbn: '',
       detailsFormData: {
         book_id: "",
+        consignment_id: '',
         isbn: "",
         book_name: "",
-        consign_ref: [],
-        pub_price: "",
         balance: "",
+        consign_ref: "",
+        pub_price: "",
+        cost_price: "",
         copies: "1",
         rate: "",
         unit_price: "0",
-        total_price: "0",
+        total_price: "",
+        total_costprice: "0",
         discount: "",
         discount_p: "",
         total_dis: '0'
@@ -4995,6 +4999,7 @@ __webpack_require__.r(__webpack_exports__);
         book_id: "",
         consign_ref: "",
         pub_price: "",
+        cost_price: "",
         balance: "",
         copies: "1",
         rate: "",
@@ -5002,6 +5007,7 @@ __webpack_require__.r(__webpack_exports__);
         isbn: "",
         book_name: "",
         total_price: "0",
+        total_costprice: "0",
         discount: "",
         discount_p: "",
         total_dis: '0'
@@ -5011,50 +5017,40 @@ __webpack_require__.r(__webpack_exports__);
   created: function created() {
     var _this = this;
 
-    axios.get("/getDetailsForInvoice").then(function (response) {
-      _this.allBook = response.data.data; // console.log(response.data.data)
-    });
     axios.get("/uniqueConsignIsbn").then(function (response) {
       _this.allUniqueIsbn = response.data.data; // console.log(this.allUniqueIsbn)
     });
   },
   computed: {
-    filterd: function filterd() {
+    UniqueIsbn: function UniqueIsbn() {
       var _this2 = this;
 
-      return this.allBook.filter(function (val) {
-        return val.book.isbn.startsWith(_this2.detailsFormData.isbn);
-      });
-    },
-    filterdUnique: function filterdUnique() {
-      var _this3 = this;
-
       return this.allUniqueIsbn.filter(function (val) {
-        return val.book.isbn.startsWith(_this3.detailsFormData.isbn);
+        return val.isbn.startsWith(_this2.detailsFormData.isbn);
       });
-    },
-    unique: function unique() {
-      return function (arr, key) {
-        var output = [];
-        var usedKeys = {};
-
-        for (var i = 0; i < arr.length; i++) {
-          if (!usedKeys[arr[i][key]]) {
-            usedKeys[arr[i][key]] = true;
-            output.push(arr[i]);
-          }
-        }
-
-        return output;
-      };
     }
   },
   methods: {
     getConsignmentData: function getConsignmentData() {
-      var _this4 = this;
+      var _this3 = this;
 
-      axios.get('get-consignment-data?consign_ref=' + this.selected_consign_ref + '&isbn=' + this.selected_isbn).then(function (response) {
-        _this4.detailsFormData = response.data;
+      axios.get('get-consignment-data?consign_ref=' + this.detailsFormData.consign_ref + '&isbn=' + this.detailsFormData.isbn).then(function (response) {
+        _this3.allConsignData = response.data;
+        _this3.detailsFormData.book_id = _this3.allConsignData.book_id;
+        _this3.detailsFormData.book_name = _this3.allConsignData.book.book_name;
+        _this3.detailsFormData.isbn = _this3.allConsignData.book.isbn;
+        _this3.detailsFormData.balance = _this3.allConsignData.book.available_quantity;
+        _this3.detailsFormData.pub_price = _this3.allConsignData.pub_price;
+        _this3.detailsFormData.cost_price = _this3.allConsignData.cost_price;
+        _this3.detailsFormData.consignment_id = _this3.allConsignData.consignment_id;
+        _this3.detailsFormData.copies = "1";
+        _this3.detailsFormData.rate = "";
+        _this3.detailsFormData.unit_price = "0";
+        _this3.detailsFormData.total_price = "0";
+        _this3.detailsFormData.total_costprice = "0";
+        _this3.detailsFormData.discount = "";
+        _this3.detailsFormData.discount_p = "";
+        _this3.detailsFormData.total_dis = '0'; // this.getSearchValue = false;
       });
     },
     createEditInvoice: function createEditInvoice() {
@@ -5100,40 +5096,33 @@ __webpack_require__.r(__webpack_exports__);
       this.editingData = item;
     },
     invoiceStore: function invoiceStore() {
-      var _this5 = this;
+      var _this4 = this;
 
-      if (this.dataArray.cus_name == "") {
+      axios.post("/storeInvoice", this.dataArray).then(function () {
+        _this4.getInvoiceRef();
+
+        _this4.$router.push('invoiceprint');
+
+        _this4.dataArray = {
+          cus_name: "",
+          email: "",
+          phone: "",
+          address: "",
+          invoice_ref: "",
+          total_price: "0",
+          total_discount: "0",
+          pay_mode: "Cash",
+          total_qty: "0",
+          receivable: "0",
+          net_receivable: "0",
+          total_receivable: "0",
+          details: []
+        };
         Toast.fire({
-          icon: 'danger',
-          title: 'Customer name must not be empty!'
+          icon: 'success',
+          title: 'Invoice Saved Successfully'
         });
-      } else {
-        axios.post("/storeInvoice", this.dataArray).then(function () {
-          _this5.getInvoiceRef();
-
-          _this5.$router.push('invoiceprint');
-
-          _this5.dataArray = {
-            cus_name: "",
-            email: "",
-            phone: "",
-            address: "",
-            invoice_ref: "",
-            total_price: "0",
-            total_discount: "0",
-            pay_mode: "Cash",
-            total_qty: "0",
-            receivable: "0",
-            net_receivable: "0",
-            total_receivable: "0",
-            details: []
-          };
-          Toast.fire({
-            icon: 'success',
-            title: 'Invoice Saved Successfully'
-          });
-        });
-      }
+      });
     },
     cleanInvoice: function cleanInvoice() {
       this.dataArray = {
@@ -5154,22 +5143,31 @@ __webpack_require__.r(__webpack_exports__);
     },
     createInvoice: function createInvoice() {
       if (this.detailsFormData.balance >= 1) {
-        this.dataArray.details.push(this.detailsFormData);
-        this.detailsFormData = {
-          book_id: "",
-          consign_ref: "",
-          pub_price: "",
-          balance: "",
-          copies: "1",
-          rate: "0.8",
-          unit_price: "0",
-          isbn: "",
-          book_name: "",
-          total_price: "0",
-          discount: "",
-          discount_p: "",
-          total_dis: "0"
-        };
+        if (this.detailsFormData.balance >= this.detailsFormData.copies) {
+          this.dataArray.details.push(this.detailsFormData);
+          this.detailsFormData = {
+            book_id: "",
+            consign_ref: "",
+            pub_price: "",
+            cost_price: "",
+            balance: "",
+            copies: "1",
+            rate: "0.8",
+            unit_price: "0",
+            isbn: "",
+            book_name: "",
+            total_price: "0",
+            total_costprice: "",
+            discount: "",
+            discount_p: "",
+            total_dis: "0"
+          };
+        } else {
+          Toast.fire({
+            icon: 'warning',
+            title: 'Out of Stock'
+          });
+        }
       } else {
         Toast.fire({
           icon: 'warning',
@@ -5199,14 +5197,14 @@ __webpack_require__.r(__webpack_exports__);
     },
     //get value isbn and bookname from booktable
     getVal: function getVal(val) {
-      var _this6 = this;
+      var _this5 = this;
 
-      this.selected_isbn = val.isbn;
+      this.detailsFormData.isbn = val.isbn;
       axios.post("getConsignRef", {
         isbn: val.isbn
       }).then(function (response) {
-        _this6.allConsignRef = response.data.data;
-        _this6.getSearchValue = false;
+        _this5.allConsignRef = response.data.data;
+        _this5.getSearchValue = false;
       });
     },
     //this method for generate random number
@@ -5221,6 +5219,9 @@ __webpack_require__.r(__webpack_exports__);
     pub_price: function pub_price(event) {
       this.detailsFormData.pub_price = event.target.value;
     },
+    cost_price: function cost_price(event) {
+      this.detailsFormData.cost_price = event.target.value;
+    },
     rate: function rate(event) {
       this.detailsFormData.rate = event.target.value;
     },
@@ -5234,11 +5235,15 @@ __webpack_require__.r(__webpack_exports__);
       this.detailsFormData.copies = event.target.value;
     },
     costBd: function costBd() {
-      if (parseFloat(this.detailsFormData.pub_price) > 0 && parseFloat(this.detailsFormData.rate) > 0) {
+      if (parseInt(this.detailsFormData.copies) > 0) {
+        this.detailsFormData.total_costprice = parseFloat(this.detailsFormData.cost_price) * parseInt(this.detailsFormData.copies);
+      }
+
+      if (parseFloat(this.detailsFormData.rate) > 0) {
         this.detailsFormData.unit_price = parseFloat(this.detailsFormData.pub_price) * parseFloat(this.detailsFormData.rate);
       }
 
-      if (parseFloat(this.detailsFormData.pub_price) > 0 && parseFloat(this.detailsFormData.rate) > 0 && parseInt(this.detailsFormData.copies) > 0) {
+      if (parseFloat(this.detailsFormData.rate) > 0 && parseInt(this.detailsFormData.copies) > 0) {
         this.detailsFormData.total_price = parseFloat(this.detailsFormData.rate) * parseFloat(this.detailsFormData.pub_price) * parseInt(this.detailsFormData.copies);
         var total_dis1 = parseFloat(this.detailsFormData.pub_price) * parseInt(this.detailsFormData.copies);
         this.detailsFormData.total_dis = total_dis1 - this.detailsFormData.total_price;
@@ -5249,7 +5254,7 @@ __webpack_require__.r(__webpack_exports__);
         }
       }
 
-      if (parseFloat(this.detailsFormData.discount_p) > 0) {
+      if (parseFloat(this.detailsFormData.discount_p) > 0 && parseInt(this.detailsFormData.copies) > 0) {
         if (parseFloat(this.detailsFormData.pub_price) > 0 && parseInt(this.detailsFormData.copies) > 0) {
           var uunit_price = parseFloat(this.detailsFormData.pub_price);
           var b_unit_price = parseFloat(this.detailsFormData.pub_price) * parseFloat(this.detailsFormData.discount_p) / 100;
@@ -5265,6 +5270,10 @@ __webpack_require__.r(__webpack_exports__);
         }
       } //editing Item
 
+
+      if (parseInt(this.editingData.copies) > 0) {
+        this.editingData.total_costprice = parseFloat(this.editingData.cost_price) * parseInt(this.editingData.copies);
+      }
 
       if (parseFloat(this.editingData.pub_price) > 0 && parseFloat(this.editingData.rate) > 0) {
         this.editingData.unit_price = parseFloat(this.editingData.pub_price) * parseFloat(this.editingData.rate);
@@ -5299,10 +5308,10 @@ __webpack_require__.r(__webpack_exports__);
       }
     },
     getInvoiceRef: function getInvoiceRef() {
-      var _this7 = this;
+      var _this6 = this;
 
       axios.get("get-last-invoice-serial").then(function (response) {
-        _this7.dataArray.invoice_ref = _this7.formatInvoiceRef(response.data);
+        _this6.dataArray.invoice_ref = _this6.formatInvoiceRef(response.data);
       });
     },
     formatInvoiceRef: function formatInvoiceRef(serial) {
@@ -13653,7 +13662,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.ulstyle[data-v-6db0a08d]{\r\n    list-style: none;\r\n    padding-left: 0px;\r\n    position: absolute;\r\n    background: aliceblue;\r\n    width: 50%;\r\n    z-index: 999;\n}\n.ulstyle > li[data-v-6db0a08d]:hover {\r\n    background:#ddd;\r\n    color: blue;\r\n    border-radius: 5px;\n}\n.ulstyle > li > p[data-v-6db0a08d]{\r\n    padding: 5px;\r\n    cursor: pointer;\r\n    margin-bottom: 0px;\r\n    border-bottom: 1px solid #DCA;\n}\n.card-title[data-v-6db0a08d] {\r\n  float: left;\n}\r\n\r\n", ""]);
+exports.push([module.i, "\n.ulstyle[data-v-6db0a08d]{\n    list-style: none;\n    padding-left: 0px;\n    position: absolute;\n    background: aliceblue;\n    width: 50%;\n    z-index: 999;\n}\n.ulstyle > li[data-v-6db0a08d]:hover {\n    background:#ddd;\n    color: blue;\n    border-radius: 5px;\n}\n.ulstyle > li > p[data-v-6db0a08d]{\n    padding: 5px;\n    cursor: pointer;\n    margin-bottom: 0px;\n    border-bottom: 1px solid #DCA;\n}\n.card-title[data-v-6db0a08d] {\n  float: left;\n}\n\n", ""]);
 
 // exports
 
@@ -13672,7 +13681,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.invoice_title[data-v-75c3f0ea]{\r\n    text-align: center;\r\n    font-weight: bold;\r\n    margin-bottom: 10px;\r\n    border-bottom: 2px solid #ddd;\r\n    padding-bottom: 5px;\n}\r\n\r\n", ""]);
+exports.push([module.i, "\n.invoice_title[data-v-75c3f0ea]{\n    text-align: center;\n    font-weight: bold;\n    margin-bottom: 10px;\n    border-bottom: 2px solid #ddd;\n    padding-bottom: 5px;\n}\n\n", ""]);
 
 // exports
 
@@ -13691,7 +13700,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.ulstyle[data-v-6545489e] {\r\n  list-style: none;\r\n  padding-left: 0px;\r\n  float: left;\r\n  width: 100%;\n}\n.ulstyle > li[data-v-6545489e]:hover {\r\n  background: #ddd;\r\n  color: blue;\r\n  border-radius: 5px;\n}\n.ulstyle > li > p[data-v-6545489e] {\r\n  padding: 5px;\r\n  cursor: pointer;\r\n  margin-bottom: 4px;\r\n  float: left;\r\n  width: 100%;\n}\r\n\r\n\r\n", ""]);
+exports.push([module.i, "\n.ulstyle[data-v-6545489e] {\n  list-style: none;\n  padding-left: 0px;\n  float: left;\n  width: 100%;\n}\n.ulstyle > li[data-v-6545489e]:hover {\n  background: #ddd;\n  color: blue;\n  border-radius: 5px;\n}\n.ulstyle > li > p[data-v-6545489e] {\n  padding: 5px;\n  cursor: pointer;\n  margin-bottom: 4px;\n  float: left;\n  width: 100%;\n}\n\n\n", ""]);
 
 // exports
 
@@ -13710,7 +13719,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.ulstyle[data-v-6545489e] {\r\n  list-style: none;\r\n  padding-left: 0px;\r\n  float: left;\r\n  position: absolute;\r\n    background: aliceblue;\r\n    width: 50%;\r\n    z-index: 999;\r\n    overflow-y:scroll;\r\n    min-height: 5rem;\r\n    max-height: 12rem;\n}\n.ulstyle > li[data-v-6545489e]:hover {\r\n  background: #ddd;\r\n  color: blue;\r\n  border-radius: 5px;\n}\n.ulstyle > li > p[data-v-6545489e] {\r\n  padding: 5px;\r\n  cursor: pointer;\r\n  margin-bottom: 4px;\r\n  float: left;\r\n  margin-bottom: 0px;\r\nborder-bottom: 1px solid #DCA;\n}\n.invoice_title[data-v-6545489e]{\r\n    text-align: center;\r\n    font-weight: bold;\r\n    margin-bottom: 10px;\r\n    border-bottom: 2px solid #ddd;\r\n    padding-bottom: 5px;\n}\r\n\r\n", ""]);
+exports.push([module.i, "\n.ulstyle[data-v-6545489e] {\n  list-style: none;\n  padding-left: 0px;\n  float: left;\n  position: absolute;\n    background: aliceblue;\n    width: 50%;\n    z-index: 999;\n    overflow-y:scroll;\n    min-height: 5rem;\n    max-height: 12rem;\n}\n.ulstyle > li[data-v-6545489e]:hover {\n  background: #ddd;\n  color: blue;\n  border-radius: 5px;\n}\n.ulstyle > li > p[data-v-6545489e] {\n  padding: 5px;\n  cursor: pointer;\n  margin-bottom: 4px;\n  float: left;\n  margin-bottom: 0px;\nborder-bottom: 1px solid #DCA;\n}\n.invoice_title[data-v-6545489e]{\n    text-align: center;\n    font-weight: bold;\n    margin-bottom: 10px;\n    border-bottom: 2px solid #ddd;\n    padding-bottom: 5px;\n}\n\n", ""]);
 
 // exports
 
@@ -13748,7 +13757,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.ulstyle[data-v-249b947c]{\r\n    list-style: none;\r\n    padding-left: 0px;\r\n    position: absolute;\r\n    background: aliceblue;\r\n    width: 50%;\r\n    z-index: 999;\n}\n.ulstyle > li[data-v-249b947c]:hover {\r\n    background:#ddd;\r\n    color: blue;\r\n    border-radius: 5px;\n}\n.ulstyle > li > p[data-v-249b947c]{\r\n    padding: 5px;\r\n    cursor: pointer;\r\n    margin-bottom: 0px;\r\n    border-bottom: 1px solid #DCA;\n}\n.card-title[data-v-249b947c] {\r\n  float: left;\n}\r\n\r\n", ""]);
+exports.push([module.i, "\n.ulstyle[data-v-249b947c]{\n    list-style: none;\n    padding-left: 0px;\n    position: absolute;\n    background: aliceblue;\n    width: 50%;\n    z-index: 999;\n}\n.ulstyle > li[data-v-249b947c]:hover {\n    background:#ddd;\n    color: blue;\n    border-radius: 5px;\n}\n.ulstyle > li > p[data-v-249b947c]{\n    padding: 5px;\n    cursor: pointer;\n    margin-bottom: 0px;\n    border-bottom: 1px solid #DCA;\n}\n.card-title[data-v-249b947c] {\n  float: left;\n}\n\n", ""]);
 
 // exports
 
@@ -13767,7 +13776,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.ulstyle[data-v-8e43ef84] {\r\n  list-style: none;\r\n  padding-left: 0px;\r\n  float: left;\r\n  width: 95%;\r\n  position: absolute;\r\n  background: aliceblue;\r\n  z-index: 999;\r\n  overflow-y:scroll;\r\n    min-height: 5rem;\r\n    max-height: 12rem;\n}\n.ulstyle > li[data-v-8e43ef84]:hover {\r\n  background: #ddd;\r\n  color: blue;\r\n  border-radius: 5px;\n}\n.ulstyle > li > p[data-v-8e43ef84] {\r\n  padding: 5px;\r\n  cursor: pointer;\r\n  margin-bottom: 4px;\r\n  float: left;\r\n  width: 100%;\r\n  margin-bottom: 0px;\r\n    border-bottom: 1px solid #DCA;\n}\n.card-title[data-v-8e43ef84] {\r\n  float: left;\n}\n.supp[data-v-8e43ef84] {\r\n  width: 100%;\r\n  float: right;\n}\r\n", ""]);
+exports.push([module.i, "\n.ulstyle[data-v-8e43ef84] {\n  list-style: none;\n  padding-left: 0px;\n  float: left;\n  width: 95%;\n  position: absolute;\n  background: aliceblue;\n  z-index: 999;\n  overflow-y:scroll;\n    min-height: 5rem;\n    max-height: 12rem;\n}\n.ulstyle > li[data-v-8e43ef84]:hover {\n  background: #ddd;\n  color: blue;\n  border-radius: 5px;\n}\n.ulstyle > li > p[data-v-8e43ef84] {\n  padding: 5px;\n  cursor: pointer;\n  margin-bottom: 4px;\n  float: left;\n  width: 100%;\n  margin-bottom: 0px;\n    border-bottom: 1px solid #DCA;\n}\n.card-title[data-v-8e43ef84] {\n  float: left;\n}\n.supp[data-v-8e43ef84] {\n  width: 100%;\n  float: right;\n}\n", ""]);
 
 // exports
 
@@ -13786,7 +13795,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.head_menu[data-v-798ca618]{\r\n    border-radius: 10px;\r\n    border: 1px solid #fff;\r\n    background: #494E54;\r\n    color: #fff !important;\r\n    margin-left: 14px;\n}\n.head_menu[data-v-798ca618]:hover {\r\n    background: gray !important;\r\n    color: black !important;\r\n    border:1px solid #ddd;transition-delay: 0.2s;\n}\n.fixed_position[data-v-798ca618]{\r\n    left:0;\r\n    right:0; top: 0;\r\n    position: fixed;\n}\n.ulstyle[data-v-798ca618]{\r\n    list-style: none;\r\n    padding-left: 0px;\r\n    position: absolute;\r\n    background: aliceblue;\r\n    width: 80%;\r\n    z-index: 999;\r\n    overflow-y:scroll;\r\n    min-height: 5rem;\r\n    max-height: 12rem;\n}\n.ulstyle > li[data-v-798ca618]:hover {\r\n    background:#ddd;\r\n    color: blue;\r\n    border-radius: 5px;\n}\n.ulstyle > li > p[data-v-798ca618]{\r\n    padding: 5px;\r\n    cursor: pointer;\r\n    margin-bottom: 0px;\r\n    border-bottom: 1px solid #DCA;\n}\r\n", ""]);
+exports.push([module.i, "\n.head_menu[data-v-798ca618]{\n    border-radius: 10px;\n    border: 1px solid #fff;\n    background: #494E54;\n    color: #fff !important;\n    margin-left: 14px;\n}\n.head_menu[data-v-798ca618]:hover {\n    background: gray !important;\n    color: black !important;\n    border:1px solid #ddd;transition-delay: 0.2s;\n}\n.fixed_position[data-v-798ca618]{\n    left:0;\n    right:0; top: 0;\n    position: fixed;\n}\n.ulstyle[data-v-798ca618]{\n    list-style: none;\n    padding-left: 0px;\n    position: absolute;\n    background: aliceblue;\n    width: 80%;\n    z-index: 999;\n    overflow-y:scroll;\n    min-height: 5rem;\n    max-height: 12rem;\n}\n.ulstyle > li[data-v-798ca618]:hover {\n    background:#ddd;\n    color: blue;\n    border-radius: 5px;\n}\n.ulstyle > li > p[data-v-798ca618]{\n    padding: 5px;\n    cursor: pointer;\n    margin-bottom: 0px;\n    border-bottom: 1px solid #DCA;\n}\n", ""]);
 
 // exports
 
@@ -72671,7 +72680,7 @@ var staticRenderFns = [
       "div",
       { staticClass: "card-footer", staticStyle: { display: "block" } },
       [
-        _vm._v("\r\n                    Visit "),
+        _vm._v("\n                    Visit "),
         _c(
           "a",
           {
@@ -72682,7 +72691,7 @@ var staticRenderFns = [
           },
           [_vm._v("www.ideatechsolution.com")]
         ),
-        _vm._v(" for more information.\r\n                ")
+        _vm._v(" for more information.\n                ")
       ]
     )
   }
@@ -74221,6 +74230,10 @@ var render = function() {
                                   ]),
                                   _vm._v(" "),
                                   _c("td", [
+                                    _vm._v(_vm._s(consignment.total_price))
+                                  ]),
+                                  _vm._v(" "),
+                                  _c("td", [
                                     _vm._v(_vm._s(consignment.pay_mode))
                                   ]),
                                   _vm._v(" "),
@@ -74895,6 +74908,8 @@ var staticRenderFns = [
         _c("th", [_vm._v("Consignment Date")]),
         _vm._v(" "),
         _c("th", [_vm._v("Supplier")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Total Price")]),
         _vm._v(" "),
         _c("th", [_vm._v("Pay Mode")]),
         _vm._v(" "),
@@ -76081,6 +76096,10 @@ var render = function() {
                                   _vm._v(" "),
                                   _c("td", [_vm._v(_vm._s(invoice.cus_name))]),
                                   _vm._v(" "),
+                                  _c("td", [
+                                    _vm._v(_vm._s(invoice.total_price))
+                                  ]),
+                                  _vm._v(" "),
                                   _c("td", [_vm._v(_vm._s(invoice.pay_mode))]),
                                   _vm._v(" "),
                                   _c("td", [
@@ -76680,6 +76699,60 @@ var render = function() {
                                     )
                                   }
                                 }
+                              }),
+                              _vm._v(" "),
+                              _c("input", {
+                                directives: [
+                                  {
+                                    name: "model",
+                                    rawName: "v-model",
+                                    value: _vm.editDetails.cost_price,
+                                    expression: "editDetails.cost_price"
+                                  }
+                                ],
+                                staticClass: "form-control",
+                                attrs: { hidden: "", type: "text" },
+                                domProps: { value: _vm.editDetails.cost_price },
+                                on: {
+                                  input: function($event) {
+                                    if ($event.target.composing) {
+                                      return
+                                    }
+                                    _vm.$set(
+                                      _vm.editDetails,
+                                      "cost_price",
+                                      $event.target.value
+                                    )
+                                  }
+                                }
+                              }),
+                              _vm._v(" "),
+                              _c("input", {
+                                directives: [
+                                  {
+                                    name: "model",
+                                    rawName: "v-model",
+                                    value: _vm.editDetails.total_costprice,
+                                    expression: "editDetails.total_costprice"
+                                  }
+                                ],
+                                staticClass: "form-control",
+                                attrs: { hidden: "", type: "text" },
+                                domProps: {
+                                  value: _vm.editDetails.total_costprice
+                                },
+                                on: {
+                                  input: function($event) {
+                                    if ($event.target.composing) {
+                                      return
+                                    }
+                                    _vm.$set(
+                                      _vm.editDetails,
+                                      "total_costprice",
+                                      $event.target.value
+                                    )
+                                  }
+                                }
                               })
                             ]),
                             _vm._v(" "),
@@ -76788,6 +76861,8 @@ var staticRenderFns = [
         _c("th", [_vm._v("Invoice Date")]),
         _vm._v(" "),
         _c("th", [_vm._v("Customer Name")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Total Price")]),
         _vm._v(" "),
         _c("th", [_vm._v("Pay Mode")]),
         _vm._v(" "),
@@ -77666,7 +77741,7 @@ var render = function() {
                                         ],
                                         staticClass: "ulstyle"
                                       },
-                                      _vm._l(_vm.allUniqueIsbn, function(val) {
+                                      _vm._l(_vm.UniqueIsbn, function(val) {
                                         return _c("li", { key: val.isbn }, [
                                           _c(
                                             "p",
@@ -77703,8 +77778,8 @@ var render = function() {
                                     {
                                       name: "model",
                                       rawName: "v-model",
-                                      value: _vm.selected_consign_ref,
-                                      expression: "selected_consign_ref"
+                                      value: _vm.detailsFormData.consign_ref,
+                                      expression: "detailsFormData.consign_ref"
                                     }
                                   ],
                                   staticClass: "form-control",
@@ -77723,10 +77798,13 @@ var render = function() {
                                               "_value" in o ? o._value : o.value
                                             return val
                                           })
-                                        _vm.selected_consign_ref = $event.target
-                                          .multiple
-                                          ? $$selectedVal
-                                          : $$selectedVal[0]
+                                        _vm.$set(
+                                          _vm.detailsFormData,
+                                          "consign_ref",
+                                          $event.target.multiple
+                                            ? $$selectedVal
+                                            : $$selectedVal[0]
+                                        )
                                       },
                                       _vm.getConsignmentData
                                     ]
@@ -77895,7 +77973,7 @@ var render = function() {
                                         staticClass: "form-control",
                                         attrs: {
                                           type: "number",
-                                          placeholder: "Rate"
+                                          placeholder: "Copies"
                                         },
                                         domProps: {
                                           value: _vm.detailsFormData.copies
@@ -78081,6 +78159,64 @@ var render = function() {
                                         _vm.$set(
                                           _vm.detailsFormData,
                                           "total_price",
+                                          $event.target.value
+                                        )
+                                      }
+                                    }
+                                  }),
+                                  _vm._v(" "),
+                                  _c("input", {
+                                    directives: [
+                                      {
+                                        name: "model",
+                                        rawName: "v-model",
+                                        value: _vm.detailsFormData.cost_price,
+                                        expression: "detailsFormData.cost_price"
+                                      }
+                                    ],
+                                    staticClass: "form-control",
+                                    attrs: { hidden: "", type: "text" },
+                                    domProps: {
+                                      value: _vm.detailsFormData.cost_price
+                                    },
+                                    on: {
+                                      input: function($event) {
+                                        if ($event.target.composing) {
+                                          return
+                                        }
+                                        _vm.$set(
+                                          _vm.detailsFormData,
+                                          "cost_price",
+                                          $event.target.value
+                                        )
+                                      }
+                                    }
+                                  }),
+                                  _vm._v(" "),
+                                  _c("input", {
+                                    directives: [
+                                      {
+                                        name: "model",
+                                        rawName: "v-model",
+                                        value:
+                                          _vm.detailsFormData.totalcost_price,
+                                        expression:
+                                          "detailsFormData.totalcost_price"
+                                      }
+                                    ],
+                                    staticClass: "form-control",
+                                    attrs: { hidden: "", type: "text" },
+                                    domProps: {
+                                      value: _vm.detailsFormData.totalcost_price
+                                    },
+                                    on: {
+                                      input: function($event) {
+                                        if ($event.target.composing) {
+                                          return
+                                        }
+                                        _vm.$set(
+                                          _vm.detailsFormData,
+                                          "totalcost_price",
                                           $event.target.value
                                         )
                                       }
@@ -78491,7 +78627,7 @@ var render = function() {
                                         staticClass: "form-control",
                                         attrs: {
                                           type: "number",
-                                          placeholder: "Rate"
+                                          placeholder: "Copies"
                                         },
                                         domProps: {
                                           value: _vm.editingData.copies
@@ -78674,6 +78810,63 @@ var render = function() {
                                         _vm.$set(
                                           _vm.editingData,
                                           "total_price",
+                                          $event.target.value
+                                        )
+                                      }
+                                    }
+                                  }),
+                                  _vm._v(" "),
+                                  _c("input", {
+                                    directives: [
+                                      {
+                                        name: "model",
+                                        rawName: "v-model",
+                                        value: _vm.editingData.cost_price,
+                                        expression: "editingData.cost_price"
+                                      }
+                                    ],
+                                    staticClass: "form-control",
+                                    attrs: { hidden: "", type: "text" },
+                                    domProps: {
+                                      value: _vm.editingData.cost_price
+                                    },
+                                    on: {
+                                      input: function($event) {
+                                        if ($event.target.composing) {
+                                          return
+                                        }
+                                        _vm.$set(
+                                          _vm.editingData,
+                                          "cost_price",
+                                          $event.target.value
+                                        )
+                                      }
+                                    }
+                                  }),
+                                  _vm._v(" "),
+                                  _c("input", {
+                                    directives: [
+                                      {
+                                        name: "model",
+                                        rawName: "v-model",
+                                        value: _vm.editingData.total_costprice,
+                                        expression:
+                                          "editingData.total_costprice"
+                                      }
+                                    ],
+                                    staticClass: "form-control",
+                                    attrs: { hidden: "", type: "text" },
+                                    domProps: {
+                                      value: _vm.editingData.total_costprice
+                                    },
+                                    on: {
+                                      input: function($event) {
+                                        if ($event.target.composing) {
+                                          return
+                                        }
+                                        _vm.$set(
+                                          _vm.editingData,
+                                          "total_costprice",
                                           $event.target.value
                                         )
                                       }
@@ -103779,8 +103972,8 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! D:\Office Project\Inventory\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! D:\Office Project\Inventory\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! D:\Hasinur\Inventory\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! D:\Hasinur\Inventory\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })

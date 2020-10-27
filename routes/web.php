@@ -75,8 +75,6 @@ Route::get('/getSuppDetailsById', 'InventoryController@getDetailsSuppId');
 //get invoice list
 Route::get('/getInvoices', 'InvoiceController@index');
 
-//get details for invoice/sale
-Route::get('/getDetailsForInvoice', 'ConsignmentController@detailsForInvoice');
 //get unique consign isbn
 Route::get('/uniqueConsignIsbn', 'ConsignmentController@uniqueISBN');
 //get Invoice details by id

@@ -23,6 +23,7 @@
                                                     <th>Invoice Ref#</th>
                                                     <th>Invoice Date</th>
                                                     <th>Customer Name</th>
+                                                    <th>Total Price</th>
                                                     <th>Pay Mode</th>
                                                     <th>Modify</th>
                                                 </tr>
@@ -32,6 +33,7 @@
                                                     <td>{{ invoice.invoice_ref }}</td>
                                                     <td>{{ invoice.created_at | formatDate }}</td>
                                                     <td>{{ invoice.cus_name }}</td>
+                                                    <td>{{ invoice.total_price }}</td>
                                                     <td>{{ invoice.pay_mode }}</td>
                                                     <td>
                                                          <button v-if="invoice.pay_mode == 'Due' && invoice.status == 1" @click="addInventoryByid(invoice)"
@@ -60,39 +62,6 @@
                                 </div>
                                 <!-- /.card -->
                             </div>
-
-
-                            <!-- <div class="col-md-4" style="float:right;">
-                                <div class="card">
-                                    <div class="card-body table-responsive p-0">
-                                        <table class="table table-hover">
-                                            <thead>
-                                                <tr>
-                                                    <th>Quantity</th>
-                                                    <th>Total Price</th>
-                                                    <th>Modify</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr v-for="(item, index) in invoiceDetails" :key="index">
-                                                    <td>{{ item.qty }}</td>
-                                                    <td>{{ item.total_price }}</td>
-                                                    <td>
-                                                        <button @click="showEditModal(item)"
-                                                            class="float-left btn btn-primary btn-sm"><i
-                                                                class="fa fa-edit"></i></button>
-                                                        <button @click="deleteSingleDetails(item.id)"
-                                                            class="float-left btn btn-danger btn-sm"><i
-                                                                class="fa fa-trash"></i></button>
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-
-                            </div> -->
-
 
 
                         <div class="modal fade" id="editInvoice" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
@@ -241,6 +210,8 @@
                                         <label>Total Price</label>
                                         <input readonly v-model="editDetails.total_price" type="text"
                                             class="form-control">
+                                        <input hidden v-model="editDetails.cost_price" type="text" class="form-control">
+                                        <input hidden v-model="editDetails.total_costprice" type="text" class="form-control">
                                     </div>
                                     <div style="width:48%; float: left;">
                                         <div class="form-group">
@@ -295,10 +266,12 @@
                     'qty': '',
                     'consign_ref': '',
                     'pub_price': '',
+                    'cost_price':'',
                     'unit_price': '',
                     'discount_p': '',
                     'rate': '',
                     'total_price': '',
+                    'total_costprice':'',
                     'discount': '',
                 },
             };
@@ -384,19 +357,36 @@
             },
 
             updateIvoiceSingleDetails() {
-                axios
-                    .post(`/update-invoice-details`, this.editDetails)
-                    .then(response => {
-                    console.log(response.data);
+                if(this.editDetails.qty <= 0){
                     Toast.fire({
-                        icon: 'success',
-                        title: 'Item Updated Successfully'
+                        icon: 'warning',
+                        title: 'Does not exist 0. You can delete this item from item-list'
                     })
-                });
+                }else{
+                    if(this.editDetails.book.available_quantity < this.editDetails.qty){
+                        Toast.fire({
+                            icon: 'warning',
+                            title: 'Your required Qty is not available in Stock!'
+                        })
+                    }else{
+                        axios
+                            .post(`/update-invoice-details`, this.editDetails)
+                            .then(response => {
+                            this.viewInvoice();
+                            Toast.fire({
+                                icon: 'success',
+                                title: 'Item Updated Successfully'
+                            })
+                        });
+                    }
+                }
             },
 
             pub_price: function (event) {
                 this.editDetails.pub_price = event.target.value;
+            },
+            cost_price: function (event) {
+                this.editDetails.cost_price = event.target.value;
             },
             rate: function (event) {
                 this.editDetails.rate = event.target.value;
@@ -412,6 +402,10 @@
             },
 
             costBd(){
+                if(parseInt(this.editDetails.qty) > 0){
+                    this.editDetails.total_costprice = parseFloat(this.editDetails.cost_price)*parseInt(this.editDetails.qty);
+                }
+
                 if(parseFloat(this.editDetails.pub_price) > 0 && parseFloat(this.editDetails.rate) > 0){
                     this.editDetails.unit_price = (parseFloat(this.editDetails.pub_price) * parseFloat(this.editDetails.rate))
                 }
@@ -447,10 +441,6 @@
                 }
 
             },
-
-
-
-
         },
 
         components: {

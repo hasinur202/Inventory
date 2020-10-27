@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use App\Book;
 use App\Consignment;
 use App\Invoice;
+use App\InvoiceDetails;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
@@ -139,8 +140,8 @@ class BookController extends Controller
         $consignment = Consignment::get();
         $consignTotal = $consignment->sum('total_price');
 
-        $invoice = Invoice::get();
-        $invoiceTotal = $invoice->sum('total_price');
+        $invoice = InvoiceDetails::get();
+        $invoiceTotal = $invoice->sum('total_costprice');
 
         $availableTotal = $consignTotal - $invoiceTotal;
 

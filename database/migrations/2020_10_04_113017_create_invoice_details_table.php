@@ -21,10 +21,12 @@ class CreateInvoiceDetailsTable extends Migration
             $table->foreign('book_id')->references('id')->on('books');
             $table->string('consign_ref');
             $table->float('pub_price');
+            $table->float('cost_price');
             $table->integer('qty');
             $table->float('rate')->nullable();
             $table->float('unit_price');
             $table->float('total_price');
+            $table->float('total_costprice');
             $table->float('discount_p')->nullable();
             $table->float('discount')->default(0.00);
             $table->float('total_dis');

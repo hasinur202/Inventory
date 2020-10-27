@@ -195,9 +195,8 @@
                                                 v-if="errors.hasOwnProperty('isbn')"
                                                 >{{errors.isbn[0]}}</span>
 
-
                                                 <ul v-show="getSearchValue" class="ulstyle">
-                                                    <li v-for="val in allUniqueIsbn" :key="val.isbn">
+                                                    <li v-for="val in UniqueIsbn" :key="val.isbn">
                                                         <p @click.prevent="getVal(val)">{{ val.isbn }}</p>
                                                     </li>
                                                 </ul>
@@ -216,7 +215,7 @@
                                         <div class="col-md-12">
 
                                             <div class="form-group">
-                                                <select @change="getConsignmentData" v-model="selected_consign_ref" id="type" class="form-control">
+                                                <select @change="getConsignmentData" v-model="detailsFormData.consign_ref" id="type" class="form-control">
                                                     <option v-for="(item, index) in allConsignRef" :key="index">{{ item.consign_ref }} </option>
                                                 </select>
                                             </div>
@@ -246,7 +245,7 @@
                                                 <div style="width:48%; float: right;">
                                                     <div class="form-group">
                                                         <label>Copies</label>
-                                                        <input v-model="detailsFormData.copies" @keyup="costBd" type="number" placeholder="Rate"
+                                                        <input v-model="detailsFormData.copies" @keyup="costBd" type="number" placeholder="Copies"
                                                             class="form-control">
                                                     </div>
                                                 </div>
@@ -278,6 +277,8 @@
                                                 <div class="form-group">
                                                     <label>Total Price</label>
                                                     <input readonly v-model="detailsFormData.total_price" type="text" class="form-control">
+                                                    <input hidden v-model="detailsFormData.cost_price" type="text" class="form-control">
+                                                    <input hidden v-model="detailsFormData.totalcost_price" type="text" class="form-control">
                                                 </div>
                                                 <div style="width:48%; float: left;">
                                                     <div class="form-group">
@@ -363,7 +364,7 @@
                                                 <div style="width:48%; float: right;">
                                                     <div class="form-group">
                                                         <label>Copies</label>
-                                                        <input v-model="editingData.copies" @keyup="costBd" type="number" placeholder="Rate"
+                                                        <input v-model="editingData.copies" @keyup="costBd" type="number" placeholder="Copies"
                                                             class="form-control">
                                                     </div>
                                                 </div>
@@ -395,7 +396,10 @@
                                                 <div class="form-group">
                                                     <label>Total Price</label>
                                                     <input readonly v-model="editingData.total_price" type="text" class="form-control">
+                                                    <input hidden v-model="editingData.cost_price" type="text" class="form-control">
+                                                    <input hidden v-model="editingData.total_costprice" type="text" class="form-control">
                                                 </div>
+
                                                 <div style="width:48%; float: left;">
                                                     <div class="form-group">
                                                         <label>Discount</label>
@@ -448,6 +452,7 @@ export default {
             errors: {},
             batchList:[],
             allConsignRef:[],
+            allConsignData:{},
             editingIndex:0,
             getSearchValue: false,
             getSearchSupp: false,
@@ -457,15 +462,18 @@ export default {
             selected_isbn : '',
             detailsFormData: {
                 book_id: "",
+                consignment_id:'',
                 isbn: "",
                 book_name: "",
-                consign_ref: [],
-                pub_price: "",
                 balance: "",
+                consign_ref: "",
+                pub_price: "",
+                cost_price: "",
                 copies: "1",
                 rate: "",
                 unit_price: "0",
-                total_price: "0",
+                total_price: "",
+                total_costprice: "0",
                 discount:"",
                 discount_p:"",
                 total_dis:'0',
@@ -489,6 +497,7 @@ export default {
                 book_id: "",
                 consign_ref: "",
                 pub_price: "",
+                cost_price: "",
                 balance: "",
                 copies: "1",
                 rate: "",
@@ -496,6 +505,7 @@ export default {
                 isbn: "",
                 book_name: "",
                 total_price: "0",
+                total_costprice: "0",
                 discount:"",
                 discount_p:"",
                 total_dis:'0',
@@ -504,11 +514,6 @@ export default {
     },
 
     created() {
-        axios.get("/getDetailsForInvoice").then(response => {
-            this.allBook = response.data.data;
-            // console.log(response.data.data)
-        });
-
         axios.get("/uniqueConsignIsbn").then(response =>{
             this.allUniqueIsbn = response.data.data;
             // console.log(this.allUniqueIsbn)
@@ -516,40 +521,35 @@ export default {
     },
 
     computed:{
-        filterd() {
-            return this.allBook.filter(val =>
-                val.book.isbn.startsWith(this.detailsFormData.isbn)
-            );
-        },
-
-        filterdUnique() {
+        UniqueIsbn() {
             return this.allUniqueIsbn.filter(val =>
-                val.book.isbn.startsWith(this.detailsFormData.isbn)
+                val.isbn.startsWith(this.detailsFormData.isbn)
             );
         },
-
-        unique () {
-            return function (arr, key) {
-                var output = []
-                var usedKeys = {}
-                for (var i = 0; i < arr.length; i++) {
-                if (!usedKeys[arr[i][key]]) {
-                    usedKeys[arr[i][key]] = true
-                    output.push(arr[i])
-                }
-                }
-                return output
-            }
-            }
-
-
     },
 
     methods:{
         getConsignmentData(){
-            axios.get('get-consignment-data?consign_ref='+this.selected_consign_ref+'&isbn='+this.selected_isbn)
+            axios.get('get-consignment-data?consign_ref='+this.detailsFormData.consign_ref+'&isbn='+this.detailsFormData.isbn)
             .then(response=>{
-                this.detailsFormData = response.data
+                this.allConsignData = response.data
+                    this.detailsFormData.book_id = this.allConsignData.book_id;
+                    this.detailsFormData.book_name = this.allConsignData.book.book_name;
+                    this.detailsFormData.isbn = this.allConsignData.book.isbn;
+                    this.detailsFormData.balance = this.allConsignData.book.available_quantity;
+                    this.detailsFormData.pub_price = this.allConsignData.pub_price;
+                    this.detailsFormData.cost_price = this.allConsignData.cost_price;
+                    this.detailsFormData.consignment_id = this.allConsignData.consignment_id;
+
+                    this.detailsFormData.copies= "1";
+                    this.detailsFormData.rate= "";
+                    this.detailsFormData.unit_price= "0";
+                    this.detailsFormData.total_price= "0";
+                    this.detailsFormData.total_costprice= "0";
+                    this.detailsFormData.discount="";
+                    this.detailsFormData.discount_p="";
+                    this.detailsFormData.total_dis='0';
+                    // this.getSearchValue = false;
             })
         },
         createEditInvoice(){
@@ -578,7 +578,6 @@ export default {
                 return parseFloat(acc) + parseFloat(curr.total_dis)
             }, 0);
         },
-
 
 
         deleteItem(index) {
@@ -610,37 +609,29 @@ export default {
         },
 
         invoiceStore(){
-            if(this.dataArray.cus_name == ""){
+            axios.post("/storeInvoice", this.dataArray).then(() => {
+                this.getInvoiceRef();
+                this.$router.push('invoiceprint');
+                this.dataArray = {
+                cus_name:"",
+                email:"",
+                phone:"",
+                address:"",
+                invoice_ref: "",
+                total_price: "0",
+                total_discount:"0",
+                pay_mode:"Cash",
+                total_qty: "0",
+                receivable:"0",
+                net_receivable:"0",
+                total_receivable:"0",
+                details: [],
+            };
                 Toast.fire({
-                    icon: 'danger',
-                    title: 'Customer name must not be empty!'
+                    icon: 'success',
+                    title: 'Invoice Saved Successfully'
                 })
-            }else{
-                axios.post("/storeInvoice", this.dataArray).then(() => {
-                    this.getInvoiceRef();
-                    this.$router.push('invoiceprint');
-                    this.dataArray = {
-                    cus_name:"",
-                    email:"",
-                    phone:"",
-                    address:"",
-                    invoice_ref: "",
-                    total_price: "0",
-                    total_discount:"0",
-                    pay_mode:"Cash",
-                    total_qty: "0",
-                    receivable:"0",
-                    net_receivable:"0",
-                    total_receivable:"0",
-                    details: [],
-                };
-                    Toast.fire({
-                        icon: 'success',
-                        title: 'Invoice Saved Successfully'
-                    })
-                });
-            }
-
+            });
         },
 
         cleanInvoice(){
@@ -662,23 +653,31 @@ export default {
         },
         createInvoice() {
             if(this.detailsFormData.balance >= 1){
-                    this.dataArray.details.push(this.detailsFormData);
-                    this.detailsFormData = {
-                    book_id: "",
-                    consign_ref: "",
-                    pub_price: "",
-                    balance: "",
-                    copies: "1",
-                    rate: "0.8",
-                    unit_price: "0",
-                    isbn: "",
-                    book_name: "",
-                    total_price: "0",
-                    discount:"",
-                    discount_p:"",
-                    total_dis:"0",
-                };
-
+                if(this.detailsFormData.balance >= this.detailsFormData.copies){
+                        this.dataArray.details.push(this.detailsFormData);
+                        this.detailsFormData = {
+                        book_id: "",
+                        consign_ref: "",
+                        pub_price: "",
+                        cost_price: "",
+                        balance: "",
+                        copies: "1",
+                        rate: "0.8",
+                        unit_price: "0",
+                        isbn: "",
+                        book_name: "",
+                        total_price: "0",
+                        total_costprice: "",
+                        discount:"",
+                        discount_p:"",
+                        total_dis:"0",
+                    };
+                }else{
+                    Toast.fire({
+                        icon: 'warning',
+                        title: 'Out of Stock'
+                    })
+                }
             }else{
                 Toast.fire({
                     icon: 'warning',
@@ -709,27 +708,17 @@ export default {
             } else {
                 this.getSearchValue = true;
             }
-            },
+        },
+
             //get value isbn and bookname from booktable
         getVal(val) {
-            this.selected_isbn = val.isbn
+            this.detailsFormData.isbn = val.isbn
             axios.post(`getConsignRef`, {isbn : val.isbn})
             .then(response=>{
                 this.allConsignRef = response.data.data;
                 this.getSearchValue = false;
             })
         },
-
-
-
-
-
-
-
-
-
-
-
 
         //this method for generate random number
         // myFunction: function(min, max) {
@@ -745,6 +734,9 @@ export default {
         pub_price: function (event) {
             this.detailsFormData.pub_price = event.target.value;
         },
+        cost_price: function (event) {
+            this.detailsFormData.cost_price = event.target.value;
+        },
         rate: function (event) {
             this.detailsFormData.rate = event.target.value;
         },
@@ -759,11 +751,15 @@ export default {
         },
 
         costBd(){
-            if(parseFloat(this.detailsFormData.pub_price) > 0 && parseFloat(this.detailsFormData.rate) > 0){
+            if(parseInt(this.detailsFormData.copies) > 0){
+                this.detailsFormData.total_costprice = parseFloat(this.detailsFormData.cost_price)*parseInt(this.detailsFormData.copies);
+            }
+
+            if(parseFloat(this.detailsFormData.rate) > 0){
                 this.detailsFormData.unit_price = (parseFloat(this.detailsFormData.pub_price) * parseFloat(this.detailsFormData.rate))
             }
 
-            if(parseFloat(this.detailsFormData.pub_price) > 0 && parseFloat(this.detailsFormData.rate) > 0 && parseInt(this.detailsFormData.copies) > 0){
+            if(parseFloat(this.detailsFormData.rate) > 0 && parseInt(this.detailsFormData.copies) > 0){
                 this.detailsFormData.total_price = (parseFloat(this.detailsFormData.rate) * parseFloat(this.detailsFormData.pub_price) * parseInt(this.detailsFormData.copies))
                 var total_dis1 = parseFloat(this.detailsFormData.pub_price) * parseInt(this.detailsFormData.copies);
 
@@ -775,7 +771,7 @@ export default {
                     }
             }
 
-            if(parseFloat(this.detailsFormData.discount_p) > 0){
+            if(parseFloat(this.detailsFormData.discount_p) > 0 && parseInt(this.detailsFormData.copies) > 0){
                 if(parseFloat(this.detailsFormData.pub_price) > 0 && parseInt(this.detailsFormData.copies) > 0){
                     var uunit_price = parseFloat(this.detailsFormData.pub_price);
                     var b_unit_price = ((parseFloat(this.detailsFormData.pub_price) * parseFloat(this.detailsFormData.discount_p))/100);
@@ -794,6 +790,10 @@ export default {
             }
 
             //editing Item
+            if(parseInt(this.editingData.copies) > 0){
+                this.editingData.total_costprice = parseFloat(this.editingData.cost_price)*parseInt(this.editingData.copies);
+            }
+
             if(parseFloat(this.editingData.pub_price) > 0 && parseFloat(this.editingData.rate) > 0){
                 this.editingData.unit_price = (parseFloat(this.editingData.pub_price) * parseFloat(this.editingData.rate))
             }
@@ -809,6 +809,7 @@ export default {
                          this.editingData.total_price = parseFloat(this.editingData.total_price) - parseFloat(this.editingData.discount);
                     }
             }
+
 
             if(parseFloat(this.editingData.discount_p) > 0){
                 if(parseFloat(this.editingData.pub_price) > 0 && parseInt(this.editingData.copies) > 0){

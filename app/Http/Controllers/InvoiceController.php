@@ -113,6 +113,7 @@ class InvoiceController extends Controller
             'discount_p'    => $request->discount_p,
             'rate'          => $request->rate,
             'discount'      => $request->discount,
+            'total_costprice' => $request->total_costprice,
             'total_price'   => $request->total_price,
         ]);
 

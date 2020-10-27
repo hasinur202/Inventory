@@ -39,6 +39,7 @@
                           <th>Consignment Ref#</th>
                           <th>Consignment Date</th>
                           <th>Supplier</th>
+                          <th>Total Price</th>
                           <th>Pay Mode</th>
                           <th>Modify</th>
                         </tr>
@@ -48,6 +49,7 @@
                           <td>{{ consignment.consign_ref }}</td>
                           <td>{{ consignment.created_at | formatDate }}</td>
                           <td>{{ consignment.get_supplier.supplier }}</td>
+                          <td>{{ consignment.total_price }}</td>
                           <td>{{ consignment.pay_mode }}</td>
                           <td>
                               <button v-if="consignment.pay_mode == 'Due' && consignment.status == 1" @click="addInventoryByid(consignment)"
@@ -127,18 +129,6 @@
                 </div>
             </div>
             <!--- end col md-12 -->
-
-
-
-
-
-
-
-
-
-
-
-
 
             </div>
 
@@ -371,7 +361,6 @@ export default {
     },
 
     consignmentByid(consignment) {
-      // console.log(consignment.consign_ref)
       axios.get(`/getConsignId?id=${consignment.id}`).then(response => {
         this.consignmentDetails = response.data;
       });
@@ -379,7 +368,6 @@ export default {
 
     deleteSingleDetails(id) {
       axios.post(`/delete-consignment`, { id: id }).then(response => {
-
         Toast.fire({
             icon: 'success',
             title: 'Item Deleted Successfully'
@@ -388,15 +376,22 @@ export default {
     },
 
     updateSingleDetails() {
-      axios
-        .post(`/update-consignment-details`, this.editDetails)
-        .then(response => {
-          console.log(response.data);
-          Toast.fire({
-            icon: 'success',
-            title: 'Item Updated Successfully'
-        })
-        });
+        if(this.editDetails.qty <= 0){
+            Toast.fire({
+                icon: 'warning',
+                title: 'Does not exist 0. You can delete this item from item-list'
+            })
+        }else{
+            axios
+            .post(`/update-consignment-details`, this.editDetails)
+                .then(response => {
+                this.viewConsignment();
+                Toast.fire({
+                    icon: 'success',
+                    title: 'Item Updated Successfully'
+                })
+            });
+        }
     },
 
     pub_price: function(event) {

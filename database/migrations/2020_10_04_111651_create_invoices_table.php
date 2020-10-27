@@ -19,7 +19,7 @@ class CreateInvoicesTable extends Migration
             $table->string('total_price');
             $table->string('total_discount');
             $table->string('pay_mode');
-            $table->string('cus_name');
+            $table->string('cus_name')->nullable();
             $table->integer('phone')->nullable();
             $table->string('email')->nullable();
             $table->text('address')->nullable();

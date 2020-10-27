@@ -11,10 +11,13 @@ class InvoiceDetails extends Model
         'book_id',
         'consign_ref',
         'pub_price',
+        'cost_price',
         'qty',
         'rate',
+        'discount_p',
         'unit_price',
         'total_price',
+        'total_costprice',
         'total_dis'
     ];
 
