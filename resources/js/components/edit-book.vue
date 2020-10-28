@@ -8,27 +8,20 @@
             <div class="container">
                 <div class="card card-default">
                 <div class="card-header">
-                    <h3 class="card-title">Add New Book</h3>
+                    <h3 class="card-title">{{ singleBookDetails.book_name }} Edit</h3>
                     <div class="card-tools">
                     <button type="button" class="btn btn-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
                     </div>
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body" style="display: block;">
-                <form @submit.prevent="createBook">
+                <form @submit.prevent="updateBook">
                     <div class="row">
-                        <div class="col-md-12">
-                            <label for="exampleInputIsbn" class="isbn">ISBN Auto</label>
-                            <input @click="myFunction()" v-model="form.isbnCheck" type="checkbox" class="form-check-input">
-                            <label class="form-check-label"> Generate: </label>
-                            <input v-model="form.checkisbn" placeholder="ISBN" style="width:31%; border-style:none;">
-                        </div>
 
                     <div class="col-md-6">
-                        <div class="form-group" v-show="visible">
-                            <input v-model="form.isbn" :class="{ 'is-invalid': form.errors.has('isbn') }"
-                            type="text" placeholder="ISBN No. *" class="form-control" minlength="13" maxlength="13" >
-                            <has-error :form="form" field="isbn"></has-error>
+                        <div class="form-group">
+                            <input v-model="singleBookDetails.isbn"
+                            type="text" readonly placeholder="ISBN No. *" class="form-control" minlength="13" maxlength="13">
                         </div>
 
                         <div class="form-group">
@@ -40,50 +33,50 @@
                                 label="author"
                                 multiple
                                 :taggable="false"
-                                v-model="form.author"
+                                v-model="singleBookDetails.author"
                                 :closeOnSelect="true"/>
                             <br>
                         </div>
 
 
                         <div class="form-group">
-                            <input v-model="form.copyright" :class="{ 'is-invalid': form.errors.has('copyright') }"
+                            <input v-model="singleBookDetails.copyright"
                             type="text" name="copyright" placeholder="Copyright" class="form-control">
-                            <has-error :form="form" field="copyright"></has-error>
                         </div>
+
                         <div class="col-md-6" style="float:left; padding-left:0px">
                             <div class="form-group">
-                                <input v-model="form.year" :class="{ 'is-invalid': form.errors.has('year') }"
+                                <input v-model="singleBookDetails.year"
                                 type="text" name="year" placeholder="Publish Year" class="form-control">
-                                <has-error :form="form" field="year"></has-error>
                             </div>
 
                         </div>
                         <div class="col-md-6" style="float:right; padding-right:0px">
                             <div class="form-group">
-                                <input v-model="form.country" :class="{ 'is-invalid': form.errors.has('country') }"
+                                <input v-model="singleBookDetails.country"
                                 type="text" name="country" placeholder="Publish Country" class="form-control">
-                                <has-error :form="form" field="country"></has-error>
                             </div>
                         </div>
+
 
                         <div class="form-group">
                             <label>Cover</label>
                         <div class="input-group">
                             <div class="custom-file file-input-style">
-                                <img :src="form.cover" class="img-style" />
-                                <input  @change="changePhoto($event)" type="file" name="cover" class="custom-file-input input-new-style" id="exampleInputFile">
+                                <img :src="editMode ? updateImage() : this.singleBookDetails.cover" class="img-style" />
+                                <input  @change="changePhoto($event)" type="file"
+                                 class="custom-file-input input-new-style" id="exampleInputFile">
                             </div>
                         </div>
                         </div>
+
                     </div>
 
                     <!-- /.col -->
                     <div class="col-md-6">
                         <div class="form-group">
-                            <input v-model="form.book_name" :class="{ 'is-invalid': form.errors.has('book_name') }"
+                            <input v-model="this.singleBookDetails.book_name"
                             type="text" name="book_name" placeholder="Book Title *" class="form-control">
-                            <has-error :form="form" field="book_name"></has-error>
                         </div>
 
                         <div class="form-group">
@@ -95,15 +88,14 @@
                                 label="category"
                                 multiple
                                 :taggable="false"
-                                v-model="form.category"
+                                v-model="singleBookDetails.category"
                                 :closeOnSelect="true"/>
                             <br>
                         </div>
 
                         <div class="form-group">
-                            <input @keyup="searchPub()" v-model="form.publisher" :class="{ 'is-invalid': form.errors.has('publisher') }"
+                            <input @keyup="searchPub()" v-model="singleBookDetails.publisher"
                             type="text" placeholder="Search Publisher *" class="form-control">
-                            <has-error :form="form" field="publisher"></has-error>
                             <ul v-show="getSesrchPub" class="ulstyle">
                                 <li v-for="val in filterdPub" :key="val.id">
                                     <p @click.prevent="getPub(val)">{{ val.publisher }}</p>
@@ -112,52 +104,45 @@
                             </ul>
                         </div>
 
+
                     <div class="col-md-6" style="float:left; padding-left:0px">
                         <div class="form-group">
-                            <input v-model="form.edition" :class="{ 'is-invalid': form.errors.has('edition') }"
+                            <input v-model="singleBookDetails.edition"
                             type="text" name="edition" placeholder="Edition" class="form-control">
-                            <has-error :form="form" field="edition"></has-error>
                         </div>
                     </div>
                     <div class="col-md-6" style="float:right; padding-right:0px;">
                         <div class="form-group">
-                            <select v-model="form.language" :class="{ 'is-invalid': form.errors.has('language') }" id="type" name="language" class="form-control">
-                                <option selected="selected" hidden value="">Select Language</option>
+                            <select v-model="singleBookDetails.language" id="type" name="language" class="form-control">
                                 <option>Bangla</option>
                                 <option>English</option>
                             </select>
-                            <has-error :form="form" field="language"></has-error>
                         </div>
                     </div>
 
                         <div class="form-group">
-                            <input v-model="form.ref" :class="{ 'is-invalid': form.errors.has('ref') }"
+                            <input v-model="singleBookDetails.ref"
                             type="text" name="ref" placeholder="Shelf Ref#" class="form-control">
-                            <has-error :form="form" field="ref"></has-error>
                         </div>
 
                         <div class="form-group">
-                        <select v-model="form.status" :class="{ 'is-invalid': form.errors.has('status') }" id="type" name="status" class="form-control">
-                            <option selected="selected" value="" hidden>Select New/Upcoming</option>
+                        <select v-model="singleBookDetails.status" id="type" name="status" class="form-control">
                             <option>New</option>
                             <option>Upcoming</option>
                         </select>
-                        <has-error :form="form" field="status"></has-error>
                         </div>
 
                         <div class="form-group">
-                            <textarea v-model="form.summary" :class="{ 'is-invalid': form.errors.has('summary') }"
+                            <textarea v-model="singleBookDetails.summary"
                             type="text" name="summary" placeholder="Summary" class="form-control"></textarea>
-                            <has-error :form="form" field="summary"></has-error>
                         </div>
 
                         <div class="col-md-6" style="float:right; text-align:center;padding-right:0px">
                             <div class="form-group">
                             <button type="button" class="btn btn-danger" >Cancel</button>
-                            <button type="submit" class="btn btn-primary">Save</button>
+                            <button type="submit" class="btn btn-primary">Update</button>
                         </div>
                         </div>
-
 
                     </div>
                     <!-- /.col -->
@@ -190,7 +175,7 @@ import vSelect from 'vue-select'
 import headerComponent from "./header";
 import footerComponent from "./footer";
     export default {
-        name: "Book",
+        name: "editbook",
         components: {
             headerComponent,
             footerComponent,
@@ -198,16 +183,15 @@ import footerComponent from "./footer";
 
         data(){
             return{
+                editMode:true,
+                book_isbn:'',
                 errors:{},
-                getSesrchValue: false,
                 getSesrchPub: false,
-                getSesrchCat: false,
-                visible:true,
                 authors:[],
                 publishers:[],
                 categories:[],
-                randomNumber:'',
-                form: new Form({
+                editbooklist:[],
+                singleBookDetails: {
                     isbn:'',
                     checkisbn:'',
                     author:[],
@@ -223,8 +207,7 @@ import footerComponent from "./footer";
                     language:'',
                     ref:'',
                     status:'',
-
-                })
+                }
             }
         },
 
@@ -248,15 +231,26 @@ import footerComponent from "./footer";
         computed:{
             filterdPub(){
                 return this.publishers.filter(val =>
-                val.publisher.toLowerCase().startsWith(this.form.publisher.toLowerCase()))
+                val.publisher.startsWith(this.singleBookDetails.publisher))
             },
         },
 
         methods:{
+            updateBook(){
+                axios
+                    .post(`/update-book-details`, this.singleBookDetails)
+                    .then(response => {
+                        Toast.fire({
+                            icon: "success",
+                            title: "Book Updated Successfully"
+                        });
+                        this.$router.push('booklist');
+                    });
+            },
             fetchCat (search, loading) {
                 axios.get('/getCategory')
                 .then((response)=>{
-                    this.categories = response.data.data;
+                    this.categories = response.data;
                 })
             },
             fetchAuth (search, loading) {
@@ -265,34 +259,14 @@ import footerComponent from "./footer";
                     this.authors = response.data.data;
                 });
             },
-            createBook(){
-                    // Submit the form via a POST request
-                    if(this.form.isbn != "" || this.form.checkisbn != ""){
-                        this.form.post('/storeBook/')
-                        .then(() => {
-                            this.form.reset();
-                            Toast.fire({
-                                icon: 'success',
-                                title: 'Book Stored Successfully'
-                            })
-                        })
-
-                    }else{
-                        Toast.fire({
-                                icon: 'danger',
-                                title: 'ISBN field required'
-                            })
-                    }
-            },
 
             //publishers search
             getPub(val){
-                this.form.publisher = val.publisher;
+                this.singleBookDetails.publisher = val.publisher;
                 this.getSesrchPub = false;
             },
             searchPub(){
-
-                if (this.form.publisher == '') {
+                if (this.singleBookDetails.publisher == '') {
                     this.getSesrchPub = false;
                 }else{
                     axios.get('/getPublisher')
@@ -300,6 +274,16 @@ import footerComponent from "./footer";
                         this.publishers = response.data.data;
                     });
                     this.getSesrchPub = true;
+                }
+            },
+
+            updateImage() {
+                let img = this.singleBookDetails.cover;
+                if (img.length > 200) {
+                    return this.singleBookDetails.cover;
+                } else {
+                    return "/images/" + this.singleBookDetails.cover;
+                    // return `/images/${this.singleBookDetails.cover}`;
                 }
             },
 
@@ -311,53 +295,38 @@ import footerComponent from "./footer";
                 let file = event.target.files[0];
                 let reader = new FileReader();
                 reader.onload = event => {
-                    this.form.cover = event.target.result;
+                    this.singleBookDetails.cover = event.target.result;
                 };
                 reader.readAsDataURL(file);
 
             },
 
-            // myFunction: function (min, max) {
-            //     if(this.form.checkisbn == ''){
-            //         this.form.checkisbn = Math.floor(Math.random() * (max - min)) + min;
-            //     }else{
-            //         this.form.checkisbn =""
-            //     }
-            // },
-
-
-            myFunction: function(){
-                if(this.form.checkisbn == ""){
-                    axios.get(`get-last-isbn-serial`)
-                    .then(response => {
-                        this.form.checkisbn = this.formatBookIsbnSerial(response.data);
-                        this.visible=false;
-                    })
-                }else{
-                    this.form.checkisbn = "";
-                    this.visible = true;
-                }
-            },
-
-
-
-            formatBookIsbnSerial(serial){
-                let isbnSerial = `${this.padString(serial)}`
-                return isbnSerial
-            },
-
-            padString(serial){
-                var str = "" + serial
-                var pad = "0000"
-                var ans = pad.substring(0, pad.length - str.length) + str
-                return ans
-            }
-
         },
 
         mounted() {
             console.log('Component mounted.');
-            // this.getBookIsbnSerial();
+
+            this.book_isbn = this.$route.params.isbn;
+            axios.post(`get-edit-book`, {isbn : this.book_isbn})
+            .then(response=>{
+                this.editbooklist = response.data.data;
+                this.editbooklist.forEach(el => {
+                        this.singleBookDetails.isbn = el.isbn,
+                        this.singleBookDetails.book_name = el.book_name,
+                        this.singleBookDetails.author = el.authors,
+                        this.singleBookDetails.category = el.categories,
+                        this.singleBookDetails.publisher = el.publisher,
+                        this.singleBookDetails.copyright = el.copyright,
+                        this.singleBookDetails.year = el.year,
+                        this.singleBookDetails.country = el.country,
+                        this.singleBookDetails.cover = el.cover,
+                        this.singleBookDetails.edition = el.edition,
+                        this.singleBookDetails.language = el.language,
+                        this.singleBookDetails.status = el.status,
+                        this.singleBookDetails.ref = el.ref,
+                        this.singleBookDetails.summary = el.summary
+                });
+            })
         },
     }
 </script>
@@ -368,6 +337,7 @@ import footerComponent from "./footer";
         display: inline-flex;
         margin-right: 30px;
     }
+
 
 .file-input-style{
     border: dashed 1.5px blue;
@@ -395,6 +365,8 @@ import footerComponent from "./footer";
     width: 200px !important;
     height: 180px !important;
 }
+
+
 
 
 .ulstyle{

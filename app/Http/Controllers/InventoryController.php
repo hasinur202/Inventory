@@ -73,7 +73,9 @@ class InventoryController extends Controller
         $invoice = Invoice::find($request->id);
         $new_pay=0.00;
 
-        $custInvent = CustInventory::create(['invoice_ref' => $invoice->invoice_ref,
+        $custInvent = CustInventory::create([
+            'invoice_id' => $invoice->id,
+            'invoice_ref' => $invoice->invoice_ref,
                 'cus_name' => $invoice->cus_name,
                 'total_due' => $invoice->total_price,
                 ]);
@@ -123,8 +125,18 @@ class InventoryController extends Controller
         CustInventoryDetails::create(['pay' => $request->pay, 'cust_id' => $inventory->id]);
 
 
+        $invent = CustInventory::find($request->id);
+
+        // if($invent->total_due == $request->total_paid || $invent->total_due == $invent->total_paid){
+        // }
+
+            $invoice = Invoice::where('invoice_ref', $invent->invoice_ref)->get();
+
+            $invoice->update(['pay_mode'=> 'Cash']);
+
+
         return response()->json([
-            'message'=> 'success'
+            'message'=> $invoice
         ],200);
 
     }

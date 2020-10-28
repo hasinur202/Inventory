@@ -16,6 +16,7 @@ class CreateCustInventoriesTable extends Migration
         Schema::create('cust_inventories', function (Blueprint $table) {
             $table->id();
             $table->string('cus_name');
+            $table->unsignedBigInteger('invoice_id');
             $table->string('invoice_ref');
             $table->float('total_due');
             $table->float('total_paid')->nullable();

@@ -43,10 +43,17 @@
                                 <td>{{ books.year }}</td>
                                 <td>{{ books.edition }}</td>
                                 <td>
-                                    <button @click="bookByid(books)" data-toggle="modal" data-target="#editBook" class="btn btn-info btn-sm"><i class="fa fa-edit"></i></button>
+
+                                    <router-link to="/editbook" :to="{ name: 'editbook', params: { isbn:books.isbn }}" class="btn btn-info btn-sm">
+                                        <i class="fa fa-edit"></i>
+                                    </router-link>
+
+
+
+                                    <!-- <button @click="bookByid(books)" data-toggle="modal" data-target="#editBook" class="btn btn-info btn-sm"><i class="fa fa-edit"></i></button> -->
+
 
                                     <button @click="bookByid(books)" data-toggle="modal" data-target="#viewBook" class="btn btn-primary btn-sm"><i class="fa fa-eye"></i></button>
-                                    <!-- <button data-toggle="modal" data-target="#viewBook" class="btn btn-primary btn-sm"><i class="fa fa-eye"></i></button> -->
                                     <button v-if="books.available_quantity == 0" @click="deleteBookId(books)" class="btn btn-danger btn-sm"><i class="fa fa-trash"></i></button>
                                 </td>
                             </tr>
@@ -331,8 +338,6 @@
             </div>
         </div>
 
-
-
         </div>
       </div>
     </div>
@@ -431,8 +436,8 @@ export default {
         },
 
         ourImage(img) {
-                return "/images/" + img;
-            },
+            return "/images/" + img;
+        },
 
         changePhoto(event) {
             let file = event.target.files[0];
@@ -455,10 +460,6 @@ export default {
                     });
             });
         }
-
-
-
-
     },
 
 

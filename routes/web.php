@@ -89,6 +89,8 @@ Route::get('/getUserDetails', 'UserController@index');
 
 Route::get('get-consignment-data', 'ConsignmentController@getConsignmentData');
 
+//edit book by id
+Route::post('get-edit-book', 'BookController@getBookForEdit');
 
 //delete Book
 Route::post('/deleteBookById', 'BookController@deleteBook');

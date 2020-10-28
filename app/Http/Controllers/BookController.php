@@ -82,7 +82,7 @@ class BookController extends Controller
 
 
     public function updateBook(Request $request){
-        $book = Book::find($request->id);
+        $book = Book::find($request->isbn);
 
         if ($request->get('cover') != $book->cover) {
             $cover = $request->get('cover');
@@ -98,9 +98,7 @@ class BookController extends Controller
 
         $book->isbn         = $request->isbn;
         $book->book_name    = $request->book_name;
-        $book->author       = $request->author;
         $book->copyright    = $request->copyright;
-        $book->category     = $request->category;
         $book->publisher    = $request->publisher;
         $book->edition      = $request->edition;
         $book->language     = $request->language;
@@ -110,10 +108,26 @@ class BookController extends Controller
         $book->summary      = $request->summary;
         $book->year         = $request->year;
 
+        // $book->authors()->sync($request->author);
+        // $book->categories()->sync($request->category);
+
+        $arrAuth = array();
+        foreach ($request->author as $item) {
+            array_push($arrAuth,$item['id']);
+        }
+
+        $arrCat = array();
+        foreach ($request->category as $item) {
+            array_push($arrCat,$item['id']);
+        }
+
+        $book->authors()->sync($arrAuth);
+        $book->categories()->sync($arrCat);
+
 
         $book->save();
         return response()->json([
-            'book'=>$book
+            'book'=>'success'
         ],200);
 
     }
@@ -128,9 +142,13 @@ class BookController extends Controller
     }
 
 
+    public function getBookForEdit(Request $request){
+        $data = Book::with('authors','categories')->where('isbn', $request->isbn)->get();
 
-
-
+        return response()->json([
+            'data'=>$data
+        ],200);
+    }
 
     public function stockDetails(){
         $data = Book::where('available_quantity', '>', 0)->get();

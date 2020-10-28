@@ -51,10 +51,6 @@
                                 <input  @change="changePhoto($event)" type="file"
                                  class="custom-file-input input-new-style" id="exampleInputFile">
 
-                                 <!-- <img class="img-style" :src="`/images/${form.logo}`"/>
-                                <input  @change="changePhoto($event)" type="file"
-                                class="custom-file-input input-new-style" id="exampleInputFile"> -->
-
                             </div>
                         </div>
                         </div>
@@ -113,9 +109,9 @@ export default {
             this.editMode = false;
           }else{
             this.editMode = true;
-            
+
           }
-            
+
         })
   },
   methods: {
@@ -145,18 +141,18 @@ export default {
                 title: 'Setting Saved Successfully'
             })
         })
-          
+
      },
 
      updateSettings(){
-       
+
         this.form.post('/updateSetting/'+this.form.id)
         .then(() => {
             Toast.fire({
                 icon: 'success',
                 title: 'Setting Updated Successfully'
             })
-        })    
+        })
      },
 
      updateImage() {

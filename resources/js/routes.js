@@ -15,6 +15,7 @@ import settings from "./components/Settings"
 import custInventory from "./components/Cust-inventory"
 import suppInventory from "./components/Sup-inventory"
 import invoiceprint from "./components/Invoiceprint"
+import editbook from "./components/edit-book"
 
 
 export default [{
@@ -214,6 +215,18 @@ export default [{
         path: '/invoiceprint',
         component: invoiceprint,
         name: 'invoiceprint',
+        beforeEnter(to, from, next) {
+            if (localStorage.getItem('inventory')) {
+                next();
+            } else {
+                next('/');
+            }
+        }
+    },
+    {
+        path: '/editbook',
+        component: editbook,
+        name: 'editbook',
         beforeEnter(to, from, next) {
             if (localStorage.getItem('inventory')) {
                 next();

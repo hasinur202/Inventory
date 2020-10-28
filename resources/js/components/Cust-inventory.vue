@@ -46,7 +46,7 @@
                                 <i class="fa fa-eye"></i>
                               </button>
 
-                              <button @click="deleteInventoryCus(inventory)" class="btn btn-danger btn-sm">
+                              <button v-if="inventory.total_paid == inventory.total_due" @click="deleteInventoryCus(inventory)" class="btn btn-danger btn-sm">
                                 <i class="fa fa-trash"></i>
                               </button>
 
@@ -67,7 +67,7 @@
                     <button class="btn btn-info btn-sm" @click="download" style="">Print/Download PDF</button>
 
                   <div id="printMe" class="card">
-                      <span style="text-align:center;font-size:16px; margin-top:15px;">{{ settingData.title }}</span>
+                      <p style="text-align:center;font-size:16px; margin-top:15px;">{{ settingData.title }}</p>
                       <p style="text-align:center;">{{ settingData.address }} <br>Contact: {{ settingData.mobile }}</p>
                   <div class="card-body table-responsive p-0">
                     <table class="table table-hover">
@@ -276,6 +276,7 @@
                                 type="text"
                                 placeholder="Pay Now"
                                 class="form-control"
+                                required
                                 />
                             </div>
                         </div>
@@ -390,15 +391,32 @@ export default {
 
 
     updateCusInventory(){
-        axios
-        .post(`/update-cusinventory-details`, this.editInventory)
-        .then(response => {
-        this.viewInventoryCustomer();
+        if(this.editInventory.pay == 0){
             Toast.fire({
-                icon: "success",
-                title: "Inventory Updated Successfully"
+                icon: "warning",
+                title: "Zero/Empty field doesn't exist..!"
             });
-        });
+        }else if(this.editInventory.new_due != null){
+            if(this.editInventory.new_due < this.editInventory.pay){
+
+                Toast.fire({
+                    icon: "warning",
+                    title: "Your pay amount cross current due..!"
+                });
+            }
+        }else{
+                axios
+                .post(`/update-cusinventory-details`, this.editInventory)
+                .then(response => {
+                this.viewInventoryCustomer();
+                    Toast.fire({
+                        icon: "success",
+                        title: "Inventory Updated Successfully"
+                    });
+                });
+            }
+
+
     },
 
     editCusById(inventory) {

@@ -75,7 +75,7 @@
                                 <td></td>
                             </tr>
                             <tr>
-                                <th>Customer Name</th>
+                                <th>Supplier Name</th>
                                 <td>{{ allSupp.supplier }}</td>
                             </tr>
                             <tr>
@@ -276,6 +276,7 @@
                                 type="text"
                                 placeholder="Pay Now"
                                 class="form-control"
+                                required
                                 />
                             </div>
                         </div>
@@ -389,15 +390,31 @@ export default {
 
 
     updateSupInventory(){
-        axios
-        .post(`/update-supinventory-details`, this.editInventory)
-        .then(response => {
-        this.viewInventorySupplier();
+        if(this.editInventory.pay == 0){
             Toast.fire({
-                icon: "success",
-                title: "Inventory Updated Successfully"
+                icon: "warning",
+                title: "Zero/Empty field doesn't exist..!"
             });
-        });
+        }else if(this.editInventory.new_due != null){
+            if(this.editInventory.new_due < this.editInventory.pay){
+
+                Toast.fire({
+                    icon: "warning",
+                    title: "Your pay amount cross current due..!"
+                });
+            }
+        }else{
+                axios
+                .post(`/update-supinventory-details`, this.editInventory)
+                .then(response => {
+                this.viewInventorySupplier();
+                    Toast.fire({
+                        icon: "success",
+                        title: "Inventory Updated Successfully"
+                    });
+                });
+
+        }
     },
 
     editSupById(inventory) {
