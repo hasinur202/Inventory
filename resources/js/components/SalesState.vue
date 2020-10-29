@@ -107,7 +107,9 @@
                                                         <td>1</td>
                                                         <td>{{ statement.book.isbn }}</td>
                                                         <td>{{ statement.book.book_name }}</td>
-                                                        <td>{{ statement.book.author }}</td>
+                                                        <td>
+                                                            <span style="margin-right:3px;" class="badge badge-success" v-for="item in statement.book.authors">{{ item.author }}</span>
+                                                        </td>
                                                         <td>{{ statement.unit_price }}</td>
                                                         <td>{{ statement.qty }}</td>
                                                     </tr>
@@ -181,8 +183,8 @@
                 `sales-statement-report?fromDate=${this.formData.fromDate}&toDate=${this.formData.toDate}&fixedDate=${this.formData.fixedDate}`
                 )
                 .then(response => {
-                this.isHidden = false;
-                this.statementData = response.data.statementData;
+                    this.isHidden = false;
+                    this.statementData = response.data.statementData;
 
                 })
                 .catch(err => {

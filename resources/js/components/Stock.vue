@@ -32,7 +32,10 @@
                                                     <td>{{ stock.id }}</td>
                                                     <td>{{ stock.isbn }}</td>
                                                     <td>{{ stock.book_name }}</td>
-                                                    <td>{{ stock.author }}</td>
+                                                    <td>
+                                                        <span style="margin-right:3px;" class="badge badge-success" v-for="item in stock.authors">{{ item.author }}</span>
+
+                                                    </td>
                                                     <td>{{ stock.available_quantity }}</td>
                                                 </tr>
 

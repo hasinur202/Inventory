@@ -396,28 +396,46 @@ export default {
                 icon: "warning",
                 title: "Zero/Empty field doesn't exist..!"
             });
-        }else if(this.editInventory.new_due != null){
-            if(this.editInventory.new_due < this.editInventory.pay){
-
-                Toast.fire({
-                    icon: "warning",
-                    title: "Your pay amount cross current due..!"
-                });
-            }
         }else{
-                axios
-                .post(`/update-cusinventory-details`, this.editInventory)
-                .then(response => {
-                this.viewInventoryCustomer();
+            if(this.editInventory.new_due == null){
+                if(this.editInventory.total_due < this.editInventory.pay){
                     Toast.fire({
-                        icon: "success",
-                        title: "Inventory Updated Successfully"
+                        icon: "warning",
+                        title: "Your pay amount cross total due..!"
                     });
-                });
+                }else{
+                    this.newUpdatecust();
+                }
+            }else{
+                if(this.editInventory.new_due < this.editInventory.pay ){
+                    Toast.fire({
+                        icon: "warning",
+                        title: "Your pay amount cross current due..!"
+                    });
+                }else{
+                    this.newUpdatecust();
+                }
             }
 
-
+        }
     },
+
+    newUpdatecust(){
+        axios
+        .post(`/update-cusinventory-details`, this.editInventory)
+        .then(response => {
+            this.viewInventoryCustomer();
+            Toast.fire({
+                icon: "success",
+                title: "Inventory Updated Successfully"
+            });
+        });
+    },
+
+
+
+
+
 
     editCusById(inventory) {
         for(let index in this.editInventory){

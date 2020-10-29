@@ -391,11 +391,19 @@
                         v-if="errors.hasOwnProperty('isbn')"
                     >{{errors.isbn[0]}}</span>
                     <ul v-show="getSearchValue" class="ulstyle">
-                        <li v-for="val in filterd" :key="val.id">
+                        <li v-for="val in UniqueIsbn" :key="val.id">
                             <p @click.prevent="getVal(val)">{{ val.isbn }}</p>
                         </li>
                     </ul>
              </div>
+
+
+             <div class="form-group">
+                <select @change="getConsignmentData" v-model="detailsFormData.consign_ref" id="type" class="form-control">
+                    <option selected="selected" value="" hidden>Select Batch</option>
+                    <option v-for="(item, index) in allConsignRef" :key="index">{{ item.consign_ref }} </option>
+                </select>
+            </div>
 
              <table>
                  <tr>
@@ -406,7 +414,19 @@
                  <tr>
                      <th>Author</th>
                      <td>:</td>
-                     <td>{{ detailsFormData.author }}</td>
+                     <td>
+                        <span style="margin-right:3px;" class="badge badge-success" v-for="item in detailsFormData.author">{{ item.author }}</span>
+                    </td>
+                 </tr>
+                 <tr>
+                     <th>Sales Price</th>
+                     <td>:</td>
+                     <td>{{ detailsFormData.sales_price }} Tk.</td>
+                 </tr>
+                 <tr>
+                     <th>Cost Price</th>
+                     <td>:</td>
+                     <td>{{ detailsFormData.cost_price }} Tk.</td>
                  </tr>
                  <tr>
                      <th>Available Quantity</th>
@@ -419,7 +439,6 @@
 
             </div>
             <div class="modal-footer">
-              <button @click="quickIsbnRest" type="button" class="btn btn-info">Clear</button>
               <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
             </div>
         </div>
@@ -436,7 +455,9 @@ export default {
         return{
             getSearchValue: false,
             errors: {},
-            allBook:[],
+            allUniqueIsbn:[],
+            allConsignRef:[],
+            allConsignData:[],
             form: new Form({
                 author:'',
                 publisher:'',
@@ -445,32 +466,45 @@ export default {
 
             detailsFormData: {
                 isbn: "",
+                consign_ref: "",
                 book_name:"",
                 available_quantity:"",
-                author:"",
+                author:[],
+                sales_price:"",
+                cost_price:"",
+                book_id: "",
             },
         }
     },
 
     created() {
-        axios.get("/getBook").then(response => {
-        this.allBook = response.data.data;
+        axios.get("/uniqueConsignIsbn").then(response =>{
+            this.allUniqueIsbn = response.data.data;
+            // console.log(this.allUniqueIsbn)
         });
     },
 
     computed: {
-    //isbn filtered from allbook
-    filterd() {
-      return this.allBook.filter(val =>
-        val.isbn.startsWith(this.detailsFormData.isbn)
-      );
-    },
+        UniqueIsbn() {
+            return this.allUniqueIsbn.filter(val =>
+                val.isbn.startsWith(this.detailsFormData.isbn)
+            );
+        },
   },
 
     methods:{
-      quickIsbnRest(){
-        this.detailsFormData = [];
-      },
+        getConsignmentData(){
+            axios.get('get-consign-data?consign_ref='+this.detailsFormData.consign_ref+'&isbn='+this.detailsFormData.isbn)
+            .then(response=>{
+                this.allConsignData = response.data;
+                    this.detailsFormData.isbn = this.allConsignData.book.isbn;
+                    this.detailsFormData.author = this.allConsignData.book.authors;
+                    this.detailsFormData.book_name = this.allConsignData.book.book_name;
+                    this.detailsFormData.available_quantity = this.allConsignData.book.available_quantity;
+                    this.detailsFormData.sales_price = this.allConsignData.sales_price;
+                    this.detailsFormData.cost_price = this.allConsignData.cost_price;
+            })
+        },
 
       logout(){
         axios.get('/logout')
@@ -529,19 +563,35 @@ export default {
         this.getSearchValue = true;
       }
     },
-    //get value isbn and bookname from booktable
+
+        //get value isbn and bookname from booktable
     getVal(val) {
-      this.detailsFormData.isbn = val.isbn;
-      this.allBook.forEach(el => {
-        if (this.detailsFormData.isbn == el.isbn) {
-          this.detailsFormData.book_id = el.id;
-          this.detailsFormData.book_name = el.book_name;
-          this.detailsFormData.available_quantity = el.available_quantity;
-          this.detailsFormData.author = el.author;
-          this.getSearchValue = false;
-        }
-      });
+        this.detailsFormData.isbn = val.isbn
+        axios.post(`getConsignRef`, {isbn : val.isbn})
+        .then(response=>{
+            this.allConsignRef = response.data.data;
+            this.getSearchValue = false;
+        })
     },
+
+
+
+
+    //get value isbn and bookname from booktable
+    // getVal(val) {
+    //   this.detailsFormData.isbn = val.isbn;
+    //   this.allBook.forEach(el => {
+    //     if (this.detailsFormData.isbn == el.isbn) {
+    //       this.detailsFormData.book_id = el.id;
+    //       this.detailsFormData.book_name = el.book_name;
+    //       this.detailsFormData.available_quantity = el.available_quantity;
+    //       this.detailsFormData.author = el.author;
+    //       this.detailsFormData.sales_price = el.sales_price;
+    //       this.detailsFormData.cost_price = el.cost_price;
+    //       this.getSearchValue = false;
+    //     }
+    //   });
+    // },
 
     }
 }

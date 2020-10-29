@@ -21,6 +21,7 @@ class CreateCustInventoriesTable extends Migration
             $table->float('total_due');
             $table->float('total_paid')->nullable();
             $table->float('new_due')->nullable();
+            $table->integer('status')->default(1);
             $table->timestamps();
         });
     }

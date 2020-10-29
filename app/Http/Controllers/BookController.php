@@ -151,7 +151,7 @@ class BookController extends Controller
     }
 
     public function stockDetails(){
-        $data = Book::where('available_quantity', '>', 0)->get();
+        $data = Book::with('authors')->where('available_quantity', '>', 0)->get();
 
         $sum = $data->sum('available_quantity');
 

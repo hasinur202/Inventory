@@ -51,7 +51,9 @@ class InventoryController extends Controller
 
         $new_pay=0.00;
 
-        $custInvent = SuppIventory::create(['consign_ref' => $consign->consign_ref,
+        $custInvent = SuppIventory::create([
+            'consign_id' => $consign->id,
+            'consign_ref' => $consign->consign_ref,
                 'supplier' => $supplier->supplier,
                 'total_due' => $consign->total_price,
                 ]);
@@ -101,14 +103,22 @@ class InventoryController extends Controller
 
         SuppIventoryDetails::create(['pay' => $request->pay, 'supp_id' => $inventory->id]);
 
+        if($inventory->total_due == $inventory->total_paid){
+            $invoice = Consignment::where('id', $inventory->consign_id)->first();
+
+            $invoice->update(['pay_mode'=> 'Cash']);
+            $inventory->update(['status' => 0]);
+        }else{
+            return response()->json([
+                'message'=> 'does not update invoice'
+            ],200);
+        }
 
         return response()->json([
             'message'=> 'success'
         ],200);
 
     }
-
-
 
 
 
@@ -121,22 +131,21 @@ class InventoryController extends Controller
         $inventory->total_paid    = $inventory->total_paid + $request->pay;
         $inventory->new_due     = $inventory->total_due - $inventory->total_paid;
         $inventory->save();
-
         CustInventoryDetails::create(['pay' => $request->pay, 'cust_id' => $inventory->id]);
 
-
-        $invent = CustInventory::find($request->id);
-
-        // if($invent->total_due == $request->total_paid || $invent->total_due == $invent->total_paid){
-        // }
-
-            $invoice = Invoice::where('invoice_ref', $invent->invoice_ref)->get();
+        if($inventory->total_due == $inventory->total_paid){
+            $invoice = Invoice::where('id', $inventory->invoice_id)->first();
 
             $invoice->update(['pay_mode'=> 'Cash']);
-
+            $inventory->update(['status' => 0]);
+        }else{
+            return response()->json([
+                'message'=> 'does not update invoice'
+            ],200);
+        }
 
         return response()->json([
-            'message'=> $invoice
+            'message'=> 'success'
         ],200);
 
     }
@@ -145,6 +154,7 @@ class InventoryController extends Controller
 
     public function getInventorySupp(){
         $data = SuppIventory::get();
+
         return response()->json([
             'data'=>$data,
             'message'=>"success"

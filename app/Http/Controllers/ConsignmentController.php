@@ -241,6 +241,17 @@ class ConsignmentController extends Controller
         })->first();
     }
 
+    public function getConsignData(Request $request)
+    {
+        return ConsignmentDetails::with('book', 'book.authors')->whereHas('consignment', function($query) use ($request){
+            $query->where('consign_ref', $request->consign_ref);
+        })
+        ->whereHas('book', function ($q1) use ($request){
+            $q1->where('isbn', $request->isbn);
+        })->first();
+
+    }
+
 
 
 

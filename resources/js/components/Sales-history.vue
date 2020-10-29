@@ -363,8 +363,8 @@
                         title: 'Does not exist 0. You can delete this item from item-list'
                     })
                 }else{
-                    let balance = this.editDetails.book.available_quantity+this.editDetails.qty;
-                    if(balance < this.editDetails.qty){
+                    // let balance = this.editDetails.book.available_quantity+this.editDetails.qty;
+                    if( this.editDetails.book.available_quantity < this.editDetails.qty){
                         Toast.fire({
                             icon: 'warning',
                             title: 'Your required Qty is not available in Stock!'

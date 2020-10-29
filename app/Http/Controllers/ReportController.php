@@ -31,8 +31,8 @@ class ReportController extends Controller
 
             $purchaseData = ConsignmentDetails::query();
             $salesData = InvoiceDetails::query();
-            $supplierData = SuppIventory::query();
-            $customerData = CustInventory::query();
+            $supplierData = SuppIventory::where('status',1);
+            $customerData = CustInventory::where('status',1);
 
             $cash = Consignment::where('pay_mode','Cash');
             $card = Consignment::where('pay_mode','Card');
@@ -119,7 +119,7 @@ class ReportController extends Controller
             }
         }
 
-            $statementData = InvoiceDetails::with('book');
+            $statementData = InvoiceDetails::with('book','book.authors');
 
             if($request->filled('fixedDate')){
                 $statementData->whereDate('created_at', $request->get('fixedDate'));

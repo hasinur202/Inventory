@@ -388,34 +388,49 @@ export default {
         });
     },
 
-
     updateSupInventory(){
         if(this.editInventory.pay == 0){
             Toast.fire({
                 icon: "warning",
                 title: "Zero/Empty field doesn't exist..!"
             });
-        }else if(this.editInventory.new_due != null){
-            if(this.editInventory.new_due < this.editInventory.pay){
-
-                Toast.fire({
-                    icon: "warning",
-                    title: "Your pay amount cross current due..!"
-                });
-            }
         }else{
-                axios
-                .post(`/update-supinventory-details`, this.editInventory)
-                .then(response => {
-                this.viewInventorySupplier();
+            if(this.editInventory.new_due == null){
+                if(this.editInventory.total_due < this.editInventory.pay){
                     Toast.fire({
-                        icon: "success",
-                        title: "Inventory Updated Successfully"
+                        icon: "warning",
+                        title: "Your pay amount cross total due..!"
                     });
-                });
+                }else{
+                    this.newUpdateSup();
+                }
+            }else{
+                if(this.editInventory.new_due < this.editInventory.pay ){
+                    Toast.fire({
+                        icon: "warning",
+                        title: "Your pay amount cross current due..!"
+                    });
+                }else{
+                    this.newUpdateSup();
+                }
+            }
 
         }
     },
+
+    newUpdateSup(){
+        axios
+        .post(`/update-supinventory-details`, this.editInventory)
+        .then(response => {
+        this.viewInventorySupplier();
+            Toast.fire({
+                icon: "success",
+                title: "Inventory Updated Successfully"
+            });
+        });
+    },
+
+
 
     editSupById(inventory) {
         for(let index in this.editInventory){

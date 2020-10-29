@@ -3689,30 +3689,44 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     updateCusInventory: function updateCusInventory() {
-      var _this3 = this;
-
       if (this.editInventory.pay == 0) {
         Toast.fire({
           icon: "warning",
           title: "Zero/Empty field doesn't exist..!"
         });
-      } else if (this.editInventory.new_due != null) {
-        if (this.editInventory.new_due < this.editInventory.pay) {
-          Toast.fire({
-            icon: "warning",
-            title: "Your pay amount cross current due..!"
-          });
-        }
       } else {
-        axios.post("/update-cusinventory-details", this.editInventory).then(function (response) {
-          _this3.viewInventoryCustomer();
-
-          Toast.fire({
-            icon: "success",
-            title: "Inventory Updated Successfully"
-          });
-        });
+        if (this.editInventory.new_due == null) {
+          if (this.editInventory.total_due < this.editInventory.pay) {
+            Toast.fire({
+              icon: "warning",
+              title: "Your pay amount cross total due..!"
+            });
+          } else {
+            this.newUpdatecust();
+          }
+        } else {
+          if (this.editInventory.new_due < this.editInventory.pay) {
+            Toast.fire({
+              icon: "warning",
+              title: "Your pay amount cross current due..!"
+            });
+          } else {
+            this.newUpdatecust();
+          }
+        }
       }
+    },
+    newUpdatecust: function newUpdatecust() {
+      var _this3 = this;
+
+      axios.post("/update-cusinventory-details", this.editInventory).then(function (response) {
+        _this3.viewInventoryCustomer();
+
+        Toast.fire({
+          icon: "success",
+          title: "Inventory Updated Successfully"
+        });
+      });
     },
     editCusById: function editCusById(inventory) {
       for (var index in this.editInventory) {
@@ -4420,9 +4434,8 @@ __webpack_require__.r(__webpack_exports__);
           title: 'Does not exist 0. You can delete this item from item-list'
         });
       } else {
-        var balance = this.editDetails.book.available_quantity + this.editDetails.qty;
-
-        if (balance < this.editDetails.qty) {
+        // let balance = this.editDetails.book.available_quantity+this.editDetails.qty;
+        if (this.editDetails.book.available_quantity < this.editDetails.qty) {
           Toast.fire({
             icon: 'warning',
             title: 'Your required Qty is not available in Stock!'
@@ -4518,8 +4531,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _footer__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./footer */ "./resources/js/components/footer.vue");
 /* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
 /* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(moment__WEBPACK_IMPORTED_MODULE_2__);
-//
-//
 //
 //
 //
@@ -5505,6 +5516,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -6314,6 +6327,9 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -6782,30 +6798,44 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     updateSupInventory: function updateSupInventory() {
-      var _this4 = this;
-
       if (this.editInventory.pay == 0) {
         Toast.fire({
           icon: "warning",
           title: "Zero/Empty field doesn't exist..!"
         });
-      } else if (this.editInventory.new_due != null) {
-        if (this.editInventory.new_due < this.editInventory.pay) {
-          Toast.fire({
-            icon: "warning",
-            title: "Your pay amount cross current due..!"
-          });
-        }
       } else {
-        axios.post("/update-supinventory-details", this.editInventory).then(function (response) {
-          _this4.viewInventorySupplier();
-
-          Toast.fire({
-            icon: "success",
-            title: "Inventory Updated Successfully"
-          });
-        });
+        if (this.editInventory.new_due == null) {
+          if (this.editInventory.total_due < this.editInventory.pay) {
+            Toast.fire({
+              icon: "warning",
+              title: "Your pay amount cross total due..!"
+            });
+          } else {
+            this.newUpdateSup();
+          }
+        } else {
+          if (this.editInventory.new_due < this.editInventory.pay) {
+            Toast.fire({
+              icon: "warning",
+              title: "Your pay amount cross current due..!"
+            });
+          } else {
+            this.newUpdateSup();
+          }
+        }
       }
+    },
+    newUpdateSup: function newUpdateSup() {
+      var _this4 = this;
+
+      axios.post("/update-supinventory-details", this.editInventory).then(function (response) {
+        _this4.viewInventorySupplier();
+
+        Toast.fire({
+          icon: "success",
+          title: "Inventory Updated Successfully"
+        });
+      });
     },
     editSupById: function editSupById(inventory) {
       for (var index in this.editInventory) {
@@ -9140,13 +9170,34 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'app',
   data: function data() {
     return {
       getSearchValue: false,
       errors: {},
-      allBook: [],
+      allUniqueIsbn: [],
+      allConsignRef: [],
+      allConsignData: [],
       form: new Form({
         author: '',
         publisher: '',
@@ -9154,40 +9205,53 @@ __webpack_require__.r(__webpack_exports__);
       }),
       detailsFormData: {
         isbn: "",
+        consign_ref: "",
         book_name: "",
         available_quantity: "",
-        author: ""
+        author: [],
+        sales_price: "",
+        cost_price: "",
+        book_id: ""
       }
     };
   },
   created: function created() {
     var _this = this;
 
-    axios.get("/getBook").then(function (response) {
-      _this.allBook = response.data.data;
+    axios.get("/uniqueConsignIsbn").then(function (response) {
+      _this.allUniqueIsbn = response.data.data; // console.log(this.allUniqueIsbn)
     });
   },
   computed: {
-    //isbn filtered from allbook
-    filterd: function filterd() {
+    UniqueIsbn: function UniqueIsbn() {
       var _this2 = this;
 
-      return this.allBook.filter(function (val) {
+      return this.allUniqueIsbn.filter(function (val) {
         return val.isbn.startsWith(_this2.detailsFormData.isbn);
       });
     }
   },
   methods: {
-    quickIsbnRest: function quickIsbnRest() {
-      this.detailsFormData = [];
+    getConsignmentData: function getConsignmentData() {
+      var _this3 = this;
+
+      axios.get('get-consign-data?consign_ref=' + this.detailsFormData.consign_ref + '&isbn=' + this.detailsFormData.isbn).then(function (response) {
+        _this3.allConsignData = response.data;
+        _this3.detailsFormData.isbn = _this3.allConsignData.book.isbn;
+        _this3.detailsFormData.author = _this3.allConsignData.book.authors;
+        _this3.detailsFormData.book_name = _this3.allConsignData.book.book_name;
+        _this3.detailsFormData.available_quantity = _this3.allConsignData.book.available_quantity;
+        _this3.detailsFormData.sales_price = _this3.allConsignData.sales_price;
+        _this3.detailsFormData.cost_price = _this3.allConsignData.cost_price;
+      });
     },
     logout: function logout() {
-      var _this3 = this;
+      var _this4 = this;
 
       axios.get('/logout').then(function () {
         localStorage.removeItem('inventory');
 
-        _this3.$router.push('/');
+        _this4.$router.push('/');
 
         Toast.fire({
           icon: 'success',
@@ -9196,11 +9260,11 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     createAuthor: function createAuthor() {
-      var _this4 = this;
+      var _this5 = this;
 
       // Submit the form via a POST request
       this.form.post('/storeAuthor').then(function () {
-        _this4.form.reset();
+        _this5.form.reset();
 
         Toast.fire({
           icon: 'success',
@@ -9209,13 +9273,13 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     createPublisher: function createPublisher() {
-      var _this5 = this;
+      var _this6 = this;
 
       // Submit the form via a POST request
       this.form.post('/storePublisher').then(function (_ref) {
         var data = _ref.data;
 
-        _this5.form.reset();
+        _this6.form.reset();
 
         Toast.fire({
           icon: 'success',
@@ -9224,13 +9288,13 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     createCategory: function createCategory() {
-      var _this6 = this;
+      var _this7 = this;
 
       // Submit the form via a POST request
       this.form.post('/storeCategory').then(function (_ref2) {
         var data = _ref2.data;
 
-        _this6.form.reset();
+        _this7.form.reset();
 
         Toast.fire({
           icon: 'success',
@@ -9247,19 +9311,31 @@ __webpack_require__.r(__webpack_exports__);
     },
     //get value isbn and bookname from booktable
     getVal: function getVal(val) {
-      var _this7 = this;
+      var _this8 = this;
 
       this.detailsFormData.isbn = val.isbn;
-      this.allBook.forEach(function (el) {
-        if (_this7.detailsFormData.isbn == el.isbn) {
-          _this7.detailsFormData.book_id = el.id;
-          _this7.detailsFormData.book_name = el.book_name;
-          _this7.detailsFormData.available_quantity = el.available_quantity;
-          _this7.detailsFormData.author = el.author;
-          _this7.getSearchValue = false;
-        }
+      axios.post("getConsignRef", {
+        isbn: val.isbn
+      }).then(function (response) {
+        _this8.allConsignRef = response.data.data;
+        _this8.getSearchValue = false;
       });
-    }
+    } //get value isbn and bookname from booktable
+    // getVal(val) {
+    //   this.detailsFormData.isbn = val.isbn;
+    //   this.allBook.forEach(el => {
+    //     if (this.detailsFormData.isbn == el.isbn) {
+    //       this.detailsFormData.book_id = el.id;
+    //       this.detailsFormData.book_name = el.book_name;
+    //       this.detailsFormData.available_quantity = el.available_quantity;
+    //       this.detailsFormData.author = el.author;
+    //       this.detailsFormData.sales_price = el.sales_price;
+    //       this.detailsFormData.cost_price = el.cost_price;
+    //       this.getSearchValue = false;
+    //     }
+    //   });
+    // },
+
   }
 });
 
@@ -14059,7 +14135,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.ulstyle[data-v-6545489e] {\r\n  list-style: none;\r\n  padding-left: 0px;\r\n  float: left;\r\n  width: 100%;\n}\n.ulstyle > li[data-v-6545489e]:hover {\r\n  background: #ddd;\r\n  color: blue;\r\n  border-radius: 5px;\n}\n.ulstyle > li > p[data-v-6545489e] {\r\n  padding: 5px;\r\n  cursor: pointer;\r\n  margin-bottom: 4px;\r\n  float: left;\r\n  width: 100%;\n}\r\n\r\n\r\n", ""]);
+exports.push([module.i, "\n.ulstyle[data-v-6545489e] {\n  list-style: none;\n  padding-left: 0px;\n  float: left;\n  width: 100%;\n}\n.ulstyle > li[data-v-6545489e]:hover {\n  background: #ddd;\n  color: blue;\n  border-radius: 5px;\n}\n.ulstyle > li > p[data-v-6545489e] {\n  padding: 5px;\n  cursor: pointer;\n  margin-bottom: 4px;\n  float: left;\n  width: 100%;\n}\n\n\n", ""]);
 
 // exports
 
@@ -14078,7 +14154,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.ulstyle[data-v-6545489e] {\r\n  list-style: none;\r\n  padding-left: 0px;\r\n  float: left;\r\n  position: absolute;\r\n    background: aliceblue;\r\n    width: 50%;\r\n    z-index: 999;\r\n    overflow-y:scroll;\r\n    min-height: 5rem;\r\n    max-height: 12rem;\n}\n.ulstyle > li[data-v-6545489e]:hover {\r\n  background: #ddd;\r\n  color: blue;\r\n  border-radius: 5px;\n}\n.ulstyle > li > p[data-v-6545489e] {\r\n  padding: 5px;\r\n  cursor: pointer;\r\n  margin-bottom: 4px;\r\n  float: left;\r\n  margin-bottom: 0px;\r\nborder-bottom: 1px solid #DCA;\n}\n.invoice_title[data-v-6545489e]{\r\n    text-align: center;\r\n    font-weight: bold;\r\n    margin-bottom: 10px;\r\n    border-bottom: 2px solid #ddd;\r\n    padding-bottom: 5px;\n}\r\n\r\n", ""]);
+exports.push([module.i, "\n.ulstyle[data-v-6545489e] {\n  list-style: none;\n  padding-left: 0px;\n  float: left;\n  position: absolute;\n    background: aliceblue;\n    width: 50%;\n    z-index: 999;\n    overflow-y:scroll;\n    min-height: 5rem;\n    max-height: 12rem;\n}\n.ulstyle > li[data-v-6545489e]:hover {\n  background: #ddd;\n  color: blue;\n  border-radius: 5px;\n}\n.ulstyle > li > p[data-v-6545489e] {\n  padding: 5px;\n  cursor: pointer;\n  margin-bottom: 4px;\n  float: left;\n  margin-bottom: 0px;\nborder-bottom: 1px solid #DCA;\n}\n.invoice_title[data-v-6545489e]{\n    text-align: center;\n    font-weight: bold;\n    margin-bottom: 10px;\n    border-bottom: 2px solid #ddd;\n    padding-bottom: 5px;\n}\n\n", ""]);
 
 // exports
 
@@ -79890,9 +79966,26 @@ var render = function() {
                                           )
                                         ]),
                                         _vm._v(" "),
-                                        _c("td", [
-                                          _vm._v(_vm._s(statement.book.author))
-                                        ]),
+                                        _c(
+                                          "td",
+                                          _vm._l(
+                                            statement.book.authors,
+                                            function(item) {
+                                              return _c(
+                                                "span",
+                                                {
+                                                  staticClass:
+                                                    "badge badge-success",
+                                                  staticStyle: {
+                                                    "margin-right": "3px"
+                                                  }
+                                                },
+                                                [_vm._v(_vm._s(item.author))]
+                                              )
+                                            }
+                                          ),
+                                          0
+                                        ),
                                         _vm._v(" "),
                                         _c("td", [
                                           _vm._v(_vm._s(statement.unit_price))
@@ -81181,7 +81274,20 @@ var render = function() {
                                   _vm._v(" "),
                                   _c("td", [_vm._v(_vm._s(stock.book_name))]),
                                   _vm._v(" "),
-                                  _c("td", [_vm._v(_vm._s(stock.author))]),
+                                  _c(
+                                    "td",
+                                    _vm._l(stock.authors, function(item) {
+                                      return _c(
+                                        "span",
+                                        {
+                                          staticClass: "badge badge-success",
+                                          staticStyle: { "margin-right": "3px" }
+                                        },
+                                        [_vm._v(_vm._s(item.author))]
+                                      )
+                                    }),
+                                    0
+                                  ),
                                   _vm._v(" "),
                                   _c("td", [
                                     _vm._v(_vm._s(stock.available_quantity))
@@ -86874,7 +86980,7 @@ var render = function() {
                       ],
                       staticClass: "ulstyle"
                     },
-                    _vm._l(_vm.filterd, function(val) {
+                    _vm._l(_vm.UniqueIsbn, function(val) {
                       return _c("li", { key: val.id }, [
                         _c(
                           "p",
@@ -86894,6 +87000,62 @@ var render = function() {
                   )
                 ]),
                 _vm._v(" "),
+                _c("div", { staticClass: "form-group" }, [
+                  _c(
+                    "select",
+                    {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.detailsFormData.consign_ref,
+                          expression: "detailsFormData.consign_ref"
+                        }
+                      ],
+                      staticClass: "form-control",
+                      attrs: { id: "type" },
+                      on: {
+                        change: [
+                          function($event) {
+                            var $$selectedVal = Array.prototype.filter
+                              .call($event.target.options, function(o) {
+                                return o.selected
+                              })
+                              .map(function(o) {
+                                var val = "_value" in o ? o._value : o.value
+                                return val
+                              })
+                            _vm.$set(
+                              _vm.detailsFormData,
+                              "consign_ref",
+                              $event.target.multiple
+                                ? $$selectedVal
+                                : $$selectedVal[0]
+                            )
+                          },
+                          _vm.getConsignmentData
+                        ]
+                      }
+                    },
+                    [
+                      _c(
+                        "option",
+                        {
+                          attrs: { selected: "selected", value: "", hidden: "" }
+                        },
+                        [_vm._v("Select Batch")]
+                      ),
+                      _vm._v(" "),
+                      _vm._l(_vm.allConsignRef, function(item, index) {
+                        return _c("option", { key: index }, [
+                          _vm._v(_vm._s(item.consign_ref) + " ")
+                        ])
+                      })
+                    ],
+                    2
+                  )
+                ]),
+                _vm._v(" "),
                 _c("table", [
                   _c("tr", [
                     _c("th", [_vm._v("Book Name")]),
@@ -86908,7 +87070,40 @@ var render = function() {
                     _vm._v(" "),
                     _c("td", [_vm._v(":")]),
                     _vm._v(" "),
-                    _c("td", [_vm._v(_vm._s(_vm.detailsFormData.author))])
+                    _c(
+                      "td",
+                      _vm._l(_vm.detailsFormData.author, function(item) {
+                        return _c(
+                          "span",
+                          {
+                            staticClass: "badge badge-success",
+                            staticStyle: { "margin-right": "3px" }
+                          },
+                          [_vm._v(_vm._s(item.author))]
+                        )
+                      }),
+                      0
+                    )
+                  ]),
+                  _vm._v(" "),
+                  _c("tr", [
+                    _c("th", [_vm._v("Sales Price")]),
+                    _vm._v(" "),
+                    _c("td", [_vm._v(":")]),
+                    _vm._v(" "),
+                    _c("td", [
+                      _vm._v(_vm._s(_vm.detailsFormData.sales_price) + " Tk.")
+                    ])
+                  ]),
+                  _vm._v(" "),
+                  _c("tr", [
+                    _c("th", [_vm._v("Cost Price")]),
+                    _vm._v(" "),
+                    _c("td", [_vm._v(":")]),
+                    _vm._v(" "),
+                    _c("td", [
+                      _vm._v(_vm._s(_vm.detailsFormData.cost_price) + " Tk.")
+                    ])
                   ]),
                   _vm._v(" "),
                   _c("tr", [
@@ -86925,26 +87120,7 @@ var render = function() {
                 ])
               ]),
               _vm._v(" "),
-              _c("div", { staticClass: "modal-footer" }, [
-                _c(
-                  "button",
-                  {
-                    staticClass: "btn btn-info",
-                    attrs: { type: "button" },
-                    on: { click: _vm.quickIsbnRest }
-                  },
-                  [_vm._v("Clear")]
-                ),
-                _vm._v(" "),
-                _c(
-                  "button",
-                  {
-                    staticClass: "btn btn-danger",
-                    attrs: { type: "button", "data-dismiss": "modal" }
-                  },
-                  [_vm._v("Close")]
-                )
-              ])
+              _vm._m(14)
             ])
           ]
         )
@@ -87272,6 +87448,21 @@ var staticRenderFns = [
           }
         },
         [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
+      )
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "modal-footer" }, [
+      _c(
+        "button",
+        {
+          staticClass: "btn btn-danger",
+          attrs: { type: "button", "data-dismiss": "modal" }
+        },
+        [_vm._v("Close")]
       )
     ])
   }

@@ -88,6 +88,7 @@ Route::post('/getConsignRef', 'ConsignmentController@getConsignRefbyId');
 Route::get('/getUserDetails', 'UserController@index');
 
 Route::get('get-consignment-data', 'ConsignmentController@getConsignmentData');
+Route::get('get-consign-data', 'ConsignmentController@getConsignData');
 
 //edit book by id
 Route::post('get-edit-book', 'BookController@getBookForEdit');

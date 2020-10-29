@@ -29,4 +29,5 @@ class ConsignmentDetails extends Model
     {
         return $this->belongsTo(Book::class);
     }
+    
 }

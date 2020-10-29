@@ -200,8 +200,6 @@
                                                         <p @click.prevent="getVal(val)">{{ val.isbn }}</p>
                                                     </li>
                                                 </ul>
-
-                                                <!-- https://laracasts.com/discuss/channels/vue/unique-list-values -->
                                             </div>
                                         </div>
 
