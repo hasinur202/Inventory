@@ -8,7 +8,9 @@ use App\Supplier;
 class SupplierController extends Controller
 { 
     public function index(){
+        // $data = Supplier::where('hide', 1)->paginate(3);
         $data = Supplier::where('hide', 1)->get();
+
         return response()->json([
             'data'=>$data,
             'message'=>"success"

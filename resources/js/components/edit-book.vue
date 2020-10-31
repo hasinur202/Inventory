@@ -63,7 +63,7 @@
                             <label>Cover</label>
                         <div class="input-group">
                             <div class="custom-file file-input-style">
-                                <img :src="editMode ? updateImage() : this.singleBookDetails.cover" class="img-style" />
+                                <img :src="editMode ? updateImage() : 'images/'+this.singleBookDetails.cover" class="img-style" />
                                 <input  @change="changePhoto($event)" type="file"
                                  class="custom-file-input input-new-style" id="exampleInputFile">
                             </div>
@@ -183,7 +183,7 @@ import footerComponent from "./footer";
 
         data(){
             return{
-                editMode:true,
+                editMode:false,
                 book_isbn:'',
                 errors:{},
                 getSesrchPub: false,
@@ -279,11 +279,10 @@ import footerComponent from "./footer";
 
             updateImage() {
                 let img = this.singleBookDetails.cover;
-                if (img.length > 200) {
+                if (img.length > 100) {
                     return this.singleBookDetails.cover;
                 } else {
                     return "/images/" + this.singleBookDetails.cover;
-                    // return `/images/${this.singleBookDetails.cover}`;
                 }
             },
 

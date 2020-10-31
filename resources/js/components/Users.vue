@@ -74,7 +74,7 @@
                     </div>
 
                     <div class="form-group">
-                        <input v-model="form.email" type="email" name="email" placeholder="Email"
+                        <input v-model="form.email" type="email" placeholder="Email"
                         class="form-control" :class="{ 'is-invalid': form.errors.has('email') }">
                         <has-error :form="form" field="email"></has-error>
                     </div>

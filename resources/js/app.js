@@ -8,6 +8,8 @@ import vSelect from 'vue-select'
 Vue.component('v-select', vSelect)
     //end v-select
 
+    //pagination
+Vue.component('pagination', require('laravel-vue-pagination'));
 
 
 //for print
