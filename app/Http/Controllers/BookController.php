@@ -96,7 +96,7 @@ class BookController extends Controller
             $book->cover        = $request->cover;
         }
 
-        $book->isbn         = $request->isbn;
+        // $book->isbn         = $request->isbn;
         $book->book_name    = $request->book_name;
         $book->copyright    = $request->copyright;
         $book->publisher    = $request->publisher;

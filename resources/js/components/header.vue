@@ -67,7 +67,7 @@
       <!-- Brand Logo -->
       <div class="brand-link">
         <!-- <img :src="`/img/user-12.jpg`" alt="Library Logo" class="brand-image img-circle elevation-3" style="opacity: .8"> -->
-        <span class="brand-text font-weight-light">সন্ধিপাঠ লাইব্রেরি</span>
+        <span class="brand-text font-weight-light">IDEATECH LIBRARY</span>
       </div>
 
       <!-- Sidebar -->

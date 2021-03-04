@@ -9394,7 +9394,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -14097,7 +14096,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.ulstyle[data-v-6db0a08d]{\r\n    list-style: none;\r\n    padding-left: 0px;\r\n    position: absolute;\r\n    background: aliceblue;\r\n    width: 50%;\r\n    z-index: 999;\n}\n.ulstyle > li[data-v-6db0a08d]:hover {\r\n    background:#ddd;\r\n    color: blue;\r\n    border-radius: 5px;\n}\n.ulstyle > li > p[data-v-6db0a08d]{\r\n    padding: 5px;\r\n    cursor: pointer;\r\n    margin-bottom: 0px;\r\n    border-bottom: 1px solid #DCA;\n}\n.card-title[data-v-6db0a08d] {\r\n  float: left;\n}\r\n\r\n", ""]);
+exports.push([module.i, "\n.ulstyle[data-v-6db0a08d]{\n    list-style: none;\n    padding-left: 0px;\n    position: absolute;\n    background: aliceblue;\n    width: 50%;\n    z-index: 999;\n}\n.ulstyle > li[data-v-6db0a08d]:hover {\n    background:#ddd;\n    color: blue;\n    border-radius: 5px;\n}\n.ulstyle > li > p[data-v-6db0a08d]{\n    padding: 5px;\n    cursor: pointer;\n    margin-bottom: 0px;\n    border-bottom: 1px solid #DCA;\n}\n.card-title[data-v-6db0a08d] {\n  float: left;\n}\n\n", ""]);
 
 // exports
 
@@ -14116,7 +14115,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.invoice_title[data-v-75c3f0ea]{\r\n    text-align: center;\r\n    font-weight: bold;\r\n    margin-bottom: 10px;\r\n    border-bottom: 2px solid #ddd;\r\n    padding-bottom: 5px;\n}\r\n\r\n", ""]);
+exports.push([module.i, "\n.invoice_title[data-v-75c3f0ea]{\n    text-align: center;\n    font-weight: bold;\n    margin-bottom: 10px;\n    border-bottom: 2px solid #ddd;\n    padding-bottom: 5px;\n}\n\n", ""]);
 
 // exports
 
@@ -14135,7 +14134,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.ulstyle[data-v-6545489e] {\r\n  list-style: none;\r\n  padding-left: 0px;\r\n  float: left;\r\n  width: 100%;\n}\n.ulstyle > li[data-v-6545489e]:hover {\r\n  background: #ddd;\r\n  color: blue;\r\n  border-radius: 5px;\n}\n.ulstyle > li > p[data-v-6545489e] {\r\n  padding: 5px;\r\n  cursor: pointer;\r\n  margin-bottom: 4px;\r\n  float: left;\r\n  width: 100%;\n}\r\n\r\n\r\n", ""]);
+exports.push([module.i, "\n.ulstyle[data-v-6545489e] {\n  list-style: none;\n  padding-left: 0px;\n  float: left;\n  width: 100%;\n}\n.ulstyle > li[data-v-6545489e]:hover {\n  background: #ddd;\n  color: blue;\n  border-radius: 5px;\n}\n.ulstyle > li > p[data-v-6545489e] {\n  padding: 5px;\n  cursor: pointer;\n  margin-bottom: 4px;\n  float: left;\n  width: 100%;\n}\n\n\n", ""]);
 
 // exports
 
@@ -14154,7 +14153,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.ulstyle[data-v-6545489e] {\r\n  list-style: none;\r\n  padding-left: 0px;\r\n  float: left;\r\n  position: absolute;\r\n    background: aliceblue;\r\n    width: 50%;\r\n    z-index: 999;\r\n    overflow-y:scroll;\r\n    min-height: 5rem;\r\n    max-height: 12rem;\n}\n.ulstyle > li[data-v-6545489e]:hover {\r\n  background: #ddd;\r\n  color: blue;\r\n  border-radius: 5px;\n}\n.ulstyle > li > p[data-v-6545489e] {\r\n  padding: 5px;\r\n  cursor: pointer;\r\n  margin-bottom: 4px;\r\n  float: left;\r\n  margin-bottom: 0px;\r\nborder-bottom: 1px solid #DCA;\n}\n.invoice_title[data-v-6545489e]{\r\n    text-align: center;\r\n    font-weight: bold;\r\n    margin-bottom: 10px;\r\n    border-bottom: 2px solid #ddd;\r\n    padding-bottom: 5px;\n}\r\n\r\n", ""]);
+exports.push([module.i, "\n.ulstyle[data-v-6545489e] {\n  list-style: none;\n  padding-left: 0px;\n  float: left;\n  position: absolute;\n    background: aliceblue;\n    width: 50%;\n    z-index: 999;\n    overflow-y:scroll;\n    min-height: 5rem;\n    max-height: 12rem;\n}\n.ulstyle > li[data-v-6545489e]:hover {\n  background: #ddd;\n  color: blue;\n  border-radius: 5px;\n}\n.ulstyle > li > p[data-v-6545489e] {\n  padding: 5px;\n  cursor: pointer;\n  margin-bottom: 4px;\n  float: left;\n  margin-bottom: 0px;\nborder-bottom: 1px solid #DCA;\n}\n.invoice_title[data-v-6545489e]{\n    text-align: center;\n    font-weight: bold;\n    margin-bottom: 10px;\n    border-bottom: 2px solid #ddd;\n    padding-bottom: 5px;\n}\n\n", ""]);
 
 // exports
 
@@ -14173,7 +14172,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.file-input-style[data-v-3a09080e]{\r\n    border: dashed 1.5px blue;\r\n    background-image: repeating-linear-gradient(45deg, black, transparent 100px);\r\n    height: 180px !important;\r\n    max-width: 200px !important;\r\n    /* margin-left: 50px !important; */\r\n    margin:auto;\n}\n.input-new-style[data-v-3a09080e]{\r\n    margin-left: -100%;\r\n    height: 180px;\r\n    border: dashed 1.5px blue;\r\n    background-image: repeating-linear-gradient(45deg, black, transparent 100px);\r\n    width: 100% !important;\r\n    cursor: pointer;\n}\n.icon-style[data-v-3a09080e]{\r\n    font-size: 50px;\r\n    margin-left: 145px;\r\n    margin-top:5px;\n}\n.img-style[data-v-3a09080e]{\r\n    width: 200px !important;\r\n    height: 180px !important;\n}\r\n", ""]);
+exports.push([module.i, "\n.file-input-style[data-v-3a09080e]{\n    border: dashed 1.5px blue;\n    background-image: repeating-linear-gradient(45deg, black, transparent 100px);\n    height: 180px !important;\n    max-width: 200px !important;\n    /* margin-left: 50px !important; */\n    margin:auto;\n}\n.input-new-style[data-v-3a09080e]{\n    margin-left: -100%;\n    height: 180px;\n    border: dashed 1.5px blue;\n    background-image: repeating-linear-gradient(45deg, black, transparent 100px);\n    width: 100% !important;\n    cursor: pointer;\n}\n.icon-style[data-v-3a09080e]{\n    font-size: 50px;\n    margin-left: 145px;\n    margin-top:5px;\n}\n.img-style[data-v-3a09080e]{\n    width: 200px !important;\n    height: 180px !important;\n}\n", ""]);
 
 // exports
 
@@ -14192,7 +14191,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.ulstyle[data-v-249b947c]{\r\n    list-style: none;\r\n    padding-left: 0px;\r\n    position: absolute;\r\n    background: aliceblue;\r\n    width: 50%;\r\n    z-index: 999;\n}\n.ulstyle > li[data-v-249b947c]:hover {\r\n    background:#ddd;\r\n    color: blue;\r\n    border-radius: 5px;\n}\n.ulstyle > li > p[data-v-249b947c]{\r\n    padding: 5px;\r\n    cursor: pointer;\r\n    margin-bottom: 0px;\r\n    border-bottom: 1px solid #DCA;\n}\n.card-title[data-v-249b947c] {\r\n  float: left;\n}\r\n\r\n", ""]);
+exports.push([module.i, "\n.ulstyle[data-v-249b947c]{\n    list-style: none;\n    padding-left: 0px;\n    position: absolute;\n    background: aliceblue;\n    width: 50%;\n    z-index: 999;\n}\n.ulstyle > li[data-v-249b947c]:hover {\n    background:#ddd;\n    color: blue;\n    border-radius: 5px;\n}\n.ulstyle > li > p[data-v-249b947c]{\n    padding: 5px;\n    cursor: pointer;\n    margin-bottom: 0px;\n    border-bottom: 1px solid #DCA;\n}\n.card-title[data-v-249b947c] {\n  float: left;\n}\n\n", ""]);
 
 // exports
 
@@ -14249,7 +14248,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.head_menu[data-v-798ca618]{\r\n    border-radius: 10px;\r\n    border: 1px solid #fff;\r\n    background: #494E54;\r\n    color: #fff !important;\r\n    margin-left: 14px;\n}\n.head_menu[data-v-798ca618]:hover {\r\n    background: gray !important;\r\n    color: black !important;\r\n    border:1px solid #ddd;transition-delay: 0.2s;\n}\n.fixed_position[data-v-798ca618]{\r\n    left:0;\r\n    right:0; top: 0;\r\n    position: fixed;\n}\n.ulstyle[data-v-798ca618]{\r\n    list-style: none;\r\n    padding-left: 0px;\r\n    position: absolute;\r\n    background: aliceblue;\r\n    width: 80%;\r\n    z-index: 999;\r\n    overflow-y:scroll;\r\n    min-height: 5rem;\r\n    max-height: 12rem;\n}\n.ulstyle > li[data-v-798ca618]:hover {\r\n    background:#ddd;\r\n    color: blue;\r\n    border-radius: 5px;\n}\n.ulstyle > li > p[data-v-798ca618]{\r\n    padding: 5px;\r\n    cursor: pointer;\r\n    margin-bottom: 0px;\r\n    border-bottom: 1px solid #DCA;\n}\r\n", ""]);
+exports.push([module.i, "\n.head_menu[data-v-798ca618]{\n    border-radius: 10px;\n    border: 1px solid #fff;\n    background: #494E54;\n    color: #fff !important;\n    margin-left: 14px;\n}\n.head_menu[data-v-798ca618]:hover {\n    background: gray !important;\n    color: black !important;\n    border:1px solid #ddd;transition-delay: 0.2s;\n}\n.fixed_position[data-v-798ca618]{\n    left:0;\n    right:0; top: 0;\n    position: fixed;\n}\n.ulstyle[data-v-798ca618]{\n    list-style: none;\n    padding-left: 0px;\n    position: absolute;\n    background: aliceblue;\n    width: 80%;\n    z-index: 999;\n    overflow-y:scroll;\n    min-height: 5rem;\n    max-height: 12rem;\n}\n.ulstyle > li[data-v-798ca618]:hover {\n    background:#ddd;\n    color: blue;\n    border-radius: 5px;\n}\n.ulstyle > li > p[data-v-798ca618]{\n    padding: 5px;\n    cursor: pointer;\n    margin-bottom: 0px;\n    border-bottom: 1px solid #DCA;\n}\n", ""]);
 
 // exports
 
@@ -73769,7 +73768,7 @@ var staticRenderFns = [
       "div",
       { staticClass: "card-footer", staticStyle: { display: "block" } },
       [
-        _vm._v("\r\n                    Visit "),
+        _vm._v("\n                    Visit "),
         _c(
           "a",
           {
@@ -73780,7 +73779,7 @@ var staticRenderFns = [
           },
           [_vm._v("www.ideatechsolution.com")]
         ),
-        _vm._v(" for more information.\r\n                ")
+        _vm._v(" for more information.\n                ")
       ]
     )
   }
@@ -87823,7 +87822,7 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c("div", { staticClass: "brand-link" }, [
       _c("span", { staticClass: "brand-text font-weight-light" }, [
-        _vm._v("সন্ধিপাঠ লাইব্রেরি")
+        _vm._v("IDEATECH LIBRARY")
       ])
     ])
   },
@@ -88101,7 +88100,7 @@ var render = function() {
             }
           },
           [
-            _c("div", { staticClass: "form-group has-feedback" }, [
+            _c("div", { staticClass: "form-group" }, [
               _c("input", {
                 directives: [
                   {
@@ -88112,7 +88111,11 @@ var render = function() {
                   }
                 ],
                 staticClass: "form-control",
-                attrs: { name: "email", type: "email", placeholder: "Email" },
+                attrs: {
+                  name: "email",
+                  type: "text",
+                  placeholder: "Username/email"
+                },
                 domProps: { value: _vm.form.email },
                 on: {
                   input: function($event) {
@@ -88122,14 +88125,10 @@ var render = function() {
                     _vm.$set(_vm.form, "email", $event.target.value)
                   }
                 }
-              }),
-              _vm._v(" "),
-              _c("span", {
-                staticClass: "fa fa-envelope form-control-feedback"
               })
             ]),
             _vm._v(" "),
-            _c("div", { staticClass: "form-group has-feedback" }, [
+            _c("div", { staticClass: "form-group" }, [
               _c("input", {
                 directives: [
                   {
@@ -88154,18 +88153,12 @@ var render = function() {
                     _vm.$set(_vm.form, "password", $event.target.value)
                   }
                 }
-              }),
-              _vm._v(" "),
-              _c("span", { staticClass: "fa fa-lock form-control-feedback" })
+              })
             ]),
             _vm._v(" "),
             _vm._m(1)
           ]
-        ),
-        _vm._v(" "),
-        _vm._m(2),
-        _vm._v(" "),
-        _vm._m(3)
+        )
       ])
     ])
   ])
@@ -88182,7 +88175,10 @@ var staticRenderFns = [
           staticStyle: { "font-size": "30px", color: "lightblue" },
           attrs: { href: "#" }
         },
-        [_vm._v("\n      সন্ধিপাঠ লাইব্রেরি ব্যবস্থাপনা\n    ")]
+        [
+          _c("strong", [_vm._v("IDEA TECH")]),
+          _vm._v(" LIBRARY MANAGEMENT SYSTEM\n      ")
+        ]
       )
     ])
   },
@@ -88195,7 +88191,7 @@ var staticRenderFns = [
         _c("div", { staticClass: "checkbox icheck" }, [
           _c("label", [
             _c("input", { attrs: { type: "checkbox" } }),
-            _vm._v(" Remember Me\n              ")
+            _vm._v(" Remember Me\n                ")
           ])
         ])
       ]),
@@ -88210,26 +88206,6 @@ var staticRenderFns = [
           [_vm._v("Sign In")]
         )
       ])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("p", { staticClass: "mb-1" }, [
-      _c("a", { attrs: { href: "#" } }, [_vm._v("I forgot my password")])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("p", { staticClass: "mb-0" }, [
-      _c(
-        "a",
-        { staticClass: "text-center", attrs: { href: "register.html" } },
-        [_vm._v("Register a new membership")]
-      )
     ])
   }
 ]
@@ -106046,8 +106022,8 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! D:\Office Project\Inventory\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! D:\Office Project\Inventory\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! D:\Hasinur\Project\Inventory\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! D:\Hasinur\Project\Inventory\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })

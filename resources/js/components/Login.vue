@@ -2,7 +2,7 @@
   <div class="login-box">
     <div class="login-logo">
       <a href="#" style="font-size:30px; color: lightblue">
-        সন্ধিপাঠ লাইব্রেরি ব্যবস্থাপনা
+        <strong>IDEA TECH</strong> LIBRARY MANAGEMENT SYSTEM
       </a>
     </div>
     <div class="card">
@@ -10,13 +10,11 @@
         <p class="login-box-msg">Sign in to start your session</p>
 
         <form @submit.prevent="login()">
-          <div class="form-group has-feedback">
-            <input v-model="form.email" name="email" type="email" class="form-control" placeholder="Email" />
-            <span class="fa fa-envelope form-control-feedback"></span>
+          <div class="form-group">
+            <input v-model="form.email" name="email" type="text" class="form-control" placeholder="Username/email" />
           </div>
-          <div class="form-group has-feedback">
+          <div class="form-group">
             <input v-model="form.password" name="password" type="password" class="form-control" placeholder="Password" />
-            <span class="fa fa-lock form-control-feedback"></span>
           </div>
           <div class="row">
             <div class="col-8">
@@ -31,13 +29,14 @@
             </div>
           </div>
         </form>
-
+<!--
         <p class="mb-1">
           <a href="#">I forgot my password</a>
         </p>
         <p class="mb-0">
-          <a href="register.html" class="text-center">Register a new membership</a>
+          <a href="#" class="text-center">Register a new membership</a>
         </p>
+		-->
       </div>
     </div>
   </div>
